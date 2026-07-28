@@ -116,10 +116,11 @@ dual-battery UPS that keeps the Raspberry Pis and the HP minis running through a
 important machines shut down cleanly when the power stays out.
 
 Cooling is where the enterprise pretense falls away completely. A box fan pushes the rack's
-exhaust up into the cavity between the first and second floors of the house, which happen to
-have heated floors, and some of it bleeds into the garage through an insulated wall on the
-other side. It is not a CRAC unit. It is a box fan and a happy accident, and in winter it is
-basically free heat.
+exhaust up into the foot-high gap between the ground-floor ceiling and the main floor of the
+split-level house, and some of it bleeds into the garage through an insulated wall on the other
+side. It is not a CRAC unit. It is a box fan and a cavity, and the practical upshot is that you
+can feel the rack in the stairs and the floor above it. Homemade heated floors, sort of, if you
+do not think about it too hard.
 
 ## The Pis do the quiet jobs
 
