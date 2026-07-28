@@ -48,6 +48,11 @@ There is something satisfying about a piece of hardware that has quietly survive
 architectural fad I have chased. It was a gaming rig, then a workstation, then a hypervisor,
 and it never once needed replacing to make the jump.
 
+It has outlived its own chassis, though. The X399 started in the 4U rackmount unit that now
+holds pve-00. When I needed ECC RDIMM memory and more PCIe lanes, the new EPYC parts took over
+the 4U and the Threadripper moved into the tower case from my old gaming PC, which is the one
+now standing on the basement floor.
+
 ![An AMD Ryzen Threadripper CPU seated in an ASRock X399 motherboard socket, next to red memory sticks and a Noctua cooler](./img/2020-threadripper-cpu.jpg)
 
 *The Threadripper that is now pve-01. Same socket, same board, several lifetimes of workloads.*
@@ -102,8 +107,19 @@ descendant of that original $75 firewall.
 The 10GbE cards themselves are a grab bag: Intel X550 in one node, Mellanox ConnectX-3 Pro in
 another, Chelsio T320 in two more. They came from different eras and different deals, and they
 all do the same job well enough that standardizing on one would be spending money to fix a
-problem I do not have. Edge switching and wireless are UniFi, and an APC UPS with a network
-card keeps the whole rack alive long enough to shut down cleanly when the power blinks.
+problem I do not have. Edge switching and wireless are UniFi.
+
+## Power and heat
+
+The bottom of the rack is a rackmount PSU feeding the major players, and above it sits a
+dual-battery UPS that keeps the Raspberry Pis and the HP minis running through a blip. The
+important machines shut down cleanly when the power stays out.
+
+Cooling is where the enterprise pretense falls away completely. A box fan pushes the rack's
+exhaust up into the cavity between the first and second floors of the house, which happen to
+have heated floors, and some of it bleeds into the garage through an insulated wall on the
+other side. It is not a CRAC unit. It is a box fan and a happy accident, and in winter it is
+basically free heat.
 
 ## The Pis do the quiet jobs
 

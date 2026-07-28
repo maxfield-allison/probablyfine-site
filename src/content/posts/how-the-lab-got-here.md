@@ -67,9 +67,14 @@ along the way, but it is the same board I built on a desk in 2019. The 1080 Ti i
 too, now passed through to a Kubernetes GPU worker. Seven years of continuous service across
 three completely different architectures. Not bad for a gaming board.
 
+It started life in the 4U rackmount chassis. Later, when I needed ECC RDIMM memory and more
+PCIe lanes than the platform could give me, I bought the parts that are now pve-00, dropped
+them into that 4U, and moved the X399 out into the tower case from my old gaming PC. So the
+board has outlived its own chassis, and it is still going.
+
 ![The inside of an open rackmount server chassis with an ASRock X399 board, a large Noctua cooler, and red SATA cables running to drive bays](./img/2019-x399-server.jpg)
 
-*The X399 build going into a rackmount chassis, back in 2019. Same board that runs as pve-01 today.*
+*The X399 build in its original 4U chassis, 2019. The board still runs as pve-01, though it has since moved into a different case.*
 
 ## Why cluster at all
 
