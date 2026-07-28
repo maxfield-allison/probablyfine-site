@@ -48,6 +48,10 @@ There is something satisfying about a piece of hardware that has quietly survive
 architectural fad I have chased. It was a gaming rig, then a workstation, then a hypervisor,
 and it never once needed replacing to make the jump.
 
+![An AMD Ryzen Threadripper CPU seated in an ASRock X399 motherboard socket, next to red memory sticks and a Noctua cooler](./img/2020-threadripper-cpu.jpg)
+
+*The Threadripper that is now pve-01. Same socket, same board, several lifetimes of workloads.*
+
 ## Three GPU generations
 
 The lab has three NVIDIA cards spanning three architectures: an Ada-generation 4070 Ti, a
@@ -76,7 +80,7 @@ usually kicked off by a Proxmox upgrade deciding to be interesting at the worst 
 
 ![The inside of an open storage chassis showing a row of drive bays and a dense tangle of red SATA cables](./img/2020-drive-cage.jpg)
 
-*An earlier chassis, before Ceph. The red is all SATA, and tracing it was exactly as fun as it looks.*
+*The original X399 server's drive cages. All that red is SATA, and tracing it was exactly as fun as it looks.*
 
 The lesson that stuck hardest is the boring one. Backups are not optional, and having backups
 is not the same as having tested restores. Everything important now backs up to a dedicated

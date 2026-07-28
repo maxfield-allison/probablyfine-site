@@ -10,6 +10,10 @@ draft: false
 Every homelab has an origin story, and most of them start dumber than the current setup
 makes them look. Mine started with a $75 desktop and a router I had no business flashing.
 
+![An open desktop PC case on a hardwood floor with a box fan strapped to the side blowing onto the graphics card](./img/2017-whitebox.jpg)
+
+*Not the lab. This is my personal PC from around then, with a box fan zip-tied on to keep an overheating RX 480 alive. This is the energy we are working with.*
+
 ## The $75 firewall
 
 The first real piece was a firewall. I bought a slim HP desktop, one of those little
@@ -31,10 +35,6 @@ before anyone paid me to touch theirs.
 
 Once I trusted the network I built a real server, a whitebox running Linux Mint, around 2017.
 That's where it turned into an actual lab.
-
-![An open PC case on a hardwood floor, mid-build, with an EVGA power supply and a graphics card installed](./img/2017-whitebox.jpg)
-
-*The whitebox, mid-build in 2017. Everything started on a floor like this.*
 
 I got into Plex and the whole \*arr stack, mostly to get out from under streaming services
 that kept splitting the same catalog across more subscriptions every year. Then I stood up
@@ -66,6 +66,10 @@ swapped up to a 2920X, the memory went to 128 GB, and it collected enterprise ne
 along the way, but it is the same board I built on a desk in 2019. The 1080 Ti is still in it
 too, now passed through to a Kubernetes GPU worker. Seven years of continuous service across
 three completely different architectures. Not bad for a gaming board.
+
+![The inside of an open rackmount server chassis with an ASRock X399 board, a large Noctua cooler, and red SATA cables running to drive bays](./img/2019-x399-server.jpg)
+
+*The X399 build going into a rackmount chassis, back in 2019. Same board that runs as pve-01 today.*
 
 ## Why cluster at all
 
