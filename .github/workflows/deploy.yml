@@ -1,0 +1,82 @@
+name: Deploy
+
+# Hybrid deploy for the probablyfine.dev blog.
+#   1. Build the static site and publish it to Cloudflare Pages (external mirror
+#      / failover, zero homelab footprint).
+#   2. Build a container image and push to ghcr.io. The homelab Kubernetes
+#      cluster (via ArgoCD Image Updater) picks that up and serves the primary
+#      origin from probablyfine.dev.
+#
+# Direction is one-way: GitHub is the source of truth.
+#
+# Required repository secrets:
+#   CLOUDFLARE_API_TOKEN   - token with Pages:Edit for the account
+#   CLOUDFLARE_ACCOUNT_ID  - Cloudflare account id
+# (GITHUB_TOKEN is provided automatically for ghcr push.)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pages:
+    name: Cloudflare Pages
+    runs-on: ubuntu-latest
+    # Enabled once the Pages project + a Pages-scoped token are set. Set repo
+    # variable ENABLE_CLOUDFLARE_PAGES=true and secrets CLOUDFLARE_API_TOKEN +
+    # CLOUDFLARE_ACCOUNT_ID to turn this on.
+    if: ${{ vars.ENABLE_CLOUDFLARE_PAGES == 'true' }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Publish to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@3 pages deploy dist --project-name=probablyfine-site --branch=main --commit-dirty=true
+
+  image:
+    name: Container image (ghcr.io)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/maxfield-allison/probablyfine-site:latest
+            ghcr.io/maxfield-allison/probablyfine-site:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

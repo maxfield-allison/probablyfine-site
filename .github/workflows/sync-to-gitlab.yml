@@ -1,0 +1,48 @@
+name: Sync to GitLab
+
+# Mirrors the public source of truth (GitHub) into the GitLab instance, one-way:
+#   GitHub (main, tags)  ->  GitLab
+#
+# Required repository secrets:
+#   GITLAB_TOKEN         - GitLab project access token with write_repository
+#   GITLAB_HOST          - e.g. gitlab.probablyfine.dev
+#   GITLAB_PROJECT_PATH  - e.g. root/probablyfine-site
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-to-gitlab
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Push to GitLab
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Push main and tags to GitLab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_HOST: ${{ secrets.GITLAB_HOST }}
+          GITLAB_PROJECT_PATH: ${{ secrets.GITLAB_PROJECT_PATH }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${GITLAB_TOKEN}" ] || [ -z "${GITLAB_HOST}" ] || [ -z "${GITLAB_PROJECT_PATH}" ]; then
+            echo "::error::GITLAB_TOKEN, GITLAB_HOST, and GITLAB_PROJECT_PATH secrets must be set."
+            exit 1
+          fi
+
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@${GITLAB_HOST}/${GITLAB_PROJECT_PATH}.git"
+          git push gitlab "HEAD:refs/heads/main" --force
+          git push gitlab --tags --force
