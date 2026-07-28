@@ -1,20 +1,234 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// A living tour of the hardware. Specs are captured periodically and drift over
+// time. Network addressing, VLAN IDs, and subnets are deliberately left out.
+const captured = 'July 2026';
+
+const nodes = [
+  { name: 'pve-00', cpu: 'AMD EPYC 7282', cores: '16C / 32T', ram: '256 GB ECC', gpu: 'RTX 4070 Ti + GTX 1660', role: 'Flagship compute / GPU' },
+  { name: 'pve-01', cpu: 'Threadripper 2920X', cores: '12C / 24T', ram: '128 GB ECC', gpu: 'GTX 1080 Ti', role: 'Compute / GPU' },
+  { name: 'pve-02', cpu: 'Core i7-6700', cores: '4C / 8T', ram: '64 GB', gpu: 'iGPU only', role: 'Capacity / quorum' },
+  { name: 'pve-03', cpu: 'Core i7-6700', cores: '4C / 8T', ram: '48 GB', gpu: 'iGPU only', role: 'Capacity / quorum' },
+  { name: 'pve-04', cpu: 'Core i7-7700', cores: '4C / 8T', ram: '32 GB', gpu: 'iGPU only', role: 'Capacity / quorum' },
+];
+
+const gpus = [
+  { card: 'RTX 4070 Ti', arch: 'Ada Lovelace', host: 'pve-00', target: 'K8s GPU worker (MPS shared)' },
+  { card: 'GTX 1660', arch: 'Turing', host: 'pve-00', target: 'K8s GPU worker (MPS shared)' },
+  { card: 'GTX 1080 Ti', arch: 'Pascal', host: 'pve-01', target: 'K8s GPU worker (dedicated)' },
+];
+
+const pis = [
+  { name: 'ocisly', model: 'Raspberry Pi 5 (16 GB)', storage: '2 TB NVMe via PCIe HAT', role: 'Home automation primary', status: 'Live' },
+  { name: 'mistakenot', model: 'Raspberry Pi 5 (8 GB)', storage: '512 GB NVMe', role: 'IaC toolchain and edge services', status: 'Live' },
+  { name: 'flere', model: 'Raspberry Pi 4 (4 GB)', storage: 'microSD / USB', role: 'Lightweight services', status: 'Idle' },
+];
+
+const power = [
+  { node: 'pve-00', chassis: 'Rosewill RSV-L4412 4U (12 hot-swap bays)', psu: 'EVGA SuperNOVA 1600 P2 (Platinum)' },
+  { node: 'pve-01', chassis: 'Corsair Carbide 330R mid-tower', psu: 'EVGA SuperNOVA 850 T2 (Titanium)' },
+  { node: 'pve-02/03/04', chassis: 'HP EliteDesk 800 G2 SFF (stock)', psu: 'HP stock SFF' },
+];
 ---
 
-<Layout title="Labs — ProbablyFine" description="Experiments, one-offs, and the hardware behind the lab.">
-  <section class="max-w-3xl mx-auto px-6 pt-16 pb-16">
-    <p class="font-mono text-sm text-[--color-accent]">$ ls ./labs</p>
-    <h1 class="text-3xl font-bold mt-3">Labs</h1>
-    <p class="text-[--color-ink-dim] mt-3 max-w-2xl">
-      Experiments, half-finished ideas, and the hardware that powers the homelab. A curated
-      tour of the rack is on the way.
+<Layout title="Labs — ProbablyFine" description="A living tour of the hardware behind the homelab: a five-node Proxmox cluster, Ceph storage, a 10GbE fabric, three GPU generations, and a fleet of Raspberry Pis.">
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[--color-accent]">$ lscpu --lab</p>
+    <h1 class="text-3xl font-bold mt-3">The lab</h1>
+    <p class="text-[--color-ink-dim] mt-4 max-w-2xl leading-relaxed">
+      This is the hardware the blog keeps talking about. Five Proxmox nodes, a Ceph pool
+      measured in hundreds of terabytes, a 10GbE fabric with jumbo frames, three different
+      NVIDIA generations, and a small fleet of Raspberry Pis doing the jobs that should never
+      share a failure domain with everything else. It is over-built on purpose. That is the
+      whole point.
     </p>
+    <p class="font-mono text-xs text-[--color-ink-dim] mt-4">
+      captured {captured} · addressing and VLAN details left out on purpose
+    </p>
+  </section>
 
-    <div class="mt-10 p-6 rounded border border-[--color-line] font-mono text-sm text-[--color-ink-dim]">
-      <span class="text-[--color-warn]">WIP</span> — the hardware inventory and lab notes are
-      being written. In the meantime, the <a href="/blog">blog</a> has the architecture
-      deep-dives.
+  <!-- Cluster -->
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-sm text-[--color-accent]"># the cluster</h2>
+    <div class="mt-4 overflow-x-auto rounded border border-[--color-line]">
+      <table class="w-full text-sm">
+        <thead class="font-mono text-xs text-[--color-ink-dim] border-b border-[--color-line]">
+          <tr>
+            <th class="text-left font-normal px-4 py-3">Node</th>
+            <th class="text-left font-normal px-4 py-3">CPU</th>
+            <th class="text-left font-normal px-4 py-3">Cores</th>
+            <th class="text-left font-normal px-4 py-3">RAM</th>
+            <th class="text-left font-normal px-4 py-3">GPU</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            nodes.map((n) => (
+              <tr class="border-b border-[--color-line] last:border-0">
+                <td class="px-4 py-3 font-mono text-[--color-accent] whitespace-nowrap">{n.name}</td>
+                <td class="px-4 py-3 whitespace-nowrap">{n.cpu}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim] whitespace-nowrap">{n.cores}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim] whitespace-nowrap">{n.ram}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim]">{n.gpu}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+        <tfoot class="font-mono text-xs text-[--color-ink-dim] border-t border-[--color-line]">
+          <tr>
+            <td class="px-4 py-3">totals</td>
+            <td class="px-4 py-3">5 nodes</td>
+            <td class="px-4 py-3">40C / 80T</td>
+            <td class="px-4 py-3">528 GB</td>
+            <td class="px-4 py-3">3 discrete GPUs</td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
+    <p class="text-[--color-ink-dim] text-sm mt-4 leading-relaxed">
+      Two tiers on purpose. pve-00 and pve-01 are the heavy compute and GPU hosts, both on
+      ECC memory, with discrete NVIDIA cards passed through to Kubernetes workers. The three
+      HP small-form-factor boxes are consumer hardware doing honest work as quorum and Ceph
+      OSD hosts. Not everything needs to be a server to be useful.
+    </p>
+  </section>
+
+  <!-- GPUs -->
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-sm text-[--color-accent]"># three GPU generations</h2>
+    <p class="text-[--color-ink-dim] text-sm mt-3 max-w-2xl leading-relaxed">
+      Three NVIDIA architectures, each passed straight through to a Talos Kubernetes worker.
+      The newer cards get sliced up with MPS so several workloads can share them; the 1080 Ti
+      stays dedicated. Transcode, local inference, and the occasional experiment all land
+      here.
+    </p>
+    <div class="mt-4 overflow-x-auto rounded border border-[--color-line]">
+      <table class="w-full text-sm">
+        <thead class="font-mono text-xs text-[--color-ink-dim] border-b border-[--color-line]">
+          <tr>
+            <th class="text-left font-normal px-4 py-3">Card</th>
+            <th class="text-left font-normal px-4 py-3">Architecture</th>
+            <th class="text-left font-normal px-4 py-3">Host</th>
+            <th class="text-left font-normal px-4 py-3">Passed to</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            gpus.map((g) => (
+              <tr class="border-b border-[--color-line] last:border-0">
+                <td class="px-4 py-3 whitespace-nowrap">{g.card}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim] whitespace-nowrap">{g.arch}</td>
+                <td class="px-4 py-3 font-mono text-[--color-accent] whitespace-nowrap">{g.host}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim]">{g.target}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Storage -->
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-sm text-[--color-accent]"># storage</h2>
+    <p class="text-[--color-ink-dim] text-sm mt-3 max-w-2xl leading-relaxed">
+      Everything sits on Ceph, on the order of 230 TiB raw spread across every node. Spinning
+      disks make up the bulk pool, NVMe backs the fast pool and local VM storage, and a couple
+      of Intel Optane drives handle metadata. The big NVMe counts hang off ASUS Hyper M.2
+      carrier cards using PCIe bifurcation. This is the layer that taught me the most, mostly
+      the hard way, which is a story the blog gets into. Backups run to a dedicated Proxmox
+      Backup Server, because "I have backups" and "I have tested restores" are not the same
+      sentence.
+    </p>
+  </section>
+
+  <!-- Network -->
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-sm text-[--color-accent]"># the fabric</h2>
+    <p class="text-[--color-ink-dim] text-sm mt-3 max-w-2xl leading-relaxed">
+      A Brocade ICX6610 sits at the core, with 10GbE SFP+ uplinks to every node and jumbo
+      frames end to end. Each node runs a two-bridge, VLAN-aware layout over two 10GbE links:
+      one trunk carries tenant and VM traffic, the other isolates the latency-sensitive
+      storage and cluster replication on its own physical port. That split is what lets a
+      firewall VM live-migrate between nodes without dropping a packet. Routing between the
+      dozen or so segments is handled by a high-availability OPNsense pair with CARP failover.
+    </p>
+    <p class="text-[--color-ink-dim] text-sm mt-4 max-w-2xl leading-relaxed">
+      The per-node 10GbE cards are a museum of whatever was good and cheap at the time: Intel
+      X550, Mellanox ConnectX-3 Pro, and Chelsio T320. They all do the same job. Edge
+      switching and wireless are UniFi, and an APC UPS with a network card keeps the rack
+      alive long enough to shut down cleanly.
+    </p>
+  </section>
+
+  <!-- Pi fleet -->
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-sm text-[--color-accent]"># the pi fleet</h2>
+    <p class="text-[--color-ink-dim] text-sm mt-3 max-w-2xl leading-relaxed">
+      A handful of Raspberry Pis run the things that should keep working even when the cluster
+      is down for maintenance, mainly home automation and out-of-band tooling. They are named
+      after Culture ships, which felt appropriate for machines whose entire job is to be
+      quietly competent.
+    </p>
+    <div class="mt-4 overflow-x-auto rounded border border-[--color-line]">
+      <table class="w-full text-sm">
+        <thead class="font-mono text-xs text-[--color-ink-dim] border-b border-[--color-line]">
+          <tr>
+            <th class="text-left font-normal px-4 py-3">Host</th>
+            <th class="text-left font-normal px-4 py-3">Model</th>
+            <th class="text-left font-normal px-4 py-3">Storage</th>
+            <th class="text-left font-normal px-4 py-3">Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            pis.map((p) => (
+              <tr class="border-b border-[--color-line] last:border-0">
+                <td class="px-4 py-3 font-mono text-[--color-accent] whitespace-nowrap">{p.name}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim] whitespace-nowrap">{p.model}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim] whitespace-nowrap">{p.storage}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim]">{p.role}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="text-[--color-ink-dim] text-sm mt-4 max-w-2xl leading-relaxed">
+      They share a small bag of USB radios that move between nodes as needed: a Z-Wave
+      controller, a multiprotocol Zigbee/Thread stick, and a Google Coral TPU for edge ML.
+    </p>
+  </section>
+
+  <!-- Power -->
+  <section class="max-w-3xl mx-auto px-6 py-8 pb-16">
+    <h2 class="font-mono text-sm text-[--color-accent]"># chassis and power</h2>
+    <div class="mt-4 overflow-x-auto rounded border border-[--color-line]">
+      <table class="w-full text-sm">
+        <thead class="font-mono text-xs text-[--color-ink-dim] border-b border-[--color-line]">
+          <tr>
+            <th class="text-left font-normal px-4 py-3">Node</th>
+            <th class="text-left font-normal px-4 py-3">Chassis</th>
+            <th class="text-left font-normal px-4 py-3">PSU</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            power.map((p) => (
+              <tr class="border-b border-[--color-line] last:border-0">
+                <td class="px-4 py-3 font-mono text-[--color-accent] whitespace-nowrap">{p.node}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim]">{p.chassis}</td>
+                <td class="px-4 py-3 text-[--color-ink-dim]">{p.psu}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="text-[--color-ink-dim] text-sm mt-6 leading-relaxed">
+      Want the story behind all this instead of the spec sheet? The <a href="/blog">blog</a>
+      has the how-it-got-here and the incidents that shaped it.
+    </p>
   </section>
 </Layout>
