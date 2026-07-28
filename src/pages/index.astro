@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const recent = posts.slice(0, 3);
+---
+
+<Layout>
+  <section class="max-w-3xl mx-auto px-6 pt-20 pb-12">
+    <p class="font-mono text-sm text-[--color-accent]">$ uptime</p>
+    <h1 class="text-4xl sm:text-5xl font-bold mt-4 leading-tight">
+      It's probably fine.
+    </h1>
+    <p class="text-[--color-ink-dim] text-lg mt-6 max-w-2xl">
+      A homelab and SRE engineering blog. I run a production-grade Kubernetes cluster in my
+      basement, break it in interesting ways, and write down what I learned. Architecture
+      deep-dives, incident post-mortems, and honest notes on AI-assisted engineering.
+    </p>
+    <div class="flex flex-wrap items-center gap-4 mt-8 font-mono text-sm">
+      <a
+        href="/blog"
+        class="no-underline hover:no-underline px-4 py-2 rounded border border-[--color-accent] text-[--color-accent] hover:bg-[--color-accent] hover:text-[--color-base] transition-colors"
+        >Read the blog</a
+      >
+      <a
+        href="https://status.probablyfine.dev"
+        rel="noopener"
+        class="no-underline hover:no-underline px-4 py-2 rounded border border-[--color-line] text-[--color-ink-dim] hover:text-[--color-ink] transition-colors"
+        >Live status</a
+      >
+    </div>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <div class="grid sm:grid-cols-3 gap-4 font-mono text-sm">
+      <a href="/blog" class="no-underline hover:no-underline block p-5 rounded border border-[--color-line] hover:border-[--color-accent] transition-colors">
+        <div class="text-[--color-accent]">./blog</div>
+        <p class="text-[--color-ink-dim] mt-2 text-xs">Architecture write-ups, war stories, and lessons from running real infra.</p>
+      </a>
+      <a href="/labs" class="no-underline hover:no-underline block p-5 rounded border border-[--color-line] hover:border-[--color-accent] transition-colors">
+        <div class="text-[--color-accent]">./labs</div>
+        <p class="text-[--color-ink-dim] mt-2 text-xs">Experiments, one-offs, and the hardware that powers the lab.</p>
+      </a>
+      <a href="https://maxfieldallison.com" rel="noopener" class="no-underline hover:no-underline block p-5 rounded border border-[--color-line] hover:border-[--color-accent] transition-colors">
+        <div class="text-[--color-accent]">./whoami</div>
+        <p class="text-[--color-ink-dim] mt-2 text-xs">The professional hub: resume, projects, and case studies.</p>
+      </a>
+    </div>
+  </section>
+
+  {
+    recent.length > 0 && (
+      <section class="max-w-3xl mx-auto px-6 py-8">
+        <div class="flex items-baseline justify-between">
+          <h2 class="font-mono text-sm text-[--color-ink-dim]">recent posts</h2>
+          <a href="/blog" class="font-mono text-xs no-underline hover:no-underline text-[--color-ink-dim] hover:text-[--color-ink]">all &rarr;</a>
+        </div>
+        <div class="mt-4">
+          {recent.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Layout>

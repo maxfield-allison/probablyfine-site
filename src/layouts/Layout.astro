@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  bare?: boolean;
+}
+
+const {
+  title = 'ProbablyFine',
+  description = "A homelab + SRE engineering blog. Kubernetes, GitOps, and the occasional 3am incident. It's probably fine.",
+  bare = false,
+} = Astro.props;
+
+const site = Astro.site ?? 'https://probablyfine.dev';
+const canonical = new URL(Astro.url.pathname, site);
+const ogImage = new URL('/og.png?v=1', site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="alternate" type="application/rss+xml" title="ProbablyFine" href={new URL('/rss.xml', site).href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    {
+      bare ? (
+        <slot />
+      ) : (
+        <>
+          <Nav />
+          <main class="flex-1">
+            <slot />
+          </main>
+          <Footer />
+        </>
+      )
+    }
+  </body>
+</html>

@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { title, description, date, tags, aiAssisted } = post.data;
+const dateStr = date.toISOString().slice(0, 10);
+---
+
+<article class="border-b border-[--color-line] py-6 first:pt-0">
+  <a href={`/blog/${post.id}`} class="group no-underline hover:no-underline block">
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 class="text-lg font-semibold text-[--color-ink] group-hover:text-[--color-accent] transition-colors">
+        {title}
+      </h2>
+      <time datetime={dateStr} class="font-mono text-xs text-[--color-ink-dim] shrink-0">{dateStr}</time>
+    </div>
+    <p class="text-[--color-ink-dim] text-sm mt-2">{description}</p>
+    <div class="flex items-center gap-3 mt-3 font-mono text-xs text-[--color-ink-dim]">
+      {tags.map((t) => <span>#{t}</span>)}
+      {aiAssisted && <span class="text-[--color-warn]">ai-assisted</span>}
+    </div>
+  </a>
+</article>

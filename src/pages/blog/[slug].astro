@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { title, description, date, tags, aiAssisted } = post.data;
+const { Content } = await render(post);
+const dateStr = date.toISOString().slice(0, 10);
+---
+
+<Layout title={`${title} — ProbablyFine`} description={description}>
+  <article class="max-w-3xl mx-auto px-6 pt-16 pb-12">
+    <a href="/blog" class="font-mono text-xs text-[--color-ink-dim] hover:text-[--color-ink] no-underline hover:no-underline">&larr; all posts</a>
+    <h1 class="text-3xl sm:text-4xl font-bold mt-4 leading-tight">{title}</h1>
+    <div class="flex flex-wrap items-center gap-3 mt-4 font-mono text-xs text-[--color-ink-dim]">
+      <time datetime={dateStr}>{dateStr}</time>
+      {tags.map((t) => <span>#{t}</span>)}
+      {aiAssisted && <span class="text-[--color-warn]">ai-assisted</span>}
+    </div>
+
+    <div class="prose mt-10">
+      <Content />
+    </div>
+  </article>
+</Layout>
