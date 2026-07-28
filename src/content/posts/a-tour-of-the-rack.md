@@ -14,7 +14,7 @@ already sitting on a shelf when a problem needed solving.
 
 ![A two-post open server rack in a basement holding three stacked HP small-form-factor PCs, rackmount chassis and patch cables, with a box fan beside it and a concrete block wall behind](./img/2025-basement-rack.jpg)
 
-*The whole cluster, in one corner of a basement. It is probably fine.*
+*The whole cluster, in one corner of a basement. The 4U EPYC node sits under the switch, the three HP minis are stacked above, and pve-01 is the tower on the floor. It is probably fine.*
 
 ## Two tiers, on purpose
 

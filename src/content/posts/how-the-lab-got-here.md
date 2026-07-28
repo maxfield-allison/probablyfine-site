@@ -108,7 +108,7 @@ metadata.
 
 ![A two-post open server rack in a basement, holding three stacked HP small-form-factor PCs, rackmount chassis, and patch cables, with a box fan beside it and a concrete block wall behind](./img/2025-basement-rack.jpg)
 
-*Late 2025, in the basement. Three HP mini PCs, a real rack, and a box fan doing the thermal management.*
+*Late 2025, in the basement. The three HP minis are stacked up top, the EPYC flagship is the 4U unit under the switch, and pve-01 is the tower on the floor, still in the reused case from my old gaming PC. A box fan handles the thermals.*
 
 Storage is also where I collected most of my scars.
 
