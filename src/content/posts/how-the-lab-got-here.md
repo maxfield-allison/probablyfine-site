@@ -45,7 +45,7 @@ specifically to handle hardware transcoding once that many people were watching 
 Storage kept sprawling too. I bolted drives onto that box until it physically could not hold
 another one, which is what pushed me toward "unlimited" cloud storage. I landed on Google
 Workspace, and by the time I finally clawed back out of it I had something like 127 TB parked
-in their cloud. That is a whole story on its own, and it gets its own post.
+in their cloud. That is a whole story on its own, and it's going to get its own post.
 
 Around 2018 and 2019 I started taking home automation seriously. A growing pile of IoT junk,
 Z-Wave bridged into MQTT, and the slow realization that a smart home is just a distributed
@@ -67,7 +67,7 @@ three completely different architectures. Not bad for a gaming board.
 
 The honest reason I ever moved past one box: other people depended on it.
 
-When it is just you, a server falling over is a personal annoyance. Once your friends are
+When it is just you, a server falling over is a personal annoyance. Once your friends and wife are
 streaming from it and your house's lights and locks and thermostats run through it, an outage
 is a support ticket, and you are the only person on call. I wanted fault tolerance because I
 was tired of being the single point of failure. That one requirement drove every jump that
@@ -119,7 +119,7 @@ on the other end of it.
 ## Kubernetes
 
 When Swarm started showing its limits, Kubernetes was the obvious next step. Obvious and
-genuinely daunting, which is why most people circle it for a while before committing. It is a
+daunting, which is why most people circle it for a while before committing. It is a
 real jump in complexity. But the failure modes I was fighting were the exact ones Kubernetes
 is built to handle, so eventually I stopped circling.
 
@@ -147,7 +147,7 @@ them or not.
 I skipped a lot here. The Google Workspace exodus, the specific outages, the hardware itself.
 Those get their own posts. There is even an old Linux Mint image floating around somewhere
 that I might boot up just to see what Docker looked like back when this whole thing was one
-node and a bad idea.
+node and a list of ideas.
 
 For now, that is the arc. A $75 firewall to a Kubernetes cluster, one evolution at a time.
 

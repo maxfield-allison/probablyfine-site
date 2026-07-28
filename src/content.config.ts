@@ -4,7 +4,7 @@ import { glob } from 'astro/loaders';
 // Blog posts. One Markdown/MDX file per post in src/content/posts/.
 // This is the canonical source the site renders the blog index and post pages from.
 const posts = defineCollection({
-  loader: glob({ base: './src/content/posts', pattern: '**/*.{md,mdx}' }),
+  loader: glob({ base: './src/content/posts', pattern: '*.{md,mdx}' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
