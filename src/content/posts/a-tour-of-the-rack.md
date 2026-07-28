@@ -4,13 +4,17 @@ description: "The hardware behind the homelab, and why it looks the way it does.
 date: 2026-07-28
 tags: ["homelab", "hardware"]
 aiAssisted: true
-draft: true
+draft: false
 ---
 
 There is a full spec sheet on the [Labs page](/labs) if you just want the tables. This is
 the other version, the one where I explain why any of it looks the way it does. Homelab
 hardware is rarely a clean design. It is a fossil record of whatever was good, cheap, or
 already sitting on a shelf when a problem needed solving.
+
+![A two-post open server rack in a basement holding three stacked HP small-form-factor PCs, rackmount chassis and patch cables, with a box fan beside it and a concrete block wall behind](./img/2025-basement-rack.jpg)
+
+*The whole cluster, in one corner of a basement. It is probably fine.*
 
 ## Two tiers, on purpose
 
@@ -70,6 +74,10 @@ and need tracking down by hand. Repairs that ran on their own schedule while I s
 refreshing status output at 3am. The migration onto Ceph was its own multi-week project,
 usually kicked off by a Proxmox upgrade deciding to be interesting at the worst possible time.
 
+![The inside of an open storage chassis showing a row of drive bays and a dense tangle of red SATA cables](./img/2020-drive-cage.jpg)
+
+*An earlier chassis, before Ceph. The red is all SATA, and tracing it was exactly as fun as it looks.*
+
 The lesson that stuck hardest is the boring one. Backups are not optional, and having backups
 is not the same as having tested restores. Everything important now backs up to a dedicated
 Proxmox Backup Server, and I actually restore from it on purpose sometimes, which is the only
@@ -114,5 +122,9 @@ working hardware to make a diagram cleaner is a bad trade.
 
 If there is a philosophy, it is that. Spend where it matters, reuse everything else, and let
 the rack tell the story of how it got here.
+
+![A grey tabby cat asleep on top of a glowing tower PC with RGB lighting and a temperature gauge on the front panel](./img/2026-roland-schitt.jpg)
+
+*Roland Schitt, current cluster manager, signing off on the thermals.*
 
 It's probably fine.

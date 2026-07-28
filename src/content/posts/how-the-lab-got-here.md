@@ -4,7 +4,7 @@ description: "The homelab started as a $75 school-surplus desktop and a router I
 date: 2026-07-28
 tags: ["homelab", "history", "retrospective"]
 aiAssisted: true
-draft: true
+draft: false
 ---
 
 Every homelab has an origin story, and most of them start dumber than the current setup
@@ -31,6 +31,10 @@ before anyone paid me to touch theirs.
 
 Once I trusted the network I built a real server, a whitebox running Linux Mint, around 2017.
 That's where it turned into an actual lab.
+
+![An open PC case on a hardwood floor, mid-build, with an EVGA power supply and a graphics card installed](./img/2017-whitebox.jpg)
+
+*The whitebox, mid-build in 2017. Everything started on a floor like this.*
 
 I got into Plex and the whole \*arr stack, mostly to get out from under streaming services
 that kept splitting the same catalog across more subscriptions every year. Then I stood up
@@ -85,6 +89,10 @@ Proxmox, one node at first, then a couple, running Plex and a steadily growing D
 and the home automation. That setup carried the lab for a few years without much drama, which
 in this hobby counts as a golden age.
 
+![A black wire shelving unit holding an HP small-form-factor PC, a rackmount chassis, a printer, and a tangle of blue network cables](./img/2021-first-rack.jpg)
+
+*February 2021. The first "rack" was a wire shelf, and honestly it worked fine.*
+
 ## The pivot: Ceph and Swarm
 
 The big jump happened fast, and recently. By late 2025 the lab had turned into a five-node
@@ -93,6 +101,10 @@ Proxmox cluster with real hardware behind it. pve-00 is an EPYC 7282 with 256 GB
 fill out quorum and soak up whatever is left. Underneath all of it is a Ceph cluster, around
 232 TiB raw across a pile of spinning disks, NVMe, and a couple of Intel Optane drives for
 metadata.
+
+![A two-post open server rack in a basement, holding three stacked HP small-form-factor PCs, rackmount chassis, and patch cables, with a box fan beside it and a concrete block wall behind](./img/2025-basement-rack.jpg)
+
+*Late 2025, in the basement. Three HP mini PCs, a real rack, and a box fan doing the thermal management.*
 
 Storage is also where I collected most of my scars.
 

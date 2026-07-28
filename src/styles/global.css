@@ -142,7 +142,8 @@ a:hover {
   margin-bottom: 1.25rem;
 }
 
-/* Inline post imagery. Markdown images render inside a <figure> when captioned. */
+/* Inline post imagery. Markdown images render inside their own paragraph; the
+   italic line immediately after is treated as the caption. */
 .prose img {
   border-radius: 0.5rem;
   border: 1px solid var(--color-line);
@@ -150,6 +151,17 @@ a:hover {
   max-width: 100%;
   height: auto;
   display: block;
+}
+.prose p:has(> img) {
+  margin: 2rem 0 0;
+  text-align: center;
+}
+.prose p:has(> img) + p {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-ink-dim);
+  text-align: center;
 }
 .prose figure {
   margin: 2rem 0;
