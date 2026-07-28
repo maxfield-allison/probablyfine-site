@@ -12,7 +12,7 @@ const links = [
 ---
 
 <header class="border-b border-[--color-line]">
-  <nav class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+  <nav aria-label="Primary" class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="/" class="font-mono text-sm text-[--color-ink] no-underline hover:no-underline">
       probably<span class="text-[--color-accent]">fine</span>
     </a>
@@ -22,6 +22,7 @@ const links = [
           <a
             href={l.href}
             rel={l.external ? 'noopener' : undefined}
+            aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
             class:list={[
               'no-underline hover:no-underline transition-colors',
               !l.external && isActive(l.href)
