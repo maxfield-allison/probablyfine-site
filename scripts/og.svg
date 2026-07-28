@@ -1,0 +1,21 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0e12"/>
+      <stop offset="1" stop-color="#11161c"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#3fb950"/>
+
+  <text x="80" y="150" font-family="monospace" font-size="26" fill="#8b98a5">probably<tspan fill="#3fb950">fine</tspan>.dev</text>
+
+  <text x="78" y="270" font-family="Inter, system-ui, sans-serif" font-size="76" font-weight="600" fill="#e6edf3">It's probably fine.</text>
+
+  <text x="80" y="345" font-family="Inter, system-ui, sans-serif" font-size="34" fill="#8b98a5">A homelab + SRE engineering blog.</text>
+  <text x="80" y="395" font-family="Inter, system-ui, sans-serif" font-size="34" fill="#8b98a5">Kubernetes, GitOps, and the occasional 3am incident.</text>
+
+  <text x="80" y="540" font-family="monospace" font-size="24" fill="#3fb950">Kubernetes / GitOps / Talos / Homelab</text>
+  <text x="80" y="580" font-family="monospace" font-size="20" fill="#8b98a5">$ kubectl get incidents --all-namespaces</text>
+</svg>
