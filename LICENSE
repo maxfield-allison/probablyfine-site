@@ -1,6 +1,11 @@
-MIT License
+MIT License (code)
 
 Copyright (c) 2026 Maxfield Allison
+
+This license applies to the SOURCE CODE of this repository (the Astro site
+scaffolding, components, configuration, styles, and build tooling). It does NOT
+apply to the written content or branding — see LICENSE-CONTENT and the "Content
+and branding" section of the README.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -46,4 +46,16 @@ review are human; an AI agent helps implement faster. Posts written that way are
 
 ## License
 
-MIT
+This repository is **dual-licensed** to keep the code open while protecting the writing:
+
+- **Code** — [MIT](LICENSE). The Astro scaffolding, components, config, and tooling are free
+  to reuse. Building your own site from this is welcome.
+- **Content** — [CC BY-NC-ND 4.0](LICENSE-CONTENT). The blog posts and prose under
+  `src/content/` may be shared with attribution, but not sold, altered, or republished in full.
+
+### Content and branding
+
+The name **"ProbablyFine"**, the domain **probablyfine.dev**, the site's visual identity, and
+the author's personal identity and likeness are **not** licensed for reuse. Fork the code, not
+the persona.
+
