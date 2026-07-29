@@ -18,6 +18,34 @@ const {
 const site = Astro.site ?? 'https://probablyfine.dev';
 const canonical = new URL(Astro.url.pathname, site);
 const ogImage = new URL('/og.png?v=1', site);
+
+// Structured data. WebSite + Person identity graph (deduped by @id); posts
+// additionally emit their own BlogPosting graph from the post renderer.
+const siteLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${site}/#website`,
+      url: `${site}/`,
+      name: 'ProbablyFine',
+      description:
+        "A homelab and SRE engineering blog. Kubernetes, GitOps, and the occasional 3am incident.",
+      inLanguage: 'en',
+    },
+    {
+      '@type': 'Person',
+      '@id': `${site}/#maxfield`,
+      name: 'Maxfield Allison',
+      url: 'https://maxfieldallison.com',
+      sameAs: [
+        'https://github.com/maxfield-allison',
+        'https://www.linkedin.com/in/maxfield-allison/',
+        'https://maxfieldallison.com',
+      ],
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -50,6 +78,14 @@ const ogImage = new URL('/og.png?v=1', site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage.href} />
+    <script type="application/ld+json" set:html={JSON.stringify(siteLd)} />
+    {/* Self-hosted, privacy-friendly analytics (Umami on the homelab cluster). */}
+    <script
+      defer
+      src="https://analytics.probablyfine.dev/script.js"
+      data-website-id="500c4f8f-188b-4e0b-a804-5fecd412f118"
+    ></script>
+    <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col">
     {

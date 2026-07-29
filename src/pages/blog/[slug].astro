@@ -11,9 +11,34 @@ const { post } = Astro.props;
 const { title, description, date, tags, aiAssisted } = post.data;
 const { Content } = await render(post);
 const dateStr = date.toISOString().slice(0, 10);
+
+const site = Astro.site ?? 'https://probablyfine.dev';
+const postUrl = new URL(`/blog/${post.id}`, site).href;
+const blogPostingLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: date.toISOString(),
+  url: postUrl,
+  mainEntityOfPage: postUrl,
+  keywords: tags.join(', '),
+  inLanguage: 'en',
+  author: {
+    '@type': 'Person',
+    name: 'Maxfield Allison',
+    url: 'https://maxfieldallison.com',
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Maxfield Allison',
+    url: 'https://maxfieldallison.com',
+  },
+};
 ---
 
 <Layout title={`${title} — ProbablyFine`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
   <article class="max-w-3xl mx-auto px-6 pt-16 pb-12">
     <a href="/blog" class="font-mono text-xs text-[--color-ink-dim] hover:text-[--color-ink] no-underline hover:no-underline">&larr; all posts</a>
     <h1 class="text-3xl sm:text-4xl font-bold mt-4 leading-tight">{title}</h1>
