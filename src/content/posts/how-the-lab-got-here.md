@@ -81,7 +81,7 @@ board has outlived its own chassis, and it is still going.
 The honest reason I ever moved past one box: other people depended on it.
 
 When it is just you, a server falling over is a personal annoyance. Once your friends and wife are
-streaming from it and your house's lights and locks and thermostats run through it, an outage
+streaming from it and your house's lights and thermostats run through it, an outage
 is a support ticket, and you are the only person on call. I wanted fault tolerance because I
 was tired of being the single point of failure. That one requirement drove every jump that
 came after.
@@ -144,7 +144,7 @@ daunting, which is why most people circle it for a while before committing. It i
 real jump in complexity. But the failure modes I was fighting were the exact ones Kubernetes
 is built to handle, so eventually I stopped circling.
 
-Where it sits now: nine Talos Linux nodes, GitOps through ArgoCD, Ceph underneath, and GPU
+Now, its nine Talos Linux nodes, GitOps through ArgoCD, Ceph underneath, and GPU
 workloads spread across three different NVIDIA generations. The migration was also my chance
 to do the separation I had always wanted and never had the runway for. Dedicated tiers for
 authentication, for databases, for GitLab and CI, plus a security and honeypot layer to
