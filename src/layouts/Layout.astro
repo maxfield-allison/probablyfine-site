@@ -7,17 +7,19 @@ interface Props {
   title?: string;
   description?: string;
   bare?: boolean;
+  ogImage?: string;
 }
 
 const {
   title = 'ProbablyFine',
   description = "A homelab + SRE engineering blog. Kubernetes, GitOps, and the occasional 3am incident. It's probably fine.",
   bare = false,
+  ogImage: ogImageProp,
 } = Astro.props;
 
 const site = Astro.site ?? 'https://probablyfine.dev';
 const canonical = new URL(Astro.url.pathname, site);
-const ogImage = new URL('/og.png?v=1', site);
+const ogImage = new URL(ogImageProp ?? '/og.png?v=1', site);
 
 // Structured data. WebSite + Person identity graph (deduped by @id); posts
 // additionally emit their own BlogPosting graph from the post renderer.

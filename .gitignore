@@ -17,3 +17,6 @@ pnpm-debug.log*
 # os
 .DS_Store
 Thumbs.db
+
+# Generated per-post OG cards (build artifact)
+public/og/

@@ -4,17 +4,28 @@ import Layout from '../../layouts/Layout.astro';
 import Comments from '../../components/Comments.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      // newer = previous in reading order, older = next
+      newer: posts[i - 1] ?? null,
+      older: posts[i + 1] ?? null,
+    },
+  }));
 }
 
-const { post } = Astro.props;
+const { post, newer, older } = Astro.props;
 const { title, description, date, tags, aiAssisted } = post.data;
 const { Content } = await render(post);
 const dateStr = date.toISOString().slice(0, 10);
 
 const site = Astro.site ?? 'https://probablyfine.dev';
 const postUrl = new URL(`/blog/${post.id}`, site).href;
+const ogImage = `/og/${post.id}.png`;
 const blogPostingLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -22,6 +33,7 @@ const blogPostingLd = {
   description,
   datePublished: date.toISOString(),
   url: postUrl,
+  image: new URL(ogImage, site).href,
   mainEntityOfPage: postUrl,
   keywords: tags.join(', '),
   inLanguage: 'en',
@@ -38,7 +50,7 @@ const blogPostingLd = {
 };
 ---
 
-<Layout title={`${title} — ProbablyFine`} description={description}>
+<Layout title={`${title} — ProbablyFine`} description={description} ogImage={ogImage}>
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
   <article class="max-w-3xl mx-auto px-6 pt-16 pb-12">
     <a href="/blog" class="font-mono text-xs text-[--color-ink-dim] hover:text-[--color-ink] no-underline hover:no-underline">&larr; all posts</a>
@@ -52,6 +64,34 @@ const blogPostingLd = {
     <div class="prose mt-10">
       <Content />
     </div>
+
+    {
+      (newer || older) && (
+        <nav
+          aria-label="More posts"
+          class="mt-16 pt-8 border-t border-[--color-line] grid gap-4 sm:grid-cols-2 font-mono text-sm"
+        >
+          {older ? (
+            <a href={`/blog/${older.id}`} class="group block no-underline hover:no-underline">
+              <div class="text-xs text-[--color-ink-dim]">&larr; older</div>
+              <div class="text-[--color-ink-dim] group-hover:text-[--color-accent] transition-colors mt-1">
+                {older.data.title}
+              </div>
+            </a>
+          ) : (
+            <span />
+          )}
+          {newer && (
+            <a href={`/blog/${newer.id}`} class="group block no-underline hover:no-underline sm:text-right">
+              <div class="text-xs text-[--color-ink-dim]">newer &rarr;</div>
+              <div class="text-[--color-ink-dim] group-hover:text-[--color-accent] transition-colors mt-1">
+                {newer.data.title}
+              </div>
+            </a>
+          )}
+        </nav>
+      )
+    }
   </article>
   <Comments />
 </Layout>

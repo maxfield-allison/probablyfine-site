@@ -8,10 +8,12 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/gen-post-og.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "og": "node scripts/gen-og.mjs"
+    "og": "node scripts/gen-og.mjs",
+    "og:posts": "node scripts/gen-post-og.mjs"
   },
   "devDependencies": {
     "sharp": "^0.34.4"
