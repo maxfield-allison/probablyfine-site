@@ -10,18 +10,17 @@ draft: true
 I lost three OSDs, watched every VM hang at GRUB, and spent a night convinced I'd
 destroyed part of my Ceph cluster. The cause was a graphics card. I had installed an RTX
 4070 Ti into one of my Proxmox nodes and rebooted, the way you install any PCIe card, and
-that single change set off a chain of failures that took me a while to even connect back
+that one change set off a chain of failures that took me a while to even connect back
 to the GPU.
 
-This is the whole thing, including the two hypotheses I chased that were wrong, because the
-wrong turns are the actual lesson.
+This is the whole thing, including the two hypotheses I chased that were wrong.
 
 ## The setup
 
-Five-node Proxmox cluster, Ceph underneath, 32 OSDs across a mix of NVMe. The pools run
+Five-node Proxmox cluster, Ceph underneath, 32 OSDs across a mix of NVMe and spinning disks. The pools run
 size=3, min_size=2, which matters a lot later. A couple of the OSDs lived on Samsung 980 PRO
 drives mounted on a PCIe bifurcation carrier card, the kind that splits one x16 slot into
-four x4 NVMe slots. Remember the carrier. It is the whole story.
+four x4 NVMe slots. Keep that carrier in mind...
 
 I dropped a 4070 Ti into the flagship node and rebooted. Everything looked fine for a bit.
 Then OSDs started going down.
@@ -36,7 +35,7 @@ auth: unable to find a keyring on /var/lib/ceph/osd/ceph-8/keyring:
 (2) No such file or directory
 ```
 
-Missing keyring after a reboot. That has an obvious fix: pull the key back out of Ceph auth,
+Missing keyring after a reboot. That's an obvious fix: pull the key back out of Ceph auth,
 fix the permissions, start the OSD.
 
 ```bash
@@ -46,10 +45,10 @@ chmod 600 /var/lib/ceph/osd/ceph-8/keyring
 systemctl start ceph-osd@8
 ```
 
-This was wrong. Not the commands, the diagnosis. The missing keyring was a symptom, not the
-disease. This is the trap you fall into every time: the first fix you reach for is the one
-that would make sense on a healthy system, and you are not on a healthy system. You are on
-whatever the incident has turned it into.
+This was wrong. The missing keyring was a symptom, not the disease.
+This is the trap you fall into every time: the first fix you reach for is the one
+that would make sense on a healthy system, but you are not on a healthy system. You are on
+whatever the incident has turned that system into.
 
 ## systemd hid the real error from me
 
@@ -80,7 +79,7 @@ The reason the `block` symlink was dead is that the thing it pointed at no longe
 One of the 980 PROs still showed up but as a different device. The other one was not on the
 system at all. Not degraded, not erroring. Absent.
 
-That's when the carrier card clicked. Those drives were on the PCIe bifurcation card. And I
+That's when the carrier card re-entered my consciousness. Those drives were on the PCIe bifurcation card. And I
 had just changed the PCIe layout of the entire machine by adding a GPU.
 
 The confirming detail, once I looked for it, is clean enough that it should be the first
@@ -88,11 +87,11 @@ thing you check in a situation like this:
 
 The drive showed up in `lspci` but not in `nvme list`.
 
-That split is the fingerprint. The device is physically present and the PCIe bus sees it,
+That split is the tell. The device is physically present and the PCIe bus sees it,
 but it never enumerated as an NVMe namespace, which means the operating system has no block
-device to hand to Ceph. That is not a dead drive. That is a bifurcation problem. Adding the
+device to hand to Ceph. And that, is a bifurcation problem. Adding the
 GPU re-shuffled how the board allocated PCIe lanes, the carrier card stopped getting the
-`x4x4x4x4` split it needed, and its drives fell off the bus. The fix is in firmware, not in
+`x4x4x4x4` split it needed, and its drives fell off the bus. The fix was in firmware, not in
 Ceph:
 
 ```bash
@@ -116,8 +115,8 @@ failed to start osd.27
 ```
 
 I tried to repair it and got a wall of BlueStore assertion failures, `ceph_assert_fail`
-inside `_open_db_and_around`, repeated aborts. That is BlueStore's internal database being
-corrupt, and it is not something you talk your way out of. That OSD was gone. The move there
+inside `_open_db_and_around`, repeated aborts. That's BlueStore's internal database being
+corrupt, and it is not something you restart your way out of. That OSD was gone. The move
 is to stop trying to save it and purge it cleanly so the cluster can rebalance around it.
 
 So now I had three distinct failures tangled into one incident: a bifurcation problem, a
@@ -127,23 +126,22 @@ into each one.
 
 ## The scary part was a lie
 
-Here is the moment the whole thing felt catastrophic. I couldn't start VMs. They would get
+The moment felt catastrophic. I couldn't start VMs. They would get
 to GRUB and hang there. When storage is falling apart and your VMs won't boot, your brain
 goes straight to "the data is gone."
 
 The data was not gone. The VMs were hanging because the cluster was rebalancing, and
 rebalance traffic plus a bit of clock skew had made disk reads slow enough that bootloaders
-and kernels were just sitting there waiting on I/O. It is the same feeling as trying to use
+and kernels were just sitting there waiting on I/O. It's the same feeling as trying to use
 your laptop while it does a giant file copy in the background. Everything is technically
-working and everything is unbearably slow.
+working but also unbearably slow.
 
-That distinction, between "slow because it's healing" and "broken because data is lost," is
-the difference between a bad night and a disaster, and from the outside they look identical.
+The distinction between "slow because it's healing" and "broken because data is lost," is
+the difference between a slow-burn night and a disaster, and from the outside they look identical.
 
 ## Did I lose any data?
 
-I asked the question out loud, which is the honest version of every incident. The way you
-answer it is not by feeling better, it's by checking for the two states that actually mean
+I asked the question out loud, checking for the two states that actually mean
 loss:
 
 ```bash
@@ -153,8 +151,8 @@ ceph pg dump | grep -i unfound
 ceph pg ls | grep -v "active+clean"
 ```
 
-No `incomplete` PGs, no `unfound` objects. Everything else was `active+undersized+degraded`,
-which sounds alarming and is not. It just means some placement groups were running on fewer
+No `incomplete` PGs, no `unfound` objects. Everything was `active+undersized+degraded`.
+Thankfully, that just means some placement groups were running on fewer
 than their full three copies while the cluster rebuilt.
 
 This is where size=3, min_size=2 earns its keep. Three copies of everything. Losing one OSD
@@ -165,7 +163,7 @@ whole panic was really just me watching it work and misreading the symptoms.
 
 ## Making it usable while it healed
 
-The one genuinely useful lever during all this: you can throttle Ceph recovery so it stops
+The one useful lever discovered during all this: you can throttle Ceph recovery so it stops
 starving your clients of I/O. Recovery will take longer, but your VMs will actually boot.
 
 ```bash
@@ -186,12 +184,12 @@ completely different machine. One worked. The other was not recognized at all, o
 computer, over a different interface. That is the cleanest possible proof that it is the drive
 and not your config: it fails everywhere, independent of the system that was blamed for it.
 
-So the final tally was one drive recovered by fixing firmware, one drive genuinely dead, and
+So the final tally was one drive recovered by fixing firmware, one drive definitely dead, and
 one OSD purged for BlueStore corruption. Replacement drives were already on the way, and the
 fix from there is unglamorous: add them back as new OSDs, one at a time so the rebalance load
 spreads out.
 
-## What I actually took away
+## What I took away
 
 The GPU is the villain in the headline, but the real lessons are smaller and more useful than
 "graphics cards are dangerous."
@@ -207,7 +205,7 @@ And "slow" and "lost" look identical from the driver's seat. The only way to tel
 is to stop guessing and go check for incomplete PGs and unfound objects. Your storage layer
 will tell you the truth if you ask it the right question instead of asking your gut.
 
-The data was fine the whole time. size=3, min_size=2. That's the entire reason a dead drive
+The data was fine the whole time. size=3, min_size=2. That's the reason a dead drive
 was an annoyance and not a catastrophe.
 
-It's probably fine.
+Thankfully now, it's probably fine.
