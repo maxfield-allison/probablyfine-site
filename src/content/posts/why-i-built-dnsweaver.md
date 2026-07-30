@@ -32,7 +32,7 @@ and my workloads aren't all in Kubernetes, they're in Docker, on Proxmox, wherev
 looked, there wasn't much serving that side. Plenty for public DNS in K8s, almost nothing for
 internal resolvers like Pi-hole, Bind, PowerDNS, AdGuard, or Technitium across mixed platforms.
 
-That gap is the whole reason dnsweaver exists. Internal and external, from more than just
+That gap is the whole reason dnsweaver exists. Internal and external, for more than just
 Kubernetes.
 
 ## Split-horizon is the point
@@ -48,10 +48,30 @@ AdGuard Home, dnsmasq, RFC 2136, PowerDNS, OVHcloud, and a generic webhook, with
 over time. It runs across Docker, Docker Swarm, Kubernetes, Proxmox, and Incus. It's written
 in Go, MIT licensed, ships Prometheus metrics and a Helm chart. Standard homelab-tool checklist.
 
+## The other reason: killing the wildcard
+
+There was a second motivation. I was tired of managing DNS records, and I was tired of the
+wildcard cert.
+
+When creating a record and a cert for every service is manual and annoying, you do what
+everyone does. You issue one wildcard cert for `*.local.example.internal` and point everything
+at it. It works fine until you think about what that one key can do. Leak it and every service
+behind it is compromised at once. It also makes mutual TLS awkward, because mTLS wants each
+service presenting its own identity, and a shared wildcard has no identity to present.
+
+Once dnsweaver gives every service a real record automatically, the wildcard stops earning
+its keep. A per-service certificate from my internal CA becomes the easy path. cert-manager
+handles the ACME DNS-01 challenge against a zone dnsweaver already manages, and every service
+ends up with its own cert and its own blast radius of exactly one. That's the groundwork for
+mTLS between services later, where a shared wildcard would actively get in the way.
+
+dnsweaver never touches the certificates. It killed the reason I was leaning on a wildcard to
+avoid dealing with them.
+
 ## The Proxmox source is where the opinions live
 
-The part I'm proudest of isn't the feature list, it's two design decisions in the Proxmox
-integration that I'd defend to anyone.
+The two design decisions in the Proxmox integration are the part I'm proudest of. I'd defend
+both to anyone.
 
 ### "All VMs" is not a safe default
 
@@ -93,7 +113,7 @@ split-horizon, the multi-backend sync, and the built-in metrics. Both framed it 
 ExternalDNS, both noted it's new and single-maintainer, both said worth trying but be careful
 before production. Fair on all counts.
 
-Watching that happen was the fun part. You write a thing for yourself, and at some point it
+Watching that happen was fun. You write a thing for yourself, and at some point it
 stops being only yours.
 
 dnsweaver is open source if you want to poke at it. It's still a single-maintainer project, so
