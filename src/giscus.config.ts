@@ -17,9 +17,9 @@
 
 export const giscus = {
   repo: 'maxfield-allison/probablyfine-site' as const,
-  repoId: '', // e.g. 'R_kgD...'  ← fill in from giscus.app
+  repoId: 'R_kgDOTmTGhg',
   category: 'Comments',
-  categoryId: '', // e.g. 'DIC_kwD...'  ← fill in from giscus.app
+  categoryId: 'DIC_kwDOTmTGhs4DCUDm',
   // Visuals / behavior
   mapping: 'pathname' as const,
   theme: 'dark' as const,
