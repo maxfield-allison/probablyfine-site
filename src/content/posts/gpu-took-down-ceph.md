@@ -45,10 +45,9 @@ chmod 600 /var/lib/ceph/osd/ceph-8/keyring
 systemctl start ceph-osd@8
 ```
 
-This was wrong. The missing keyring was a symptom, not the disease.
-This is the trap you fall into every time: the first fix you reach for is the one
-that would make sense on a healthy system, but you are not on a healthy system. You are on
-whatever the incident has turned that system into.
+This was wrong. The missing keyring was a symptom, not the disease. The first fix you reach
+for is the one that makes sense on a healthy system, and I wasn't on a healthy system. I was
+on whatever the reboot had turned it into.
 
 ## systemd hid the real error from me
 
@@ -102,7 +101,7 @@ echo 1 > /sys/bus/pci/rescan
 # then a full power cycle, not just a reboot
 ```
 
-## Meanwhile, a completely different OSD was actually corrupt
+## Meanwhile, a different OSD was actually corrupt
 
 While I was untangling the bifurcation problem, a third OSD on a different node was in a
 genuine crash loop, and this one had nothing to do with the GPU. It just picked the worst
@@ -136,12 +135,12 @@ and kernels were just sitting there waiting on I/O. It's the same feeling as try
 your laptop while it does a giant file copy in the background. Everything is technically
 working but also unbearably slow.
 
-The distinction between "slow because it's healing" and "broken because data is lost," is
-the difference between a slow-burn night and a disaster, and from the outside they look identical.
+From the outside, "slow because it's healing" and "broken because data is lost" look
+identical. That's the whole trap.
 
 ## Did I lose any data?
 
-I asked the question out loud, checking for the two states that actually mean
+I asked the question out loud, checking for the two states that mean
 loss:
 
 ```bash
@@ -158,12 +157,12 @@ than their full three copies while the cluster rebuilt.
 This is where size=3, min_size=2 earns its keep. Three copies of everything. Losing one OSD
 out of 32 means every piece of data still has two other replicas alive. The cluster was never
 in danger of loss from a single failed drive, it was only ever in danger of being slow while
-it made a third copy again. Redundancy did exactly the boring thing it exists to do, and the
-whole panic was really just me watching it work and misreading the symptoms.
+it made a third copy again. Redundancy did the boring thing it exists to do. The panic was me
+watching it work and misreading the symptoms.
 
 ## Making it usable while it healed
 
-The one useful lever discovered during all this: you can throttle Ceph recovery so it stops
+The one useful lever I found: you can throttle Ceph recovery so it stops
 starving your clients of I/O. Recovery will take longer, but your VMs will actually boot.
 
 ```bash
@@ -180,7 +179,7 @@ faster.
 
 The bifurcation drive came back once I fixed the lane allocation. The other 980 PRO did not.
 I pulled both suspect drives, put them in a USB-to-NVMe adapter, and plugged them into a
-completely different machine. One worked. The other was not recognized at all, on a different
+different machine. One worked. The other was not recognized at all, on a different
 computer, over a different interface. That is the cleanest possible proof that it is the drive
 and not your config: it fails everywhere, independent of the system that was blamed for it.
 
@@ -191,21 +190,16 @@ spreads out.
 
 ## What I took away
 
-The GPU is the villain in the headline, but the real lessons are smaller and more useful than
-"graphics cards are dangerous."
+The headline blames the GPU, but the useful lesson is smaller. Adding any PCIe card can
+re-shuffle bifurcation and knock other devices off the bus, and the tell is a device that
+shows up in `lspci` but not in `nvme list`. If you run NVMe on a bifurcation carrier, a GPU in
+the same box is not a neutral change.
 
-Adding any PCIe card can re-shuffle bifurcation and knock other PCIe devices off the bus, and
-the fingerprint of that is a device that shows in `lspci` but not in `nvme list`. If you run
-NVMe on a bifurcation carrier, a GPU in the same box is not a neutral change.
+The other half is on me. I burned the first hour on a missing keyring that turned out to be
+three layers downstream of the real problem, because a missing keyring is what you fix on a
+healthy system. I had the evidence that the drive was gone before I did anything useful with it.
 
-The first fix you reach for is calibrated for a healthy system, and you are not on one. The
-missing keyring looked like the problem and was three layers downstream of it.
-
-And "slow" and "lost" look identical from the driver's seat. The only way to tell them apart
-is to stop guessing and go check for incomplete PGs and unfound objects. Your storage layer
-will tell you the truth if you ask it the right question instead of asking your gut.
-
-The data was fine the whole time. size=3, min_size=2. That's the reason a dead drive
-was an annoyance and not a catastrophe.
+The data was fine the whole time. size=3, min_size=2 is the reason a dead drive was an
+annoyance and not a catastrophe.
 
 Thankfully now, it's probably fine.
