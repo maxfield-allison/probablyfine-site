@@ -13,9 +13,9 @@ the thing down months later and its record just sits there, rotting in the zone,
 nothing. Multiply that by a homelab's worth of churn and you've got a DNS zone that's half
 lies.
 
-So I built a tool to kill it. It's called dnsweaver, and the short version is: put a label on
+So I built a tool to kill the annoyance. It's called dnsweaver, and the short version is: put a label on
 a workload, get the DNS record automatically, remove the workload, the record goes with it.
-The way I pitch it to other homelabbers is external-dns for the homelab: same reflex, aimed at
+The way I pitch it to other homelabbers is external-dns for the homelab: same pattern, aimed at
 the half of the problem the Kubernetes-shaped tools skip. The part I'm proudest of is further
 down, the Proxmox source, where the two design decisions I'd defend to anyone live.
 
@@ -23,7 +23,7 @@ It didn't start this general. The first version was a narrow thing called techni
 Technitium only, Traefik only, A records only. It solved my exact setup and nothing else. Then
 I found out someone had already shipped a tool with almost the same name, and instead of just
 renaming mine I took it as the push to rebuild it the way it should have been from the start,
-many providers and many sources instead of one of each. That rewrite is dnsweaver, and most of
+many providers and many sources instead of one of each. This rewrite is dnsweaver, and most of
 the design opinions below come from that second pass, not the first.
 
 The label is the whole interface. If you already run Traefik, you already have the label it
@@ -40,26 +40,25 @@ services:
       # - "dnsweaver.hostname=app.example.com"
 ```
 
-Start the container and the record appears. Remove it and the record is cleaned up. That's the
-entire day-to-day.
+Start the container and the record appears. Remove it and the record is cleaned up. Set and forget.
 
 ## Why not just use ExternalDNS
 
-That's the obvious question, and I asked it too. ExternalDNS is the standard answer for
+The obvious question, and I asked it too. ExternalDNS is the standard answer for
 automatic DNS in Kubernetes, and it's good at what it does. It reads a long list of sources,
-Ingress, Service, Gateway API, Traefik and other CRDs, and it drives a lot of providers. Two
-things about its shape didn't fit my problem, though.
+Ingress, Service, Gateway API, Traefik and other CRDs, and it interfaces with a lot of providers. Two
+things about its design didn't fit my problems, though.
 
-It lives in Kubernetes. It reconciles Kubernetes objects, so workloads that aren't in a cluster
+It's strictly Kubernetes. It reconciles Kubernetes objects, so workloads that aren't in a cluster
 aren't in scope.
 
 And its center of gravity is public authoritative DNS. It can talk to self-hosted resolvers,
-RFC 2136 and a few others are in there, but the internal, self-hosted side is a secondary path
+RFC 2136 support and a few others are in there, but the internal, self-hosted side seemed like a secondary path
 rather than the main event.
 
-My problem was that secondary path, at the center. I run internal DNS on Technitium. My records
+My core problem was that secondary path. I run internal DNS on Technitium. My records
 aren't all public, and my workloads aren't all in Kubernetes, they're in Docker, on Proxmox,
-wherever. When I looked, there wasn't much serving that side as a first-class concern. Plenty
+etc. When I looked, there wasn't much serving that side as a first-class concern. Plenty
 for public DNS in K8s, almost nothing built around internal resolvers like Pi-hole, Bind,
 PowerDNS, AdGuard, or Technitium, or for the Unbound resolver a lot of us just run on OPNsense
 or pfSense, across mixed platforms.
@@ -84,11 +83,11 @@ a Helm chart. Standard homelab-tool checklist.
 
 ## The other reason: killing the wildcard
 
-There was a second motivation. I was tired of managing DNS records, and I was tired of the
+There was also a second motivation. I was tired of managing DNS records, and I was tired of the
 wildcard cert.
 
 When creating a record and a cert for every service is manual and annoying, you do what
-everyone does. You issue one wildcard cert for `*.local.example.internal` and point everything
+everyone does. You issue one wildcard cert for `*.home.lab` and point everything
 at it. It works fine until you think about what that one key can do. Leak it and every service
 behind it is compromised at once. It also makes mutual TLS awkward, because mTLS wants each
 service presenting its own identity, and a shared wildcard has no identity to present.
@@ -96,10 +95,10 @@ service presenting its own identity, and a shared wildcard has no identity to pr
 Once dnsweaver gives every service a real record automatically, the wildcard stops earning
 its keep. A per-service certificate from my internal CA becomes the easy path. cert-manager
 handles the ACME DNS-01 challenge against a zone dnsweaver already manages, and every service
-ends up with its own cert and its own blast radius of exactly one. That's the groundwork for
+ends up with its own cert and its own blast radius. That turns into the groundwork for
 mTLS between services later, where a shared wildcard would get in the way.
 
-dnsweaver never touches the certificates. It killed the reason I was leaning on a wildcard to
+dnsweaver never touches the certificates. It eliminated the reason I was leaning on a wildcard to
 avoid dealing with them.
 
 ## The Proxmox source is where the opinions live
@@ -126,7 +125,7 @@ or a node under load, returns nothing for a poll or two. If you take that litera
 the record the moment the agent hiccups and recreate it when it recovers, so every transient
 blip flaps the record.
 
-The fix is a cache with a TTL of three times the poll interval. A missed poll or two just
+The solution I went with is a cache with a TTL of three times the poll interval. A missed poll or two just
 serves the last good IP, and the record only changes when something real changes. The
 full resolution order stops at the first thing that works: read the IP from the LXC's network
 config, or ask the QEMU guest agent, or fall back to the cached value if it's still fresh, and
@@ -138,7 +137,7 @@ explicit tag wins instead.
 
 ### Both rules run through the whole tool
 
-Neither of these is really about Proxmox. They're the two rules the whole thing runs on.
+Neither of these is really about Proxmox. They're two of the core rules the whole thing is designed around.
 
 The first is don't do damage you can't justify. You declare what you want managed, and it fails
 closed when you haven't. Every record dnsweaver creates gets a TXT ownership marker, so it will
@@ -154,7 +153,7 @@ briefly behind. Everything else in dnsweaver is a variation on those two.
 
 ## Then people started writing about it, and contributing to it
 
-The part that surprised me: I started it to scratch my own itch, and it picked up
+The thing that surprised me was that I built this thing to scratch my own itch, and then it picked up
 real users. Two independent write-ups showed up that I had nothing to do with, both within a
 couple weeks of each other. [Korben](https://korben.info/en/dnsweaver-automatic-dns-docker-proxmox-k8s.html)
 ran an enthusiastic walk through the core magic, a container starts with a Traefik label and
@@ -168,7 +167,7 @@ The better surprise was contribution. The Incus crowd is small but sharp, and Re
 maintains [incus-compose](https://github.com/lxc/incus-compose), showed up and got involved
 properly. He opened an issue asking dnsweaver to understand the labels his tool writes, reviewed
 the implementation, and pointed out a scaled-services case I'd missed that turned into its own
-tracked feature. He also sent a code fix directly, and his bug report with a clean repro is the
+tracked feature. He also sent a code fix directly, and his bug report with repro is the
 reason dnsweaver now does Incus certificate pinning and trust-token enrollment instead of the
 weaker default. A chunk of dnsweaver's Incus support exists because the person who'd know best
 cared enough to push on it.
@@ -183,10 +182,10 @@ coverage's "cautious before prod" note is the right one. If you try it, the most
 you can do is open an issue, especially to tell me which backend you're missing. That's how the
 provider list has grown.
 
-But if you've ever hand-created a DNS record and then forgotten to delete it, you already know
-why it exists.
+If you've ever manually created a DNS record and then forgotten to delete it, or migrated 50+
+services to a new domain, you already know why it exists.
 
-It's always DNS. dnsweaver won't change that. It just keeps the DNS from being a lie you left
-behind, which means the next time it *is* DNS, at least it won't be your fault.
+It's always DNS. Even when it isn't, it's DNS. dnsweaver won't change that. What it does is keep
+your records honest, so when the finger-pointing starts, yours are
 
 Probably fine.
