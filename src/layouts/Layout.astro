@@ -8,6 +8,7 @@ interface Props {
   description?: string;
   bare?: boolean;
   ogImage?: string;
+  ogType?: string;
 }
 
 const {
@@ -15,10 +16,17 @@ const {
   description = "A homelab + SRE engineering blog. Kubernetes, GitOps, and the occasional 3am incident. It's probably fine.",
   bare = false,
   ogImage: ogImageProp,
+  ogType = 'website',
 } = Astro.props;
 
 const site = Astro.site ?? 'https://probablyfine.dev';
-const canonical = new URL(Astro.url.pathname, site);
+// Flat-file build (build.format 'file') makes Astro.url.pathname carry a .html
+// suffix at build time, but nginx serves + everyone links the clean URL. Strip
+// .html (and /index) so canonical/og:url match the real URL and don't signal
+// duplicate content to search engines.
+let cleanPath = Astro.url.pathname.replace(/\.html$/, '');
+if (cleanPath.endsWith('/index')) cleanPath = cleanPath.slice(0, -'index'.length);
+const canonical = new URL(cleanPath || '/', site);
 const ogImage = new URL(ogImageProp ?? '/og.png?v=1', site);
 
 // Structured data. WebSite + Person identity graph (deduped by @id); posts
@@ -69,7 +77,7 @@ const siteLd = {
     <link rel="canonical" href={canonical.href} />
     <link rel="alternate" type="application/rss+xml" title="ProbablyFine" href={new URL('/rss.xml', site).href} />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />

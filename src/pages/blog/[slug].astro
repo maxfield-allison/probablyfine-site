@@ -52,7 +52,7 @@ const blogPostingLd = {
 };
 ---
 
-<Layout title={`${title} — ProbablyFine`} description={description} ogImage={ogImage}>
+<Layout title={`${title} — ProbablyFine`} description={description} ogImage={ogImage} ogType="article">
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
   <article class="max-w-3xl mx-auto px-6 pt-16 pb-12">
     <a href="/blog" class="font-mono text-xs text-[--color-ink-dim] hover:text-[--color-ink] no-underline hover:no-underline">&larr; all posts</a>
