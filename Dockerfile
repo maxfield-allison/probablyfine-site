@@ -4,6 +4,11 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
+# Fonts for build-time OG card generation (sharp/librsvg renders SVG text using
+# system fonts; node:alpine ships none, so titles render as tofu without this).
+# DejaVu provides sans-serif + monospace glyphs for the card template.
+RUN apk add --no-cache fontconfig ttf-dejavu && fc-cache -f
+
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml* ./

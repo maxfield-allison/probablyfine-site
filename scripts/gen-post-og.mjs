@@ -54,7 +54,7 @@ function svg(title) {
   const lineHeight = size * 1.15;
   const startY = 300 - ((lines.length - 1) * lineHeight) / 2;
   const tspans = lines
-    .map((l, i) => `<text x="80" y="${startY + i * lineHeight}" font-family="Inter, system-ui, sans-serif" font-size="${size}" font-weight="600" fill="#e6edf3">${escapeXml(l)}</text>`)
+    .map((l, i) => `<text x="80" y="${startY + i * lineHeight}" font-family="Inter, 'DejaVu Sans', system-ui, sans-serif" font-size="${size}" font-weight="600" fill="#e6edf3">${escapeXml(l)}</text>`)
     .join('\n  ');
   return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -65,9 +65,9 @@ function svg(title) {
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect x="0" y="0" width="1200" height="6" fill="#3fb950"/>
-  <text x="80" y="120" font-family="monospace" font-size="26" fill="#8b98a5">probably<tspan fill="#3fb950">fine</tspan>.dev</text>
+  <text x="80" y="120" font-family="'DejaVu Sans Mono', monospace" font-size="26" fill="#8b98a5">probably<tspan fill="#3fb950">fine</tspan>.dev</text>
   ${tspans}
-  <text x="80" y="560" font-family="monospace" font-size="22" fill="#3fb950">$ cat /var/log/probablyfine</text>
+  <text x="80" y="560" font-family="'DejaVu Sans Mono', monospace" font-size="22" fill="#3fb950">$ cat /var/log/probablyfine</text>
 </svg>`;
 }
 
