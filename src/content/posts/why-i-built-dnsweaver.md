@@ -4,7 +4,7 @@ description: "Automatic DNS for Docker, Kubernetes, and Proxmox, aimed at the se
 date: 2026-08-04
 tags: ["dnsweaver", "dns", "homelab", "go"]
 aiAssisted: true
-draft: true
+draft: false
 ---
 
 Spinning up a new container or VM and then manually creating its DNS record is one of those
