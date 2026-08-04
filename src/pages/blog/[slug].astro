@@ -25,7 +25,9 @@ const dateStr = date.toISOString().slice(0, 10);
 
 const site = Astro.site ?? 'https://probablyfine.dev';
 const postUrl = new URL(`/blog/${post.id}`, site).href;
-const ogImage = `/og/${post.id}.png`;
+// ?v bump forces social scrapers (LinkedIn caches OG images ~7d) to re-fetch
+// after a card regeneration. Bump when the OG template/fonts change.
+const ogImage = `/og/${post.id}.png?v=2`;
 const blogPostingLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
