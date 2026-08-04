@@ -136,7 +136,7 @@ One more thing the guest-agent path deliberately does not do: trust the OS hostn
 different from what you named the VM in Proxmox and it's unreliable, so the Proxmox name or an
 explicit tag wins instead.
 
-## Then strangers started writing about it
+## Then people started writing about it, and contributing to it
 
 The part that surprised me: I started it to scratch my own itch, and it picked up
 real users. Two independent write-ups showed up that I had nothing to do with, both within a
@@ -147,6 +147,15 @@ and a cheerful "not in prod right away though." [Tech2Geek](https://www.tech2gee
 wrote the more structured version, worked through split-horizon, the multi-backend sync, and
 the metrics, and put dnsweaver next to ExternalDNS in a feature table. Both noted it's new and
 single-maintainer, both said worth trying but cautious before production. Fair on every count.
+
+The better surprise was contribution. The Incus crowd is small but sharp, and René Jochum, who
+maintains [incus-compose](https://github.com/lxc/incus-compose), showed up and got involved
+properly. He opened an issue asking dnsweaver to understand the labels his tool writes, reviewed
+the implementation, and pointed out a scaled-services case I'd missed that turned into its own
+tracked feature. He also sent a code fix directly, and his bug report with a clean repro is the
+reason dnsweaver now does Incus certificate pinning and trust-token enrollment instead of the
+weaker default. A chunk of dnsweaver's Incus support exists because the person who'd know best
+cared enough to push on it.
 
 Watching that happen was fun. You write a thing for yourself, and at some point it
 stops being only yours.
