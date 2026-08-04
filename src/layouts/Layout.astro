@@ -82,10 +82,13 @@ const siteLd = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage.href} />
     <script type="application/ld+json" set:html={JSON.stringify(siteLd)} />
-    {/* Self-hosted, privacy-friendly analytics (Umami on the homelab cluster). */}
+    {/* Self-hosted, privacy-friendly analytics (Umami on the homelab cluster).
+        Served first-party from /pf-insights/* (proxied to Umami) so ad-blockers
+        don't drop it as a third-party tracker domain. Tracker derives its collect
+        endpoint from the script path, so it posts to /pf-insights/api/send. */}
     <script
       defer
-      src="https://analytics.probablyfine.dev/script.js"
+      src="/pf-insights/script.js"
       data-website-id="500c4f8f-188b-4e0b-a804-5fecd412f118"
     ></script>
     <slot name="head" />
