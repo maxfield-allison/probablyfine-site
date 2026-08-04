@@ -1,6 +1,6 @@
 ---
-title: "I built a DNS tool because I was tired of doing it by hand"
-description: "Every new container or VM meant hand-creating a DNS record, and forgetting to delete it later meant stale records rotting in the zone. ExternalDNS didn't cover my case. So I wrote dnsweaver, and then strangers started writing about it."
+title: "I built dnsweaver because I was tired of managing DNS by hand"
+description: "Automatic DNS for Docker, Kubernetes, and Proxmox, aimed at the self-hosted resolvers ExternalDNS skips. Every new container meant a hand-made record, and every dead one rotted in the zone. So I wrote dnsweaver, and then strangers started writing about it."
 date: 2026-08-04
 tags: ["dnsweaver", "dns", "homelab", "go"]
 aiAssisted: true
@@ -13,25 +13,51 @@ the thing down months later and its record just sits there, rotting in the zone,
 nothing. Multiply that by a homelab's worth of churn and you've got a DNS zone that's half
 lies.
 
+The interface is one label, and the part I'm proudest of is further down: the Proxmox source,
+where the two design decisions I'd defend to anyone live.
+
 So I built a tool to kill it. It's called dnsweaver, and the short version is: put a label on
 a workload, get the DNS record automatically, remove the workload, the record goes with it.
+The way I pitch it to other homelabbers is external-dns for the homelab: same reflex, aimed at
+the half of the problem the Kubernetes-shaped tools skip.
+
+The label is the whole interface. If you already run Traefik, you already have the label it
+needs:
+
+```yaml
+services:
+  app:
+    image: my/app
+    labels:
+      - "traefik.http.routers.app.rule=Host(`app.example.com`)"
+      # dnsweaver sees that Host() rule and creates app.example.com.
+      # No Traefik? Use the native label instead:
+      # - "dnsweaver.hostname=app.example.com"
+```
+
+Start the container and the record appears. Remove it and the record is cleaned up. That's the
+entire day-to-day.
 
 ## Why not just use ExternalDNS
 
 That's the obvious question, and I asked it too. ExternalDNS is the standard answer for
-automatic DNS in Kubernetes, and it's good at what it does. But what it does is a specific
-slice of the problem:
+automatic DNS in Kubernetes, and it's good at what it does. It reads a long list of sources,
+Ingress, Service, Gateway API, Traefik and other CRDs, and it drives a lot of providers. Two
+things about its shape didn't fit my problem, though.
 
-It targets public authoritative DNS. Route 53, Cloudflare, the big providers. It's built
-around external records.
+It lives in Kubernetes. It reconciles Kubernetes objects, so workloads that aren't in a cluster
+aren't in scope.
 
-And it's Kubernetes-only. It reads Ingress and Service objects and nothing else.
+And its center of gravity is public authoritative DNS. It can talk to self-hosted resolvers,
+RFC 2136 and a few others are in there, but the internal, self-hosted side is a secondary path
+rather than the main event.
 
-My problem was the other half. I run internal DNS on Technitium. My records aren't all public,
-and my workloads aren't all in Kubernetes, they're in Docker, on Proxmox, wherever. When I
-looked, there wasn't much serving that side. Plenty for public DNS in K8s, almost nothing for
-internal resolvers like Pi-hole, Bind, PowerDNS, AdGuard, or Technitium, or for the Unbound
-resolver a lot of us just run on OPNsense or pfSense, across mixed platforms.
+My problem was that secondary path, at the center. I run internal DNS on Technitium. My records
+aren't all public, and my workloads aren't all in Kubernetes, they're in Docker, on Proxmox,
+wherever. When I looked, there wasn't much serving that side as a first-class concern. Plenty
+for public DNS in K8s, almost nothing built around internal resolvers like Pi-hole, Bind,
+PowerDNS, AdGuard, or Technitium, or for the Unbound resolver a lot of us just run on OPNsense
+or pfSense, across mixed platforms.
 
 That gap is the whole reason dnsweaver exists. Internal and external, for more than just
 Kubernetes.
@@ -41,8 +67,9 @@ Kubernetes.
 The feature I care about is split-horizon: internal and external records from a
 single label. One Traefik label on one workload produces both the internal record that
 resolves on my LAN and the public record that resolves on the internet, with no duplication
-and no second config to keep in sync. ExternalDNS can't structurally do that, because it only
-knows about the public half.
+and no second config to keep in sync. You can approximate this with two ExternalDNS instances
+pointed at different providers, but you're then maintaining two deployments and two sets of
+annotations for what is really one intent. dnsweaver does it from one label, once.
 
 Under the hood it pushes to a pile of backends in parallel. Technitium, Cloudflare, Pi-hole,
 AdGuard Home, dnsmasq, PowerDNS, RFC 2136, OVHcloud, the Unbound resolver on OPNsense and
@@ -118,8 +145,14 @@ before production. Fair on all counts.
 Watching that happen was fun. You write a thing for yourself, and at some point it
 stops being only yours.
 
-dnsweaver is open source if you want to poke at it. It's still a single-maintainer project, so
-the coverage's "cautious before prod" note is the right one. But if you've ever hand-created a
-DNS record and then forgotten to delete it, you already know why it exists.
+If you want to poke at it, the code is on [GitHub](https://github.com/maxfield-allison/dnsweaver)
+and there's a [docs site](https://maxfield-allison.github.io/dnsweaver/) with a Helm chart and a
+provider for whatever resolver you're running. It's still a single-maintainer project, so the
+coverage's "cautious before prod" note is the right one. If you try it, the most useful thing
+you can do is open an issue, especially to tell me which backend you're missing. That's how the
+provider list has grown.
+
+But if you've ever hand-created a DNS record and then forgotten to delete it, you already know
+why it exists.
 
 It's probably fine.
