@@ -121,7 +121,7 @@ less convenient one. Fail closed.
 
 ### The cache exists to absorb flapping
 
-Proxmox VM IPs come from the QEMU guest agent, and the guest agent is flaky. A VM mid-reboot,
+Proxmox VM IPs come from the QEMU guest agent, and the guest agent can be flaky. A VM mid-reboot,
 or a node under load, returns nothing for a poll or two. If you take that literally, you delete
 the record the moment the agent hiccups and recreate it when it recovers, so every transient
 blip flaps the record.
@@ -135,6 +135,22 @@ if none of that works, log it and skip that workload instead of failing the whol
 One more thing the guest-agent path deliberately does not do: trust the OS hostname. It's often
 different from what you named the VM in Proxmox and it's unreliable, so the Proxmox name or an
 explicit tag wins instead.
+
+### Both rules run through the whole tool
+
+Neither of these is really about Proxmox. They're the two rules the whole thing runs on.
+
+The first is don't do damage you can't justify. You declare what you want managed, and it fails
+closed when you haven't. Every record dnsweaver creates gets a TXT ownership marker, so it will
+never delete a record a human made by hand. When it isn't sure, it does nothing.
+
+The second is prefer durable truth over a momentary signal. The name you set beats the name the
+OS reports. The last known-good IP beats a blank answer from an agent that's mid-reboot. A
+backend that's briefly unreachable gets logged and skipped, not allowed to take the whole run
+down with it.
+
+Both come from the same place: a DNS tool that's confidently wrong is worse than one that's
+briefly behind. Everything else in dnsweaver is a variation on those two.
 
 ## Then people started writing about it, and contributing to it
 
@@ -170,4 +186,7 @@ provider list has grown.
 But if you've ever hand-created a DNS record and then forgotten to delete it, you already know
 why it exists.
 
-It's probably fine.
+It's always DNS. dnsweaver won't change that. It just keeps the DNS from being a lie you left
+behind, which means the next time it *is* DNS, at least it won't be your fault.
+
+Probably fine.
