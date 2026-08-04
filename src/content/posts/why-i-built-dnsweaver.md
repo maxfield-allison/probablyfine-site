@@ -13,13 +13,18 @@ the thing down months later and its record just sits there, rotting in the zone,
 nothing. Multiply that by a homelab's worth of churn and you've got a DNS zone that's half
 lies.
 
-The interface is one label, and the part I'm proudest of is further down: the Proxmox source,
-where the two design decisions I'd defend to anyone live.
-
 So I built a tool to kill it. It's called dnsweaver, and the short version is: put a label on
 a workload, get the DNS record automatically, remove the workload, the record goes with it.
 The way I pitch it to other homelabbers is external-dns for the homelab: same reflex, aimed at
-the half of the problem the Kubernetes-shaped tools skip.
+the half of the problem the Kubernetes-shaped tools skip. The part I'm proudest of is further
+down, the Proxmox source, where the two design decisions I'd defend to anyone live.
+
+It didn't start this general. The first version was a narrow thing called technitium-companion:
+Technitium only, Traefik only, A records only. It solved my exact setup and nothing else. Then
+I found out someone had already shipped a tool with almost the same name, and instead of just
+renaming mine I took it as the push to rebuild it the way it should have been from the start,
+many providers and many sources instead of one of each. That rewrite is dnsweaver, and most of
+the design opinions below come from that second pass, not the first.
 
 The label is the whole interface. If you already run Traefik, you already have the label it
 needs:
@@ -135,12 +140,13 @@ explicit tag wins instead.
 
 The part that surprised me: I started it to scratch my own itch, and it picked up
 real users. Two independent write-ups showed up that I had nothing to do with, both within a
-couple weeks of each other. One was an enthusiastic informal piece walking through the core
-magic, a container starts with a Traefik label and the record appears, you remove the container
-and it vanishes. The other was a more structured review that worked through the problem space,
-split-horizon, the multi-backend sync, and the built-in metrics. Both framed it against
-ExternalDNS, both noted it's new and single-maintainer, both said worth trying but be careful
-before production. Fair on all counts.
+couple weeks of each other. [Korben](https://korben.info/en/dnsweaver-automatic-dns-docker-proxmox-k8s.html)
+ran an enthusiastic walk through the core magic, a container starts with a Traefik label and
+the record appears, you remove it and it's gone, with the split-horizon `bitwarden` example
+and a cheerful "not in prod right away though." [Tech2Geek](https://www.tech2geek.net/dnsweaver-automatically-manages-dns-for-docker-kubernetes-and-proxmox/)
+wrote the more structured version, worked through split-horizon, the multi-backend sync, and
+the metrics, and put dnsweaver next to ExternalDNS in a feature table. Both noted it's new and
+single-maintainer, both said worth trying but cautious before production. Fair on every count.
 
 Watching that happen was fun. You write a thing for yourself, and at some point it
 stops being only yours.
