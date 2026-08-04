@@ -97,15 +97,15 @@ Once dnsweaver gives every service a real record automatically, the wildcard sto
 its keep. A per-service certificate from my internal CA becomes the easy path. cert-manager
 handles the ACME DNS-01 challenge against a zone dnsweaver already manages, and every service
 ends up with its own cert and its own blast radius of exactly one. That's the groundwork for
-mTLS between services later, where a shared wildcard would actively get in the way.
+mTLS between services later, where a shared wildcard would get in the way.
 
 dnsweaver never touches the certificates. It killed the reason I was leaning on a wildcard to
 avoid dealing with them.
 
 ## The Proxmox source is where the opinions live
 
-The two design decisions in the Proxmox integration are the part I'm proudest of. I'd defend
-both to anyone.
+Here's the section I teased up top. Two decisions in the Proxmox integration, and the reasoning
+behind each.
 
 ### "All VMs" is not a safe default
 
