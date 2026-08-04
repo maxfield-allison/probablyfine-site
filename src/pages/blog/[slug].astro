@@ -96,4 +96,24 @@ const blogPostingLd = {
     }
   </article>
   <Comments />
+
+  {/* Read-completion signal: fire a Umami event once the reader scrolls near the
+      end of the post. Powers "read" goals/funnels beyond raw pageviews. No PII;
+      only fires once per page, only if the analytics tracker is present. */}
+  <script is:inline define:vars={{ slug: post.id }}>
+    (() => {
+      let fired = false;
+      const onScroll = () => {
+        if (fired) return;
+        const doc = document.documentElement;
+        const reached =
+          (window.scrollY + window.innerHeight) / doc.scrollHeight >= 0.9;
+        if (!reached) return;
+        fired = true;
+        window.removeEventListener('scroll', onScroll);
+        if (window.umami) window.umami.track('post-read', { slug });
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+  </script>
 </Layout>
