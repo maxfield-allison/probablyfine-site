@@ -1,7 +1,7 @@
 ---
 title: "How installing a GPU took down my storage cluster"
 description: "I put a graphics card in a Proxmox node and it quietly knocked NVMe drives off the bus, killed Ceph OSDs, and left every VM hanging at the bootloader. Nobody warns you that a GPU can do that. Here's the whole incident, including the parts I got wrong."
-date: 2026-07-30
+date: 2026-08-04
 tags: ["homelab", "ceph", "incident", "proxmox"]
 aiAssisted: true
 draft: true
@@ -18,11 +18,14 @@ This is the whole thing, including the two hypotheses I chased that were wrong.
 ## The setup
 
 Five-node Proxmox cluster, Ceph underneath, 32 OSDs across a mix of NVMe and spinning disks. The pools run
-size=3, min_size=2, which matters a lot later. A couple of the OSDs lived on Samsung 980 PRO
-drives mounted on a PCIe bifurcation carrier card, the kind that splits one x16 slot into
-four x4 NVMe slots. Keep that carrier in mind...
+size=3, min_size=2, which matters a lot later.
 
-I dropped a 4070 Ti into the flagship node and rebooted. Everything looked fine for a bit.
+The node in question is the flagship: an ASRockRack ROMED8-2T with an EPYC 7282, 256 GB of ECC,
+and a stack of NVMe, running Ceph Reef. A couple of the OSDs lived on Samsung 980 PRO drives
+mounted on an ASUS Hyper M.2 X16 carrier, the kind that splits one x16 slot into four x4 NVMe
+slots and needs the slot set to `x4x4x4x4` in BIOS to do it. Keep that carrier in mind...
+
+I dropped a 4070 Ti into that node and rebooted. Everything looked fine for a bit.
 Then OSDs started going down.
 
 ## First I blamed a missing keyring
@@ -74,12 +77,12 @@ which was closer but still not right.
 
 ## The drive was just gone
 
-The reason the `block` symlink was dead is that the thing it pointed at no longer existed.
-One of the 980 PROs still showed up but as a different device. The other one was not on the
-system at all. Not degraded, not erroring. Absent.
+The reason the `block` symlink was dead is that the thing it pointed at no longer existed. One
+of the 980 PROs was still physically detected but the OS had no NVMe device for it. The other
+wasn't on the system at all. Not degraded, not erroring. Absent.
 
-That's when the carrier card re-entered my consciousness. Those drives were on the PCIe bifurcation card. And I
-had just changed the PCIe layout of the entire machine by adding a GPU.
+That's when I remembered the carrier card. Those drives were on it, and I had just changed the
+PCIe layout of the whole machine by adding a GPU.
 
 The confirming detail, once I looked for it, is clean enough that it should be the first
 thing you check in a situation like this:
@@ -88,10 +91,9 @@ The drive showed up in `lspci` but not in `nvme list`.
 
 That split is the tell. The device is physically present and the PCIe bus sees it,
 but it never enumerated as an NVMe namespace, which means the operating system has no block
-device to hand to Ceph. And that, is a bifurcation problem. Adding the
-GPU re-shuffled how the board allocated PCIe lanes, the carrier card stopped getting the
-`x4x4x4x4` split it needed, and its drives fell off the bus. The fix was in firmware, not in
-Ceph:
+device to hand to Ceph. And that, is a bifurcation problem. Adding the GPU changed the PCIe
+layout, the carrier's slot came back up without the `x4x4x4x4` split it needs, and the drives
+behind it never came up as NVMe devices. The fix was in firmware, not in Ceph:
 
 ```bash
 # nudge the bus
@@ -104,8 +106,9 @@ echo 1 > /sys/bus/pci/rescan
 ## Meanwhile, a different OSD was actually corrupt
 
 While I was untangling the bifurcation problem, a third OSD on a different node was in a
-genuine crash loop, and this one had nothing to do with the GPU. It just picked the worst
-possible night to die.
+genuine crash loop. This one had nothing to do with the GPU directly, but I doubt the timing
+was a coincidence. Recovery load is what tends to find the next-weakest drive, and latent
+BlueStore corruption usually surfaces right when backfill starts hammering it.
 
 ```
 ceph-osd@27.service: Main process exited, code=killed, status=6/ABRT
@@ -129,11 +132,10 @@ The moment felt catastrophic. I couldn't start VMs. They would get
 to GRUB and hang there. When storage is falling apart and your VMs won't boot, your brain
 goes straight to "the data is gone."
 
-The data was not gone. The VMs were hanging because the cluster was rebalancing, and
-rebalance traffic plus a bit of clock skew had made disk reads slow enough that bootloaders
-and kernels were just sitting there waiting on I/O. It's the same feeling as trying to use
-your laptop while it does a giant file copy in the background. Everything is technically
-working but also unbearably slow.
+The data was not gone. The VMs were hanging because the cluster was rebalancing, and the
+recovery traffic had made disk reads slow enough that bootloaders and kernels were just
+sitting there waiting on I/O. It's the same feeling as trying to use your laptop while it does
+a giant file copy in the background. Everything is technically working but also unbearably slow.
 
 From the outside, "slow because it's healing" and "broken because data is lost" look
 identical. That's the whole trap.
@@ -150,9 +152,9 @@ ceph pg dump | grep -i unfound
 ceph pg ls | grep -v "active+clean"
 ```
 
-No `incomplete` PGs, no `unfound` objects. Everything was `active+undersized+degraded`.
-Thankfully, that just means some placement groups were running on fewer
-than their full three copies while the cluster rebuilt.
+No `incomplete` PGs, no `unfound` objects. Everything was `active+undersized+degraded`, which
+just means some placement groups were running on fewer than their full three copies while the
+cluster rebuilt.
 
 This is where size=3, min_size=2 earns its keep. Three copies of everything. Losing one OSD
 out of 32 means every piece of data still has two other replicas alive. The cluster was never
@@ -175,6 +177,11 @@ You are trading recovery speed for client latency on purpose. Once the VMs are h
 you're not staring at a hung bootloader, you can turn the numbers back up and let it finish
 faster.
 
+One caveat if this does nothing for you: on recent Ceph (Quincy and Reef) the default
+scheduler is mClock, and it ignores these knobs unless you also set
+`osd_mclock_override_recovery_settings true`. If you set the backfill numbers and the cluster
+shrugs, that's why.
+
 ## Confirming a drive was actually dead
 
 The bifurcation drive came back once I fixed the lane allocation. The other 980 PRO did not.
@@ -182,6 +189,8 @@ I pulled both suspect drives, put them in a USB-to-NVMe adapter, and plugged the
 different machine. One worked. The other was not recognized at all, on a different
 computer, over a different interface. That is the cleanest possible proof that it is the drive
 and not your config: it fails everywhere, independent of the system that was blamed for it.
+Drives also die disproportionately at power cycles, so the reboot is a plausible executioner on
+its own. The GPU didn't kill it, it just forced the reboot that surfaced it.
 
 So the final tally was one drive recovered by fixing firmware, one drive definitely dead, and
 one OSD purged for BlueStore corruption. Replacement drives were already on the way, and the
@@ -198,6 +207,11 @@ the same box is not a neutral change.
 The other half is on me. I burned the first hour on a missing keyring that turned out to be
 three layers downstream of the real problem, because a missing keyring is what you fix on a
 healthy system. I had the evidence that the drive was gone before I did anything useful with it.
+
+The takeaway I'm keeping: before any planned hardware change, set `noout` so the cluster
+doesn't start rebalancing the second an OSD blips, and capture `nvme list`, `lspci`, and
+`ceph -s` before and after. A clean before/after diff would have pointed me at the bifurcation
+in minutes instead of hours.
 
 The data was fine the whole time. size=3, min_size=2 is the reason a dead drive was an
 annoyance and not a catastrophe.
