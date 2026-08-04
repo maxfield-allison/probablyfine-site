@@ -1,7 +1,7 @@
 ---
 title: "I built a DNS tool because I was tired of doing it by hand"
 description: "Every new container or VM meant hand-creating a DNS record, and forgetting to delete it later meant stale records rotting in the zone. ExternalDNS didn't cover my case. So I wrote dnsweaver, and then strangers started writing about it."
-date: 2026-07-30
+date: 2026-08-04
 tags: ["dnsweaver", "dns", "homelab", "go"]
 aiAssisted: true
 draft: true
@@ -30,7 +30,8 @@ And it's Kubernetes-only. It reads Ingress and Service objects and nothing else.
 My problem was the other half. I run internal DNS on Technitium. My records aren't all public,
 and my workloads aren't all in Kubernetes, they're in Docker, on Proxmox, wherever. When I
 looked, there wasn't much serving that side. Plenty for public DNS in K8s, almost nothing for
-internal resolvers like Pi-hole, Bind, PowerDNS, AdGuard, or Technitium across mixed platforms.
+internal resolvers like Pi-hole, Bind, PowerDNS, AdGuard, or Technitium, or for the Unbound
+resolver a lot of us just run on OPNsense or pfSense, across mixed platforms.
 
 That gap is the whole reason dnsweaver exists. Internal and external, for more than just
 Kubernetes.
@@ -44,9 +45,10 @@ and no second config to keep in sync. ExternalDNS can't structurally do that, be
 knows about the public half.
 
 Under the hood it pushes to a pile of backends in parallel. Technitium, Cloudflare, Pi-hole,
-AdGuard Home, dnsmasq, RFC 2136, PowerDNS, OVHcloud, and a generic webhook, with more added
-over time. It runs across Docker, Docker Swarm, Kubernetes, Proxmox, and Incus. It's written
-in Go, MIT licensed, ships Prometheus metrics and a Helm chart. Standard homelab-tool checklist.
+AdGuard Home, dnsmasq, PowerDNS, RFC 2136, OVHcloud, the Unbound resolver on OPNsense and
+pfSense, and a generic webhook, with more added over time. It runs across Docker, Docker Swarm,
+Kubernetes, Proxmox, and Incus. It's written in Go, MIT licensed, ships Prometheus metrics and
+a Helm chart. Standard homelab-tool checklist.
 
 ## The other reason: killing the wildcard
 
