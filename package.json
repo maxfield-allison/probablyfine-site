@@ -16,7 +16,8 @@
     "og:posts": "node scripts/gen-post-og.mjs"
   },
   "devDependencies": {
-    "sharp": "^0.34.4"
+    "sharp": "^0.34.4",
+    "simple-icons": "^16.28.0"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.12",

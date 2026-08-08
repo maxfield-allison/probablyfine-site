@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 ---
 
@@ -9,11 +10,11 @@ const year = new Date().getFullYear();
     <span>&copy; {year} Maxfield Allison &middot; it's probably fine</span>
     <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
       <a href="https://maxfieldallison.com" rel="noopener" data-umami-event="outbound-maxfieldallison" class="hover:text-[--color-ink] no-underline hover:no-underline">maxfieldallison.com</a>
-      <a href="mailto:hello@maxfieldallison.com" rel="me" data-umami-event="email-click" class="hover:text-[--color-ink] no-underline hover:no-underline">Email</a>
-      <a href="https://github.com/maxfield-allison" rel="me noopener" data-umami-event="outbound-github" class="hover:text-[--color-ink] no-underline hover:no-underline">GitHub</a>
-      <a href="https://www.linkedin.com/in/maxfield-allison/" rel="me noopener" data-umami-event="outbound-linkedin" class="hover:text-[--color-ink] no-underline hover:no-underline">LinkedIn</a>
-      <a href="https://bsky.app/profile/maxfieldallison.com" rel="me noopener" data-umami-event="outbound-bluesky" class="hover:text-[--color-ink] no-underline hover:no-underline">Bluesky</a>
-      <a href="/rss.xml" data-umami-event="rss-subscribe" class="hover:text-[--color-ink] no-underline hover:no-underline">RSS</a>
+      <a href="mailto:hello@maxfieldallison.com" rel="me" data-umami-event="email-click" class="inline-flex items-center gap-1.5 hover:text-[--color-ink] no-underline hover:no-underline"><Icon name="email" size={13} /> Email</a>
+      <a href="https://github.com/maxfield-allison" rel="me noopener" data-umami-event="outbound-github" class="inline-flex items-center gap-1.5 hover:text-[--color-ink] no-underline hover:no-underline"><Icon name="github" size={13} /> GitHub</a>
+      <a href="https://www.linkedin.com/in/maxfield-allison/" rel="me noopener" data-umami-event="outbound-linkedin" class="inline-flex items-center gap-1.5 hover:text-[--color-ink] no-underline hover:no-underline"><Icon name="linkedin" size={13} /> LinkedIn</a>
+      <a href="https://bsky.app/profile/maxfieldallison.com" rel="me noopener" data-umami-event="outbound-bluesky" class="inline-flex items-center gap-1.5 hover:text-[--color-ink] no-underline hover:no-underline"><Icon name="bluesky" size={13} /> Bluesky</a>
+      <a href="/rss.xml" data-umami-event="rss-subscribe" class="inline-flex items-center gap-1.5 hover:text-[--color-ink] no-underline hover:no-underline"><Icon name="rss" size={13} /> RSS</a>
     </div>
   </div>
 </footer>
