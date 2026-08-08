@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { readingTime, tagSlug } from '../lib/posts';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -8,6 +9,7 @@ interface Props {
 const { post } = Astro.props;
 const { title, description, date, tags, aiAssisted } = post.data;
 const dateStr = date.toISOString().slice(0, 10);
+const mins = readingTime(post.body);
 ---
 
 <article class="border-b border-[--color-line] py-6 first:pt-0">
@@ -19,9 +21,19 @@ const dateStr = date.toISOString().slice(0, 10);
       <time datetime={dateStr} class="font-mono text-xs text-[--color-ink-dim] shrink-0">{dateStr}</time>
     </div>
     <p class="text-[--color-ink-dim] text-sm mt-2">{description}</p>
-    <div class="flex items-center gap-3 mt-3 font-mono text-xs text-[--color-ink-dim]">
-      {tags.map((t) => <span>#{t}</span>)}
-      {aiAssisted && <span class="text-[--color-warn]">ai-assisted</span>}
-    </div>
   </a>
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 font-mono text-xs text-[--color-ink-dim]">
+    {
+      tags.map((t) => (
+        <a
+          href={`/blog/tags/${tagSlug(t)}`}
+          class="no-underline hover:no-underline hover:text-[--color-accent] transition-colors"
+        >
+          #{t}
+        </a>
+      ))
+    }
+    <span class="text-[--color-ink-dim]/60">{mins} min read</span>
+    {aiAssisted && <span class="text-[--color-warn]">ai-assisted</span>}
+  </div>
 </article>

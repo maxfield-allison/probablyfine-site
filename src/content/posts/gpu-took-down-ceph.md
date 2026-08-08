@@ -238,3 +238,7 @@ The data was fine the whole time. size=3, min_size=2 is the reason a dead drive 
 annoyance and not a catastrophe.
 
 Thankfully now, it's probably fine.
+
+---
+
+*Related: the [Kubernetes homelab case study](https://maxfieldallison.com/projects/homelab) on the cluster this happened on.*

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Comments from '../../components/Comments.astro';
+import { readingTime, tagSlug } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -22,6 +23,7 @@ const { post, newer, older } = Astro.props;
 const { title, description, date, tags, aiAssisted } = post.data;
 const { Content } = await render(post);
 const dateStr = date.toISOString().slice(0, 10);
+const mins = readingTime(post.body);
 
 const site = Astro.site ?? 'https://probablyfine.dev';
 const postUrl = new URL(`/blog/${post.id}`, site).href;
@@ -59,7 +61,10 @@ const blogPostingLd = {
     <h1 class="text-3xl sm:text-4xl font-bold mt-4 leading-tight">{title}</h1>
     <div class="flex flex-wrap items-center gap-3 mt-4 font-mono text-xs text-[--color-ink-dim]">
       <time datetime={dateStr}>{dateStr}</time>
-      {tags.map((t) => <span>#{t}</span>)}
+      <span>{mins} min read</span>
+      {tags.map((t) => (
+        <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[--color-accent] transition-colors">#{t}</a>
+      ))}
       {aiAssisted && <span class="text-[--color-warn]">ai-assisted</span>}
     </div>
 

@@ -189,3 +189,7 @@ It's always DNS. Even when it isn't, it's DNS. dnsweaver won't change that. What
 your records honest, so when the finger-pointing starts, yours are
 
 Probably fine.
+
+---
+
+*Related: the [dnsweaver case study](https://maxfieldallison.com/projects/dnsweaver) on the how and why of the build.*

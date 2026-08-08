@@ -149,3 +149,7 @@ the rack tell the story of how it got here.
 *Roland Schitt, current cluster manager, signing off on the thermals.*
 
 It's probably fine.
+
+---
+
+*Related: the [Kubernetes homelab case study](https://maxfieldallison.com/projects/homelab) on how the whole thing runs.*

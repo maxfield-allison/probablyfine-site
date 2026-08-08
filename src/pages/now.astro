@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// A /now page (nownownow.com convention): what I'm focused on right now.
+// Keep it current and honest. Update the date when it changes. No internal
+// hostnames/IPs or client detail.
+const updated = 'August 2026';
+
+const focus = [
+  {
+    heading: 'Running the lab',
+    body: 'Keeping the 9-node Talos Kubernetes cluster healthy under GitOps, and slowly retiring the last of the homegrown glue in favour of boring, standard tooling. Recent work: controlled image updates through Renovate so every version bump is a reviewable, revertible change.',
+  },
+  {
+    heading: 'Writing it down',
+    body: 'Turning the interesting failures and design calls into posts here. The queue includes a hardware deep-dive follow-up and a couple of outage post-mortems I have been meaning to write properly.',
+  },
+  {
+    heading: 'Open source',
+    body: 'Maintaining dnsweaver: keeping DNS records following the infrastructure instead of drifting. Small, focused, well-tested Go.',
+  },
+  {
+    heading: 'Sharpening the craft',
+    body: 'Getting better at directing AI agents without letting the quality bar slip. The judgement stays mine; the typing is just faster.',
+  },
+];
+---
+
+<Layout title="Now — ProbablyFine" description="What Maxfield is focused on right now.">
+  <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[--color-accent]">$ cat ./now</p>
+    <h1 class="text-3xl font-bold mt-3">Now</h1>
+    <p class="text-[--color-ink-dim] mt-3 leading-relaxed">
+      What I'm focused on at the moment. This is a
+      <a href="https://nownownow.com/about" rel="noopener" class="hover:text-[--color-ink]">now page</a>,
+      so it goes stale on purpose between updates.
+    </p>
+    <p class="font-mono text-xs text-[--color-ink-dim] mt-4">last updated {updated}</p>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 pb-8">
+    {
+      focus.map((f) => (
+        <div class="py-5 border-t border-[--color-line]">
+          <h2 class="font-mono text-sm text-[--color-accent]"># {f.heading}</h2>
+          <p class="text-[--color-ink-dim] mt-2 leading-relaxed">{f.body}</p>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="max-w-3xl mx-auto px-6 pb-16">
+    <p class="text-[--color-ink-dim] text-sm">
+      More about the professional side over on
+      <a href="https://maxfieldallison.com" rel="noopener" data-umami-event="outbound-maxfieldallison" class="hover:text-[--color-ink]">maxfieldallison.com</a>.
+    </p>
+  </section>
+</Layout>
