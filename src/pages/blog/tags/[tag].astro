@@ -21,15 +21,17 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 ---
 
-<Layout title={`#${tag} — ProbablyFine`} description={`Posts tagged ${tag}.`}>
+<Layout title={`#${tag} · ProbablyFine`} description={`Posts tagged ${tag}.`}>
   <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
     <p class="font-mono text-sm text-[--color-accent]">$ grep -rl "#{tag}" ./blog</p>
     <h1 class="text-3xl font-bold mt-3">
       <span class="text-[--color-ink-dim]">#</span>{tag}
     </h1>
     <p class="text-[--color-ink-dim] mt-3 font-mono text-sm">
-      {posts.length} {posts.length === 1 ? 'post' : 'posts'} ·
-      <a href="/blog/tags" class="hover:text-[--color-ink] no-underline hover:no-underline">all tags</a> ·
+      {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+      {' · '}
+      <a href="/blog/tags" class="hover:text-[--color-ink] no-underline hover:no-underline">all tags</a>
+      {' · '}
       <a href="/blog" class="hover:text-[--color-ink] no-underline hover:no-underline">all posts</a>
     </p>
   </section>

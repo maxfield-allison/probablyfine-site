@@ -30,9 +30,34 @@ const power = [
   { node: 'pve-01', chassis: 'Corsair Carbide 330R mid-tower', psu: 'EVGA SuperNOVA 850 T2 (Titanium)' },
   { node: 'pve-02/03/04', chassis: 'HP EliteDesk 800 G2 SFF (stock)', psu: 'HP stock SFF' },
 ];
+
+// The software that actually earns its keep. Grouped, not exhaustive, and it
+// drifts as I add and retire things.
+const services = [
+  {
+    group: 'media',
+    blurb: 'The reason any of this started.',
+    items: 'Plex, the full *arr automation stack, request management, and download clients pinned behind a VPN.',
+  },
+  {
+    group: 'home',
+    blurb: 'Runs on the Pi fleet so it survives cluster maintenance.',
+    items: 'Home Assistant, Frigate NVR with Coral TPU detection, Music Assistant, and a bag of Zigbee, Z-Wave, and Thread radios.',
+  },
+  {
+    group: 'personal cloud',
+    blurb: 'The stuff I would otherwise rent from someone else.',
+    items: 'Nextcloud, a recipe box, a wiki, and Penpot for design.',
+  },
+  {
+    group: 'platform',
+    blurb: 'The boring, important layer that keeps the rest honest.',
+    items: 'Self-hosted GitLab with CI runners, Prometheus and Grafana plus Graylog for observability, Authentik for SSO, Infisical and Vaultwarden for secrets, Umami for analytics, and a public status page.',
+  },
+];
 ---
 
-<Layout title="Labs — ProbablyFine" description="A living tour of the hardware behind the homelab: a five-node Proxmox cluster, Ceph storage, a 10GbE fabric, three GPU generations, and a fleet of Raspberry Pis.">
+<Layout title="Labs · ProbablyFine" description="A living tour of the hardware behind the homelab: a five-node Proxmox cluster, Ceph storage, a 10GbE fabric, three GPU generations, and a fleet of Raspberry Pis.">
   <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
     <p class="font-mono text-sm text-[--color-accent]">$ lscpu --lab</p>
     <h1 class="text-3xl font-bold mt-3">The lab</h1>
@@ -201,6 +226,26 @@ const power = [
     </p>
   </section>
 
+  <!-- What it runs -->
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-sm text-[--color-accent]"># what it runs</h2>
+    <p class="text-[--color-ink-dim] text-sm mt-3 max-w-2xl leading-relaxed">
+      The hardware is only half the story. Here is what actually runs on it, grouped and
+      not exhaustive. It drifts as I add and retire things.
+    </p>
+    <div class="mt-4 space-y-4">
+      {
+        services.map((s) => (
+          <div class="rounded border border-[--color-line] p-4">
+            <div class="font-mono text-sm text-[--color-accent]"># {s.group}</div>
+            <p class="text-[--color-ink] text-sm mt-2">{s.items}</p>
+            <p class="text-[--color-ink-dim] text-xs mt-1 italic">{s.blurb}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
   <!-- Power -->
   <section class="max-w-3xl mx-auto px-6 py-8 pb-16">
     <h2 class="font-mono text-sm text-[--color-accent]"># chassis and power</h2>
@@ -227,7 +272,8 @@ const power = [
       </table>
     </div>
     <p class="text-[--color-ink-dim] text-sm mt-6 leading-relaxed">
-      Want the story behind all this instead of the spec sheet? The <a href="/blog">blog</a>
+      Want the story behind all this instead of the spec sheet? The{' '}
+      <a href="/blog">blog</a>{' '}
       has the how-it-got-here and the incidents that shaped it.
     </p>
   </section>

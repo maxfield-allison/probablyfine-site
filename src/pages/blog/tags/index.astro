@@ -7,7 +7,7 @@ const posts = await getCollection('posts', ({ data }) => !data.draft);
 const tags = collectTags(posts);
 ---
 
-<Layout title="Tags — ProbablyFine" description="Browse blog posts by tag.">
+<Layout title="Tags · ProbablyFine" description="Browse blog posts by tag.">
   <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
     <p class="font-mono text-sm text-[--color-accent]">$ ls ./blog/tags</p>
     <h1 class="text-3xl font-bold mt-3">Tags</h1>
