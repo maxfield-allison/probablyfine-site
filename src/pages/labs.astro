@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Topology from '../components/Topology.astro';
 
 // A living tour of the hardware. Specs are captured periodically and drift over
 // time. Network addressing, VLAN IDs, and subnets are deliberately left out.
@@ -29,6 +30,16 @@ const power = [
   { node: 'pve-00', chassis: 'Rosewill RSV-L4412 4U (12 hot-swap bays)', psu: 'EVGA SuperNOVA 1600 P2 (Platinum)' },
   { node: 'pve-01', chassis: 'Corsair Carbide 330R mid-tower', psu: 'EVGA SuperNOVA 850 T2 (Titanium)' },
   { node: 'pve-02/03/04', chassis: 'HP EliteDesk 800 G2 SFF (stock)', psu: 'HP stock SFF' },
+];
+
+// Aggregate scale, the numbers that make the point without a spec dump.
+const stats = [
+  { value: '9', label: 'Talos K8s nodes' },
+  { value: '~38', label: 'services under GitOps' },
+  { value: '~230 TiB', label: 'Ceph raw storage' },
+  { value: '3', label: 'GPU generations' },
+  { value: '40C / 80T', label: 'cluster CPU' },
+  { value: '528 GB', label: 'cluster RAM' },
 ];
 
 // The software that actually earns its keep. Grouped, not exhaustive, and it
@@ -71,6 +82,32 @@ const services = [
     <p class="font-mono text-xs text-[--color-ink-dim] mt-4">
       captured {captured} · addressing and VLAN details left out on purpose
     </p>
+  </section>
+
+  <!-- Stats -->
+  <section class="max-w-3xl mx-auto px-6 py-6">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      {
+        stats.map((s) => (
+          <div class="rounded border border-[--color-line] p-4">
+            <div class="font-mono text-xl text-[--color-accent]">{s.value}</div>
+            <div class="text-[--color-ink-dim] text-xs mt-1">{s.label}</div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Topology -->
+  <section class="max-w-3xl mx-auto px-6 py-8">
+    <h2 class="font-mono text-sm text-[--color-accent]"># how it fits together</h2>
+    <p class="text-[--color-ink-dim] text-sm mt-3 max-w-2xl leading-relaxed">
+      One diagram for the whole shape of it. Traffic comes in from the top, through the edge
+      and the firewall, across the 10GbE core, and down onto the compute and storage that
+      actually run the workloads. The Pi fleet hangs off to the side on purpose, so home
+      automation keeps working when the cluster is down for maintenance.
+    </p>
+    <Topology />
   </section>
 
   <!-- Cluster -->

@@ -52,10 +52,27 @@ const blogPostingLd = {
     url: 'https://maxfieldallison.com',
   },
 };
+
+// Breadcrumb trail for richer search results.
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${site}/` },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site}/blog` },
+    { '@type': 'ListItem', position: 3, name: title, item: postUrl },
+  ],
+};
 ---
 
 <Layout title={`${title} · ProbablyFine`} description={description} ogImage={ogImage} ogType="article">
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} slot="head" />
+  <Fragment slot="head">
+    <meta property="article:published_time" content={date.toISOString()} />
+    <meta property="article:author" content="Maxfield Allison" />
+    {tags.map((t) => <meta property="article:tag" content={t} />)}
+  </Fragment>
   <article class="max-w-3xl mx-auto px-6 pt-16 pb-12">
     <a href="/blog" class="font-mono text-xs text-[--color-ink-dim] hover:text-[--color-ink] no-underline hover:no-underline">&larr; all posts</a>
     <h1 class="text-3xl sm:text-4xl font-bold mt-4 leading-tight">{title}</h1>
@@ -104,8 +121,9 @@ const blogPostingLd = {
 
   {/* Read-completion signal: fire a Umami event once the reader scrolls near the
       end of the post. Powers "read" goals/funnels beyond raw pageviews. No PII;
-      only fires once per page, only if the analytics tracker is present. */}
-  <script is:inline define:vars={{ slug: post.id }}>
+      only fires once per page, only if the analytics tracker is present.
+      data-astro-rerun so it re-arms after a client-side (ClientRouter) nav. */}
+  <script is:inline data-astro-rerun define:vars={{ slug: post.id }}>
     (() => {
       let fired = false;
       const onScroll = () => {

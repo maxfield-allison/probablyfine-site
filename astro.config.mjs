@@ -8,6 +8,9 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://probablyfine.dev',
   integrations: [sitemap()],
+  // Prefetch internal links on hover/tap for near-instant navigation. Static
+  // pages, so this is just a small HTML fetch primed into cache.
+  prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   // Flat file output (/blog.html, not /blog/index.html) so the static host
   // serves clean URLs without directory redirects. Directory redirects behind a
   // reverse proxy leak the internal origin host:port in the Location header.
