@@ -8,18 +8,30 @@ export async function getStaticPaths() {
   const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
   );
-  return posts.map((post, i) => ({
-    params: { slug: post.id },
-    props: {
-      post,
-      // newer = previous in reading order, older = next
-      newer: posts[i - 1] ?? null,
-      older: posts[i + 1] ?? null,
-    },
-  }));
+  return posts.map((post, i) => {
+    const tags = new Set(post.data.tags ?? []);
+    // Related = other posts sharing the most tags, then most recent. Up to 3.
+    const related = posts
+      .filter((p) => p.id !== post.id)
+      .map((p) => ({ p, shared: (p.data.tags ?? []).filter((t) => tags.has(t)).length }))
+      .filter((x) => x.shared > 0)
+      .sort((a, b) => b.shared - a.shared || b.p.data.date.getTime() - a.p.data.date.getTime())
+      .slice(0, 3)
+      .map((x) => x.p);
+    return {
+      params: { slug: post.id },
+      props: {
+        post,
+        // newer = previous in reading order, older = next
+        newer: posts[i - 1] ?? null,
+        older: posts[i + 1] ?? null,
+        related,
+      },
+    };
+  });
 }
 
-const { post, newer, older } = Astro.props;
+const { post, newer, older, related } = Astro.props;
 const { title, description, date, tags, aiAssisted } = post.data;
 const { Content } = await render(post);
 const dateStr = date.toISOString().slice(0, 10);
@@ -114,6 +126,34 @@ const breadcrumbLd = {
             </a>
           )}
         </nav>
+      )
+    }
+
+    {
+      related.length > 0 && (
+        <section class="mt-12 pt-8 border-t border-[var(--color-line)]">
+          <h2 class="font-mono text-sm text-[var(--color-ink-dim)]">related posts</h2>
+          <ul class="mt-4 space-y-3">
+            {related.map((r) => (
+              <li>
+                <a
+                  href={`/blog/${r.id}`}
+                  class="group flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 no-underline hover:no-underline"
+                >
+                  <span class="text-[var(--color-ink)] group-hover:text-[var(--color-accent)] transition-colors">
+                    {r.data.title}
+                  </span>
+                  <time
+                    datetime={r.data.date.toISOString().slice(0, 10)}
+                    class="font-mono text-xs text-[var(--color-ink-dim)] shrink-0"
+                  >
+                    {r.data.date.toISOString().slice(0, 10)}
+                  </time>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       )
     }
   </article>
