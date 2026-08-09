@@ -10,21 +10,21 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 
 <Layout title="Blog · ProbablyFine" description="Homelab and SRE engineering write-ups.">
   <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
-    <p class="font-mono text-sm text-[--color-accent]">$ ls ./blog</p>
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ ls ./blog</p>
     <h1 class="text-3xl font-bold mt-3">Blog</h1>
-    <p class="text-[--color-ink-dim] mt-3">
+    <p class="text-[var(--color-ink-dim)] mt-3">
       Architecture deep-dives, incident post-mortems, and notes on building infrastructure
       (with and without AI).
     </p>
-    <p class="text-[--color-ink-dim] mt-3 font-mono text-sm">
-      <a href="/blog/tags" class="hover:text-[--color-ink] no-underline hover:no-underline">browse by tag →</a>
+    <p class="text-[var(--color-ink-dim)] mt-3 font-mono text-sm">
+      <a href="/blog/tags" class="hover:text-[var(--color-ink)] no-underline hover:no-underline">browse by tag →</a>
     </p>
   </section>
 
   <section class="max-w-3xl mx-auto px-6 pb-16">
     {
       posts.length === 0 ? (
-        <p class="text-[--color-ink-dim] font-mono text-sm">No posts yet. Check back soon.</p>
+        <p class="text-[var(--color-ink-dim)] font-mono text-sm">No posts yet. Check back soon.</p>
       ) : (
         posts.map((post) => <PostCard post={post} />)
       )

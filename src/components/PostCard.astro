@@ -12,28 +12,28 @@ const dateStr = date.toISOString().slice(0, 10);
 const mins = readingTime(post.body);
 ---
 
-<article class="border-b border-[--color-line] py-6 first:pt-0">
+<article class="border-b border-[var(--color-line)] py-6 first:pt-0">
   <a href={`/blog/${post.id}`} class="group no-underline hover:no-underline block">
     <div class="flex items-baseline justify-between gap-4">
-      <h2 class="text-lg font-semibold text-[--color-ink] group-hover:text-[--color-accent] transition-colors">
+      <h2 class="text-lg font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-accent)] transition-colors">
         {title}
       </h2>
-      <time datetime={dateStr} class="font-mono text-xs text-[--color-ink-dim] shrink-0">{dateStr}</time>
+      <time datetime={dateStr} class="font-mono text-xs text-[var(--color-ink-dim)] shrink-0">{dateStr}</time>
     </div>
-    <p class="text-[--color-ink-dim] text-sm mt-2">{description}</p>
+    <p class="text-[var(--color-ink-dim)] text-sm mt-2">{description}</p>
   </a>
-  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 font-mono text-xs text-[--color-ink-dim]">
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 font-mono text-xs text-[var(--color-ink-dim)]">
     {
       tags.map((t) => (
         <a
           href={`/blog/tags/${tagSlug(t)}`}
-          class="no-underline hover:no-underline hover:text-[--color-accent] transition-colors"
+          class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors"
         >
           #{t}
         </a>
       ))
     }
-    <span class="text-[--color-ink-dim]/60">{mins} min read</span>
-    {aiAssisted && <span class="text-[--color-warn]">ai-assisted</span>}
+    <span class="text-[var(--color-ink-dim)]/60">{mins} min read</span>
+    {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
   </div>
 </article>

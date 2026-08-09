@@ -11,31 +11,63 @@ const links = [
   { href: 'https://status.probablyfine.dev', label: 'Status', external: true },
   { href: 'https://maxfieldallison.com', label: 'About me', external: true },
 ];
+
+const linkClass = (l: (typeof links)[number]) => [
+  'no-underline hover:no-underline transition-colors',
+  !l.external && isActive(l.href)
+    ? 'text-[var(--color-ink)]'
+    : 'text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]',
+];
 ---
 
-<header class="border-b border-[--color-line]">
+<header class="border-b border-[var(--color-line)]">
   <nav aria-label="Primary" class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="/" class="font-mono text-sm text-[--color-ink] no-underline hover:no-underline">
-      probably<span class="text-[--color-accent]">fine</span>
+    <a href="/" class="font-mono text-sm text-[var(--color-ink)] no-underline hover:no-underline">
+      probably<span class="text-[var(--color-accent)]">fine</span>
     </a>
-    <div class="flex items-center gap-6 font-mono text-sm">
+
+    {/* Desktop: inline row */}
+    <div class="hidden sm:flex items-center gap-6 font-mono text-sm">
       {
         links.map((l) => (
           <a
             href={l.href}
             rel={l.external ? 'noopener' : undefined}
             aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
-            class:list={[
-              'no-underline hover:no-underline transition-colors',
-              !l.external && isActive(l.href)
-                ? 'text-[--color-ink]'
-                : 'text-[--color-ink-dim] hover:text-[--color-ink]',
-            ]}
+            class:list={linkClass(l)}
           >
             {l.label}
           </a>
         ))
       }
     </div>
+
+    {/* Mobile: no-JS disclosure menu. ClientRouter re-renders the header on
+        navigation, so the menu resets to closed after each click. */}
+    <details class="sm:hidden relative open:[&_.chev]:rotate-180">
+      <summary
+        class="list-none [&::-webkit-details-marker]:hidden cursor-pointer text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] flex items-center gap-1.5"
+        aria-label="Menu"
+      >
+        <span class="font-mono text-sm">menu</span>
+        <svg class="chev transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </summary>
+      <div class="absolute right-0 top-full mt-2 z-50 w-44 rounded border border-[var(--color-line)] bg-[var(--color-surface)] p-2 flex flex-col font-mono text-sm shadow-lg">
+        {
+          links.map((l) => (
+            <a
+              href={l.href}
+              rel={l.external ? 'noopener' : undefined}
+              aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
+              class:list={['px-2 py-1.5 rounded hover:bg-[var(--color-base)]', ...linkClass(l)]}
+            >
+              {l.label}
+            </a>
+          ))
+        }
+      </div>
+    </details>
   </nav>
 </header>

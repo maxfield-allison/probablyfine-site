@@ -11,11 +11,11 @@ const recent = posts.slice(0, 3);
 
 <Layout>
   <section class="max-w-3xl mx-auto px-6 pt-20 pb-12">
-    <p class="font-mono text-sm text-[--color-accent]">$ uptime<span class="cursor" aria-hidden="true"></span></p>
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ uptime<span class="cursor" aria-hidden="true"></span></p>
     <h1 class="text-4xl sm:text-5xl font-bold mt-4 leading-tight">
       It's probably fine.
     </h1>
-    <p class="text-[--color-ink-dim] text-lg mt-6 max-w-2xl">
+    <p class="text-[var(--color-ink-dim)] text-lg mt-6 max-w-2xl">
       A homelab and SRE engineering blog. I run a production-grade Kubernetes cluster in my
       basement, break it in interesting ways, and write down what I learned. Architecture
       deep-dives, incident post-mortems, and honest notes on AI-assisted engineering.
@@ -23,13 +23,13 @@ const recent = posts.slice(0, 3);
     <div class="flex flex-wrap items-center gap-4 mt-8 font-mono text-sm">
       <a
         href="/blog"
-        class="no-underline hover:no-underline px-4 py-2 rounded border border-[--color-accent] text-[--color-accent] hover:bg-[--color-accent] hover:text-[--color-base] transition-colors"
+        class="no-underline hover:no-underline px-4 py-2 rounded border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-[var(--color-base)] transition-colors"
         >Read the blog</a
       >
       <a
         href="https://status.probablyfine.dev"
         rel="noopener"
-        class="no-underline hover:no-underline px-4 py-2 rounded border border-[--color-line] text-[--color-ink-dim] hover:text-[--color-ink] transition-colors"
+        class="no-underline hover:no-underline px-4 py-2 rounded border border-[var(--color-line)] text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] transition-colors"
         >Live status</a
       >
     </div>
@@ -37,21 +37,21 @@ const recent = posts.slice(0, 3);
 
   <section class="max-w-3xl mx-auto px-6 py-8">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-sm">
-      <a href="/blog" class="no-underline hover:no-underline block p-5 rounded border border-[--color-line] hover:border-[--color-accent] transition-colors">
-        <div class="text-[--color-accent]">./blog</div>
-        <p class="text-[--color-ink-dim] mt-2 text-xs">Architecture write-ups, war stories, and lessons from running real infra.</p>
+      <a href="/blog" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
+        <div class="text-[var(--color-accent)]">./blog</div>
+        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">Architecture write-ups, war stories, and lessons from running real infra.</p>
       </a>
-      <a href="/labs" class="no-underline hover:no-underline block p-5 rounded border border-[--color-line] hover:border-[--color-accent] transition-colors">
-        <div class="text-[--color-accent]">./labs</div>
-        <p class="text-[--color-ink-dim] mt-2 text-xs">Experiments, one-offs, and the hardware that powers the lab.</p>
+      <a href="/labs" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
+        <div class="text-[var(--color-accent)]">./labs</div>
+        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">Experiments, one-offs, and the hardware that powers the lab.</p>
       </a>
-      <a href="/now" class="no-underline hover:no-underline block p-5 rounded border border-[--color-line] hover:border-[--color-accent] transition-colors">
-        <div class="text-[--color-accent]">./now</div>
-        <p class="text-[--color-ink-dim] mt-2 text-xs">What I'm focused on right now.</p>
+      <a href="/now" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
+        <div class="text-[var(--color-accent)]">./now</div>
+        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">What I'm focused on right now.</p>
       </a>
-      <a href="https://maxfieldallison.com" rel="noopener" class="no-underline hover:no-underline block p-5 rounded border border-[--color-line] hover:border-[--color-accent] transition-colors">
-        <div class="text-[--color-accent]">./whoami</div>
-        <p class="text-[--color-ink-dim] mt-2 text-xs">The professional hub: resume, projects, and case studies.</p>
+      <a href="https://maxfieldallison.com" rel="noopener" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
+        <div class="text-[var(--color-accent)]">./whoami</div>
+        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">The professional hub: resume, projects, and case studies.</p>
       </a>
     </div>
   </section>
@@ -60,8 +60,8 @@ const recent = posts.slice(0, 3);
     recent.length > 0 && (
       <section class="max-w-3xl mx-auto px-6 py-8">
         <div class="flex items-baseline justify-between">
-          <h2 class="font-mono text-sm text-[--color-ink-dim]">recent posts</h2>
-          <a href="/blog" class="font-mono text-xs no-underline hover:no-underline text-[--color-ink-dim] hover:text-[--color-ink]">all &rarr;</a>
+          <h2 class="font-mono text-sm text-[var(--color-ink-dim)]">recent posts</h2>
+          <a href="/blog" class="font-mono text-xs no-underline hover:no-underline text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]">all &rarr;</a>
         </div>
         <div class="mt-4">
           {recent.map((post) => (

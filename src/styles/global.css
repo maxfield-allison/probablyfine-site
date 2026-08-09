@@ -14,31 +14,37 @@
   --color-warn: #d29922;
 }
 
-html {
-  color-scheme: dark;
-  scroll-behavior: smooth;
-}
+/* Base element styles live in @layer base so utility classes (e.g.
+   text-[var(--color-ink-dim)] on nav links) reliably override them. Unlayered
+   rules beat @layer utilities in the cascade, which would otherwise force every
+   <a> to the accent color regardless of its text-color utility. */
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
 
-body {
-  background-color: var(--color-base);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
+  body {
+    background-color: var(--color-base);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-}
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
 
-a:hover {
-  text-decoration: underline;
-}
+  a:hover {
+    text-decoration: underline;
+  }
 
-::selection {
-  background-color: var(--color-accent);
-  color: var(--color-base);
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-base);
+  }
 }
 
 /* Keyboard focus — visible ring on every interactive element. */

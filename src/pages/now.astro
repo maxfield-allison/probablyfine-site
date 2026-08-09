@@ -28,31 +28,31 @@ const focus = [
 
 <Layout title="Now · ProbablyFine" description="What Maxfield is focused on right now.">
   <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
-    <p class="font-mono text-sm text-[--color-accent]">$ cat ./now</p>
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ cat ./now</p>
     <h1 class="text-3xl font-bold mt-3">Now</h1>
-    <p class="text-[--color-ink-dim] mt-3 leading-relaxed">
+    <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
       What I'm focused on at the moment. This is a{' '}
-      <a href="https://nownownow.com/about" rel="noopener" class="hover:text-[--color-ink]">now page</a>,
+      <a href="https://nownownow.com/about" rel="noopener" class="hover:text-[var(--color-ink)]">now page</a>,
       so it goes stale on purpose between updates.
     </p>
-    <p class="font-mono text-xs text-[--color-ink-dim] mt-4">last updated {updated}</p>
+    <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4">last updated {updated}</p>
   </section>
 
   <section class="max-w-3xl mx-auto px-6 pb-8">
     {
       focus.map((f) => (
-        <div class="py-5 border-t border-[--color-line]">
-          <h2 class="font-mono text-sm text-[--color-accent]"># {f.heading}</h2>
-          <p class="text-[--color-ink-dim] mt-2 leading-relaxed">{f.body}</p>
+        <div class="py-5 border-t border-[var(--color-line)]">
+          <h2 class="font-mono text-sm text-[var(--color-accent)]"># {f.heading}</h2>
+          <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">{f.body}</p>
         </div>
       ))
     }
   </section>
 
   <section class="max-w-3xl mx-auto px-6 pb-16">
-    <p class="text-[--color-ink-dim] text-sm">
+    <p class="text-[var(--color-ink-dim)] text-sm">
       More about the professional side over on{' '}
-      <a href="https://maxfieldallison.com" rel="noopener" data-umami-event="outbound-maxfieldallison" class="hover:text-[--color-ink]">maxfieldallison.com</a>.
+      <a href="https://maxfieldallison.com" rel="noopener" data-umami-event="outbound-maxfieldallison" class="hover:text-[var(--color-ink)]">maxfieldallison.com</a>.
     </p>
   </section>
 </Layout>

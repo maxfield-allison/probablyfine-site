@@ -9,10 +9,10 @@ const tags = collectTags(posts);
 
 <Layout title="Tags · ProbablyFine" description="Browse blog posts by tag.">
   <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
-    <p class="font-mono text-sm text-[--color-accent]">$ ls ./blog/tags</p>
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ ls ./blog/tags</p>
     <h1 class="text-3xl font-bold mt-3">Tags</h1>
-    <p class="text-[--color-ink-dim] mt-3 font-mono text-sm">
-      <a href="/blog" class="hover:text-[--color-ink] no-underline hover:no-underline">← all posts</a>
+    <p class="text-[var(--color-ink-dim)] mt-3 font-mono text-sm">
+      <a href="/blog" class="hover:text-[var(--color-ink)] no-underline hover:no-underline">← all posts</a>
     </p>
   </section>
 
@@ -22,10 +22,10 @@ const tags = collectTags(posts);
         tags.map(({ tag, slug, count }) => (
           <a
             href={`/blog/tags/${slug}`}
-            class="inline-flex items-center gap-2 font-mono text-sm no-underline hover:no-underline border border-[--color-line] rounded px-3 py-1.5 text-[--color-ink-dim] hover:text-[--color-ink] hover:border-[--color-accent] transition-colors"
+            class="inline-flex items-center gap-2 font-mono text-sm no-underline hover:no-underline border border-[var(--color-line)] rounded px-3 py-1.5 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] hover:border-[var(--color-accent)] transition-colors"
           >
             <span>#{tag}</span>
-            <span class="text-[--color-ink-dim]/60">{count}</span>
+            <span class="text-[var(--color-ink-dim)]/60">{count}</span>
           </a>
         ))
       }

@@ -44,7 +44,7 @@ const laid = bands.map((band) => {
 const H = cursor - gap + 16;
 ---
 
-<figure class="mt-4 overflow-x-auto rounded border border-[--color-line] bg-[--color-surface]/40 p-4">
+<figure class="mt-4 overflow-x-auto rounded border border-[var(--color-line)] bg-[var(--color-surface)]/40 p-4">
   <svg
     viewBox={`0 0 ${W} ${H}`}
     width="100%"
@@ -117,7 +117,7 @@ const H = cursor - gap + 16;
       })
     }
   </svg>
-  <figcaption class="text-[--color-ink-dim] text-xs mt-3 leading-relaxed">
+  <figcaption class="text-[var(--color-ink-dim)] text-xs mt-3 leading-relaxed">
     How traffic flows, top to bottom. Addressing and VLANs left out on purpose.
   </figcaption>
 </figure>

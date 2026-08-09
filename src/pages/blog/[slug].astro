@@ -74,15 +74,15 @@ const breadcrumbLd = {
     {tags.map((t) => <meta property="article:tag" content={t} />)}
   </Fragment>
   <article class="max-w-3xl mx-auto px-6 pt-16 pb-12">
-    <a href="/blog" class="font-mono text-xs text-[--color-ink-dim] hover:text-[--color-ink] no-underline hover:no-underline">&larr; all posts</a>
+    <a href="/blog" class="font-mono text-xs text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] no-underline hover:no-underline">&larr; all posts</a>
     <h1 class="text-3xl sm:text-4xl font-bold mt-4 leading-tight">{title}</h1>
-    <div class="flex flex-wrap items-center gap-3 mt-4 font-mono text-xs text-[--color-ink-dim]">
+    <div class="flex flex-wrap items-center gap-3 mt-4 font-mono text-xs text-[var(--color-ink-dim)]">
       <time datetime={dateStr}>{dateStr}</time>
       <span>{mins} min read</span>
       {tags.map((t) => (
-        <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[--color-accent] transition-colors">#{t}</a>
+        <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors">#{t}</a>
       ))}
-      {aiAssisted && <span class="text-[--color-warn]">ai-assisted</span>}
+      {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
     </div>
 
     <div class="prose mt-10">
@@ -93,12 +93,12 @@ const breadcrumbLd = {
       (newer || older) && (
         <nav
           aria-label="More posts"
-          class="mt-16 pt-8 border-t border-[--color-line] grid gap-4 sm:grid-cols-2 font-mono text-sm"
+          class="mt-16 pt-8 border-t border-[var(--color-line)] grid gap-4 sm:grid-cols-2 font-mono text-sm"
         >
           {older ? (
             <a href={`/blog/${older.id}`} class="group block no-underline hover:no-underline">
-              <div class="text-xs text-[--color-ink-dim]">&larr; older</div>
-              <div class="text-[--color-ink-dim] group-hover:text-[--color-accent] transition-colors mt-1">
+              <div class="text-xs text-[var(--color-ink-dim)]">&larr; older</div>
+              <div class="text-[var(--color-ink-dim)] group-hover:text-[var(--color-accent)] transition-colors mt-1">
                 {older.data.title}
               </div>
             </a>
@@ -107,8 +107,8 @@ const breadcrumbLd = {
           )}
           {newer && (
             <a href={`/blog/${newer.id}`} class="group block no-underline hover:no-underline sm:text-right">
-              <div class="text-xs text-[--color-ink-dim]">newer &rarr;</div>
-              <div class="text-[--color-ink-dim] group-hover:text-[--color-accent] transition-colors mt-1">
+              <div class="text-xs text-[var(--color-ink-dim)]">newer &rarr;</div>
+              <div class="text-[var(--color-ink-dim)] group-hover:text-[var(--color-accent)] transition-colors mt-1">
                 {newer.data.title}
               </div>
             </a>

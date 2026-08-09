@@ -4,14 +4,14 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="404 · ProbablyFine" description="Page not found.">
   <section class="max-w-3xl mx-auto px-6 pt-24 pb-24 text-center">
-    <p class="font-mono text-sm text-[--color-accent]">$ curl -s /$(pwd)</p>
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ curl -s /$(pwd)</p>
     <h1 class="text-5xl font-bold mt-4">404</h1>
-    <p class="text-[--color-ink-dim] mt-4 font-mono text-sm">
+    <p class="text-[var(--color-ink-dim)] mt-4 font-mono text-sm">
       This page is not fine. It's missing.
     </p>
     <a
       href="/"
-      class="inline-block mt-8 font-mono text-sm no-underline hover:no-underline px-4 py-2 rounded border border-[--color-accent] text-[--color-accent] hover:bg-[--color-accent] hover:text-[--color-base] transition-colors"
+      class="inline-block mt-8 font-mono text-sm no-underline hover:no-underline px-4 py-2 rounded border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-[var(--color-base)] transition-colors"
       >cd /</a
     >
   </section>
