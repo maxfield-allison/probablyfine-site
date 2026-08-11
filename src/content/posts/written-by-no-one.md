@@ -117,3 +117,16 @@ Anyway. If you've read this far, congrats. You've found one of the posts a human
 My friend will have to take my word for it.
 
 It's probably fine.
+
+## Update, the same day
+
+He read the essay. His words: "To be clear I thought that original post WAS AI generated. I am
+HAPPY to be counted as wrong on that topic though." So the ambiguity above is resolved. A guy
+who's known me for over twenty years read my writing and concluded a machine wrote it.
+
+Then, in his own words, he described the same thing I wrote up above: that human writing is
+starting to take cues from the slop. He put it as the organic material beginning to reflect
+the cadence and templating of the generated stuff, and called it an inflection point. Two of
+us arriving there separately doesn't prove it, but it's not nothing.
+
+I didn't pay him to prove the thesis in the comments. I couldn't have paid for better.
