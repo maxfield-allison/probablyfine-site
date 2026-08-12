@@ -1,6 +1,6 @@
 ---
 title: "I built dnsweaver because I was tired of managing DNS by hand"
-description: "Automatic DNS for Docker, Kubernetes, and Proxmox, aimed at the self-hosted resolvers ExternalDNS skips. Every new container meant a hand-made record, and every dead one rotted in the zone. So I wrote dnsweaver, and then strangers started writing about it."
+description: "Automatic DNS records for Docker, Kubernetes, Proxmox, and Incus, aimed at the self-hosted resolvers ExternalDNS skips. Every new container meant a hand-made record, and every dead one rotted in the zone. So I wrote dnsweaver, and then strangers started writing about it."
 date: 2026-08-04
 tags: ["dnsweaver", "dns", "homelab", "go"]
 aiAssisted: true
