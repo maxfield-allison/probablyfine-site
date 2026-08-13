@@ -9,7 +9,9 @@ import sitemap from '@astrojs/sitemap';
 // reimplement an editor theme. Five roles, matching the --color-code-* tokens
 // in global.css: output/plain, comments, strings, flags and arguments, and the
 // command itself. Kept as a literal so it needs no import from shiki, which is
-// a transitive dependency and not directly resolvable.
+// a literal rather than built with shiki's helpers; shiki itself is a
+// devDependency only so these JSDoc types resolve.
+/** @type {import('shiki').ThemeRegistrationRaw} */
 const sessionTheme = {
   name: 'probablyfine-session',
   type: 'dark',
@@ -59,15 +61,19 @@ const sessionTheme = {
 //
 // Falls back to the language name, so an unannotated fence still renders as a
 // well-formed block rather than an empty bar.
+/** @type {import('shiki').ShikiTransformer} */
 const sessionBlock = {
   name: 'session-block',
+  /** @param {any} node */
   root(node) {
     const raw = this.options.meta?.__raw ?? '';
     const lang = this.options.lang ?? 'text';
     const title =
       /title="([^"]+)"/.exec(raw)?.[1] ?? /host=(\S+)/.exec(raw)?.[1] ?? lang;
     const kind = /kind=(\S+)/.exec(raw)?.[1] ?? lang;
-    const pre = node.children.find((c) => c.tagName === 'pre');
+    const pre = node.children.find(
+      /** @param {any} c */ (c) => c.tagName === 'pre',
+    );
     if (!pre) return;
     node.children = [
       {

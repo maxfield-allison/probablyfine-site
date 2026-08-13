@@ -266,8 +266,10 @@
   font-size: 0.6875rem;
   color: var(--color-ink-dim);
 }
+/* No opacity here: at 11px, 0.6 on ink-dim gives 3.06:1, under WCAG AA.
+   The label is dim enough already by being ink-dim at a small size. */
 .prose .session-kind {
-  opacity: 0.6;
+  color: var(--color-ink-dim);
 }
 .prose .session pre {
   margin: 0;

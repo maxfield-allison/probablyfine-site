@@ -1,4 +1,4 @@
-Contact: mailto:hello@probablyfine.dev
+Contact: mailto:hello@maxfieldallison.com
 Expires: 2027-08-04T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://probablyfine.dev/.well-known/security.txt

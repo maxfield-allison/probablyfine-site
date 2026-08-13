@@ -1,0 +1,21 @@
+---
+// Read-completion signal for a page. The behaviour lives in the static file
+// /js/read-tracker.js; this component only emits the element that configures
+// it. See that file for why it is static rather than an Astro <script>.
+interface Props {
+  /** Umami event name, e.g. "case-study-read". */
+  event: string;
+  /** Identifier reported with the event, e.g. the project or post id. */
+  id: string;
+  /** Property name the id is reported under. probablyfine has always sent
+      "slug"; changing it would split the existing Umami data. */
+  key?: string;
+  /** Scroll fraction that counts as "read". */
+  threshold?: number;
+}
+
+const { event, id, key = 'id', threshold = 0.9 } = Astro.props as Props;
+---
+
+<div data-read-tracker data-event={event} data-key={key} data-id={id} data-threshold={threshold} hidden></div>
+<script is:inline defer src="/js/read-tracker.js"></script>
