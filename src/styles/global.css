@@ -22,6 +22,16 @@
   src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2-variations');
 }
 
+/* ⚠ Do not use the `text-base` utility on this site.
+
+   --color-base below makes Tailwind v4 generate a `text-base` COLOR utility,
+   which shadows the built-in `text-base` font-size utility. Anything carrying
+   that class is painted --color-base, the page background, and becomes
+   invisible against it. It fails silently: the class compiles, no build error,
+   the text is simply gone. Use an explicit size such as text-[1rem] instead.
+
+   Same failure mode as the Tailwind v4 bracket-colour bug fixed in Aug 2026:
+   valid-looking CSS that quietly renders nothing. */
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Fira Code', monospace;
