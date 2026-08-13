@@ -1,0 +1,24 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "probablyfine-failover"
+main = "failover.js"
+compatibility_date = "2026-07-01"
+workers_dev = false
+
+# K8s homelab is primary; Cloudflare Pages is the fallback mirror.
+# PRIMARY_ORIGIN is a separate hostname that resolves to the cluster ingress and
+# is matched by the site's Traefik IngressRoute. The Worker fetches that rather
+# than the apex so it never recurses into its own route.
+[vars]
+PRIMARY_ORIGIN = "k8s.probablyfine.dev"
+FALLBACK_ORIGIN = "probablyfine-site.pages.dev"
+
+# Serve the apex and www from this Worker. blog.probablyfine.dev is deliberately
+# left off: it hits Traefik directly, so it stays a control path that does not
+# depend on the Worker.
+[[routes]]
+pattern = "probablyfine.dev/*"
+zone_name = "probablyfine.dev"
+
+[[routes]]
+pattern = "www.probablyfine.dev/*"
+zone_name = "probablyfine.dev"
