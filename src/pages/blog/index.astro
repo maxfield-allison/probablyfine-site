@@ -2,31 +2,93 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
+import { readingTime, tagSlug } from '../../lib/posts';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
+const [latest, ...archive] = posts;
+
+// The archive reads as a ledger: dense, dated rows grouped by month. This is
+// where the density split with maxfieldallison.com lives — the listing surface
+// packs in, while the post body itself stays generous.
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+const groups = new Map<string, typeof archive>();
+for (const post of archive) {
+  const month = iso(post.data.date).slice(0, 7);
+  if (!groups.has(month)) groups.set(month, []);
+  groups.get(month)!.push(post);
+}
 ---
 
 <Layout title="Blog · ProbablyFine" description="Homelab and SRE engineering write-ups.">
-  <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
-    <p class="font-mono text-sm text-[var(--color-accent)]">$ ls ./blog</p>
-    <h1 class="text-3xl font-bold mt-3">Blog</h1>
-    <p class="text-[var(--color-ink-dim)] mt-3">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-12 sm:pt-16 pb-2">
+    <p class="font-mono text-sm text-[var(--color-accent)] m-0">
+      $ ls ./blog<span class="cursor" aria-hidden="true"></span>
+    </p>
+    <h1 class="text-3xl font-bold mt-4 mb-0">Blog</h1>
+    <p class="text-[var(--color-ink-dim)] mt-3 mb-0 max-w-[var(--measure-read)]">
       Architecture deep-dives, incident post-mortems, and notes on building infrastructure
       (with and without AI).
     </p>
-    <p class="text-[var(--color-ink-dim)] mt-3 font-mono text-sm">
-      <a href="/blog/tags" class="hover:text-[var(--color-ink)] no-underline hover:no-underline">browse by tag →</a>
+    <p class="mt-3 mb-0 font-mono text-sm">
+      <a href="/blog/tags" class="no-underline hover:no-underline">browse by tag →</a>
     </p>
   </section>
 
-  <section class="max-w-3xl mx-auto px-6 pb-16">
+  {
+    latest && (
+      <section class="max-w-[var(--container-shell)] mx-auto px-6 mt-10">
+        <article class="border border-[var(--color-line)] rounded-md p-7 sm:p-9 bg-[var(--color-surface)]/45">
+          <div class="flex flex-wrap items-center gap-3 font-mono text-[11px]">
+            <span class="text-[var(--color-accent)] font-semibold tracking-[0.08em]">LATEST</span>
+            <span class="text-[var(--color-ink-dim)]">
+              {iso(latest.data.date)} · {readingTime(latest.body)} min read
+            </span>
+            {latest.data.aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
+          </div>
+          <a href={`/blog/${latest.id}`} class="group block mt-3.5 no-underline hover:no-underline text-[var(--color-ink)]">
+            <h2 class="m-0 text-[1.6875rem] font-bold leading-[1.25] tracking-[-0.015em] text-pretty group-hover:text-[var(--color-accent)] transition-colors">
+              {latest.data.title}
+            </h2>
+          </a>
+          <p class="mt-3.5 mb-0 text-[var(--color-ink-dim)] text-base leading-[1.6] max-w-[var(--measure-read)] text-pretty">
+            {latest.data.description}
+          </p>
+          <div class="flex flex-wrap gap-2 mt-4.5 font-mono text-[11px]">
+            {latest.data.tags.map((t) => (
+              <a
+                href={`/blog/tags/${tagSlug(t)}`}
+                class="text-[var(--color-ink-dim)] border border-[var(--color-line)] rounded-sm px-2 py-0.5 no-underline hover:no-underline hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+              >
+                #{t}
+              </a>
+            ))}
+          </div>
+        </article>
+      </section>
+    )
+  }
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-20 mt-14">
     {
       posts.length === 0 ? (
         <p class="text-[var(--color-ink-dim)] font-mono text-sm">No posts yet. Check back soon.</p>
       ) : (
-        posts.map((post) => <PostCard post={post} />)
+        [...groups.entries()].map(([month, monthPosts]) => (
+          <div class="mt-10 first:mt-0">
+            <div class="flex items-center gap-4 font-mono text-xs text-[var(--color-ink-dim)]">
+              <span class="text-[var(--color-accent)]"># {month}</span>
+              <span class="flex-1 border-t border-[var(--color-line)]" aria-hidden="true" />
+              <span class="opacity-60">
+                {monthPosts.length} post{monthPosts.length === 1 ? '' : 's'}
+              </span>
+            </div>
+            {monthPosts.map((post) => (
+              <PostCard post={post} fullDate={false} />
+            ))}
+          </div>
+        ))
       )
     }
   </section>

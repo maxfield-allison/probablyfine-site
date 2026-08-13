@@ -29,7 +29,7 @@ the design opinions below come from that second pass, not the first.
 The label is the whole interface. If you already run Traefik, you already have the label it
 needs:
 
-```yaml
+```yaml title="docker-compose.yml"
 services:
   app:
     image: my/app

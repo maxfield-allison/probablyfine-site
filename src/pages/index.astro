@@ -7,15 +7,32 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 const recent = posts.slice(0, 3);
+
+// The path tiles. Kept as paths because that is the site's established
+// grammar, and given the same label-bar panel chrome the sessions and the labs
+// inventory use, so the home page is built from the same vocabulary as the
+// pages it points at rather than a set of one-off cards.
+const tiles = [
+  { href: '/blog', path: './blog', blurb: 'Architecture write-ups, war stories, and lessons from running real infra.' },
+  { href: '/labs', path: './labs', blurb: 'Experiments, one-offs, and the hardware that powers the lab.' },
+  { href: '/now', path: './now', blurb: "What I'm focused on right now." },
+  {
+    href: 'https://maxfieldallison.com?utm_source=probablyfine&utm_medium=site',
+    path: './whoami',
+    blurb: 'The professional hub: resume, projects, and case studies.',
+    external: true,
+    umami: 'outbound-maxfieldallison',
+  },
+];
 ---
 
 <Layout>
-  <section class="max-w-3xl mx-auto px-6 pt-20 pb-12">
-    <p class="font-mono text-sm text-[var(--color-accent)]">$ uptime<span class="cursor" aria-hidden="true"></span></p>
-    <h1 class="text-4xl sm:text-5xl font-bold mt-4 leading-tight">
-      It's probably fine.
-    </h1>
-    <p class="text-[var(--color-ink-dim)] text-lg mt-6 max-w-2xl">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 sm:pt-20 pb-12">
+    <p class="font-mono text-sm text-[var(--color-accent)] m-0">
+      $ uptime<span class="cursor" aria-hidden="true"></span>
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-bold mt-4 mb-0 leading-tight">It's probably fine.</h1>
+    <p class="text-[var(--color-ink-dim)] text-lg mt-6 mb-0 max-w-[var(--measure-read)] leading-relaxed">
       A homelab and SRE engineering blog. I run a production-grade Kubernetes cluster in my
       basement, break it in interesting ways, and write down what I learned. Architecture
       deep-dives, incident post-mortems, and honest notes on AI-assisted engineering.
@@ -29,45 +46,61 @@ const recent = posts.slice(0, 3);
       <a
         href="https://status.probablyfine.dev"
         rel="noopener"
+        data-umami-event="outbound-status"
         class="no-underline hover:no-underline px-4 py-2 rounded border border-[var(--color-line)] text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] transition-colors"
         >Live status</a
       >
     </div>
   </section>
 
-  <section class="max-w-3xl mx-auto px-6 py-8">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-sm">
-      <a href="/blog" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
-        <div class="text-[var(--color-accent)]">./blog</div>
-        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">Architecture write-ups, war stories, and lessons from running real infra.</p>
-      </a>
-      <a href="/labs" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
-        <div class="text-[var(--color-accent)]">./labs</div>
-        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">Experiments, one-offs, and the hardware that powers the lab.</p>
-      </a>
-      <a href="/now" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
-        <div class="text-[var(--color-accent)]">./now</div>
-        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">What I'm focused on right now.</p>
-      </a>
-      <a href="https://maxfieldallison.com?utm_source=probablyfine&utm_medium=site" rel="noopener" class="no-underline hover:no-underline block p-5 rounded border border-[var(--color-line)] hover:border-[var(--color-accent)] transition-colors">
-        <div class="text-[var(--color-accent)]">./whoami</div>
-        <p class="text-[var(--color-ink-dim)] mt-2 text-xs">The professional hub: resume, projects, and case studies.</p>
-      </a>
+  {/* Panel chrome, matching the labs inventory and the session blocks: a status
+      dot and a label bar, then the contents. Present tense — this is what is
+      here, not what was built. */}
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-4">
+    <div class="border border-[var(--color-line)] rounded-md overflow-hidden">
+      <div class="flex items-center justify-between gap-4 px-4 py-2 border-b border-[var(--color-line)] font-mono text-[11px] text-[var(--color-ink-dim)]">
+        <span class="flex items-center gap-2">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+          ls -1
+        </span>
+        <span class="opacity-60">{tiles.length} paths</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4">
+        {
+          tiles.map((t, i) => (
+            <a
+              href={t.href}
+              rel={t.external ? 'noopener' : undefined}
+              data-umami-event={t.umami}
+              class:list={[
+                'no-underline hover:no-underline block p-5 font-mono text-sm border-[var(--color-line)] hover:bg-[var(--color-surface)]/60 transition-colors',
+                i % 2 === 0 && 'border-r sm:border-r',
+                i % 4 !== 3 && 'sm:border-r',
+                i < 2 && 'border-b sm:border-b-0',
+              ]}
+            >
+              <div class="text-[var(--color-accent)]">{t.path}</div>
+              <p class="text-[var(--color-ink-dim)] mt-2 mb-0 text-xs leading-normal">{t.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
     </div>
   </section>
 
   {
     recent.length > 0 && (
-      <section class="max-w-3xl mx-auto px-6 py-8">
-        <div class="flex items-baseline justify-between">
-          <h2 class="font-mono text-sm text-[var(--color-ink-dim)]">recent posts</h2>
-          <a href="/blog" class="font-mono text-xs no-underline hover:no-underline text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]">all &rarr;</a>
+      <section class="max-w-[var(--container-shell)] mx-auto px-6 py-10">
+        <div class="flex items-center gap-4 font-mono text-xs text-[var(--color-ink-dim)]">
+          <span class="text-[var(--color-accent)]"># recent</span>
+          <span class="flex-1 border-t border-[var(--color-line)]" aria-hidden="true" />
+          <a href="/blog" class="no-underline hover:no-underline opacity-60 hover:opacity-100">
+            all posts &rarr;
+          </a>
         </div>
-        <div class="mt-4">
-          {recent.map((post) => (
-            <PostCard post={post} />
-          ))}
-        </div>
+        {recent.map((post) => (
+          <PostCard post={post} />
+        ))}
       </section>
     )
   }

@@ -85,17 +85,25 @@ const breadcrumbLd = {
     <meta property="article:author" content="Maxfield Allison" />
     {tags.map((t) => <meta property="article:tag" content={t} />)}
   </Fragment>
-  <article class="max-w-3xl mx-auto px-6 pt-16 pb-12">
-    <a href="/blog" class="font-mono text-xs text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] no-underline hover:no-underline">&larr; all posts</a>
-    <h1 class="text-3xl sm:text-4xl font-bold mt-4 leading-tight">{title}</h1>
-    <div class="flex flex-wrap items-center gap-3 mt-4 font-mono text-xs text-[var(--color-ink-dim)]">
-      <time datetime={dateStr}>{dateStr}</time>
-      <span>{mins} min read</span>
-      {tags.map((t) => (
-        <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors">#{t}</a>
-      ))}
-      {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
-    </div>
+  {/* The post shell is the container width; the header and prose hold the
+      narrower reading measure inside it, so sessions, figures, and photographs
+      break out wider without the text ever running long. */}
+  <article class="max-w-[var(--container-shell)] mx-auto px-6 pt-12 sm:pt-16 pb-12">
+    <header class="max-w-[var(--measure-read)] mx-auto">
+      <p class="font-mono text-xs text-[var(--color-accent)] m-0">
+        $ cd ./blog<span class="cursor" aria-hidden="true"></span>
+      </p>
+      <h1 class="text-[2rem] sm:text-[2.5rem] font-bold mt-5 leading-[1.15] tracking-[-0.01em]">{title}</h1>
+      <p class="text-lg leading-[1.6] text-[var(--color-ink-dim)] mt-5 mb-0">{description}</p>
+      <div class="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-[var(--color-line)] font-mono text-xs text-[var(--color-ink-dim)]">
+        <time datetime={dateStr}>{dateStr}</time>
+        <span>{mins} min read</span>
+        {tags.map((t) => (
+          <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors">#{t}</a>
+        ))}
+        {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
+      </div>
+    </header>
 
     <div class="prose mt-10">
       <Content />

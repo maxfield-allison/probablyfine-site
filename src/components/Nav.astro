@@ -3,25 +3,36 @@ const { pathname } = Astro.url;
 const isActive = (href: string) =>
   href === '/' ? pathname === '/' : pathname.startsWith(href);
 
-const links = [
+// Shape kept deliberately identical to personal-site/src/components/Nav.astro:
+// the nav skeleton is part of the verbatim identity layer shared by both sites.
+// Only the link list and the wordmark differ. Edit both together.
+interface NavLink {
+  href: string;
+  label: string;
+  external?: boolean;
+  umami?: string;
+}
+
+const links: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
   { href: '/labs', label: 'Labs' },
   { href: '/now', label: 'Now' },
-  { href: 'https://status.probablyfine.dev', label: 'Status', external: true },
-  { href: 'https://maxfieldallison.com?utm_source=probablyfine&utm_medium=site', label: 'About me', external: true },
+  { href: 'https://status.probablyfine.dev', label: 'Status', external: true, umami: 'outbound-status' },
+  { href: 'https://maxfieldallison.com?utm_source=probablyfine&utm_medium=site', label: 'About me', external: true, umami: 'outbound-maxfieldallison' },
 ];
 
-const linkClass = (l: (typeof links)[number]) => [
+const linkClass = (l: NavLink) => [
   'no-underline hover:no-underline transition-colors',
   !l.external && isActive(l.href)
     ? 'text-[var(--color-ink)]'
     : 'text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]',
 ];
+const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
 ---
 
 <header class="border-b border-[var(--color-line)]">
-  <nav aria-label="Primary" class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+  <nav aria-label="Primary" class="max-w-[var(--container-shell)] mx-auto px-6 h-16 flex items-center justify-between">
     <a href="/" class="font-mono text-sm text-[var(--color-ink)] no-underline hover:no-underline">
       probably<span class="text-[var(--color-accent)]">fine</span>
     </a>
@@ -32,7 +43,8 @@ const linkClass = (l: (typeof links)[number]) => [
         links.map((l) => (
           <a
             href={l.href}
-            rel={l.external ? 'noopener' : undefined}
+            rel={relFor(l)}
+            data-umami-event={l.umami}
             aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
             class:list={linkClass(l)}
           >
@@ -59,7 +71,8 @@ const linkClass = (l: (typeof links)[number]) => [
           links.map((l) => (
             <a
               href={l.href}
-              rel={l.external ? 'noopener' : undefined}
+              rel={relFor(l)}
+              data-umami-event={l.umami}
               aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
               class:list={['px-2 py-1.5 rounded hover:bg-[var(--color-base)]', ...linkClass(l)]}
             >

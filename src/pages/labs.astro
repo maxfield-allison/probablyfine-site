@@ -69,7 +69,7 @@ const services = [
 ---
 
 <Layout title="Labs · ProbablyFine" description="A living tour of the hardware behind the homelab: a five-node Proxmox cluster, Ceph storage, a 10GbE fabric, three GPU generations, and a fleet of Raspberry Pis.">
-  <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
     <p class="font-mono text-sm text-[var(--color-accent)]">$ lscpu --lab</p>
     <h1 class="text-3xl font-bold mt-3">The lab</h1>
     <p class="text-[var(--color-ink-dim)] mt-4 max-w-2xl leading-relaxed">
@@ -84,22 +84,41 @@ const services = [
     </p>
   </section>
 
-  <!-- Stats -->
-  <section class="max-w-3xl mx-auto px-6 py-6">
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {
-        stats.map((s) => (
-          <div class="rounded border border-[var(--color-line)] p-4">
-            <div class="font-mono text-xl text-[var(--color-accent)]">{s.value}</div>
-            <div class="text-[var(--color-ink-dim)] text-xs mt-1">{s.label}</div>
-          </div>
-        ))
-      }
+  {/* Inventory panel. Deliberately in the present tense: this is what is
+      running, not what was built. The status dot and the panel chrome are the
+      difference between this site's diagrams and the sibling's — same hairline
+      vocabulary, reporting rather than explaining. */}
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-6">
+    <div class="border border-[var(--color-line)] rounded-md overflow-hidden">
+      <div class="flex items-center justify-between gap-4 px-4 py-2 border-b border-[var(--color-line)] font-mono text-[11px] text-[var(--color-ink-dim)]">
+        <span class="flex items-center gap-2">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+          inventory
+        </span>
+        <span class="opacity-60">captured {captured}</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3">
+        {
+          stats.map((s, i) => (
+            <div
+              class:list={[
+                'p-4 border-[var(--color-line)]',
+                i % 2 === 0 && 'border-r sm:border-r',
+                i % 3 !== 2 && 'sm:border-r',
+                i < stats.length - 2 && 'border-b',
+              ]}
+            >
+              <div class="font-mono text-xl text-[var(--color-accent)]">{s.value}</div>
+              <div class="text-[var(--color-ink-dim)] text-xs mt-1">{s.label}</div>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
 
   <!-- Topology -->
-  <section class="max-w-3xl mx-auto px-6 py-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># how it fits together</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       One diagram for the whole shape of it. Traffic comes in from the top, through the edge
@@ -111,7 +130,7 @@ const services = [
   </section>
 
   <!-- Cluster -->
-  <section class="max-w-3xl mx-auto px-6 py-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the cluster</h2>
     <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
       <table class="w-full text-sm">
@@ -157,7 +176,7 @@ const services = [
   </section>
 
   <!-- GPUs -->
-  <section class="max-w-3xl mx-auto px-6 py-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># three GPU generations</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       Three NVIDIA architectures, each passed straight through to a Talos Kubernetes worker.
@@ -192,7 +211,7 @@ const services = [
   </section>
 
   <!-- Storage -->
-  <section class="max-w-3xl mx-auto px-6 py-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># storage</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       Everything sits on Ceph, on the order of 230 TiB raw spread across every node. Spinning
@@ -206,7 +225,7 @@ const services = [
   </section>
 
   <!-- Network -->
-  <section class="max-w-3xl mx-auto px-6 py-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the fabric</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       A Brocade ICX6610 sits at the core, with 10GbE SFP+ uplinks to every node and jumbo
@@ -225,7 +244,7 @@ const services = [
   </section>
 
   <!-- Pi fleet -->
-  <section class="max-w-3xl mx-auto px-6 py-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the pi fleet</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       A handful of Raspberry Pis run the things that should keep working even when the cluster
@@ -264,7 +283,7 @@ const services = [
   </section>
 
   <!-- What it runs -->
-  <section class="max-w-3xl mx-auto px-6 py-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># what it runs</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       The hardware is only half the story. Here's what runs on it, grouped and
@@ -284,7 +303,7 @@ const services = [
   </section>
 
   <!-- Power -->
-  <section class="max-w-3xl mx-auto px-6 py-8 pb-16">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8 pb-16">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># chassis and power</h2>
     <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
       <table class="w-full text-sm">

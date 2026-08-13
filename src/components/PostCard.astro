@@ -1,39 +1,47 @@
 ---
+// A post as a ledger row: date, title, tags, reading time. Dense on purpose —
+// listing surfaces are where this site's density lives, while the post body
+// itself keeps a generous measure. Shared by the blog index, the tag pages,
+// and the home page so the archive reads the same everywhere.
 import type { CollectionEntry } from 'astro:content';
 import { readingTime, tagSlug } from '../lib/posts';
 
 interface Props {
   post: CollectionEntry<'posts'>;
+  /** Show the full date rather than month-day. Month-grouped lists supply the
+      year in their group header, so they pass false. */
+  fullDate?: boolean;
 }
 
-const { post } = Astro.props;
-const { title, description, date, tags, aiAssisted } = post.data;
-const dateStr = date.toISOString().slice(0, 10);
+const { post, fullDate = true } = Astro.props;
+const { title, tags, date, aiAssisted } = post.data;
+const iso = date.toISOString().slice(0, 10);
 const mins = readingTime(post.body);
 ---
 
-<article class="border-b border-[var(--color-line)] py-6 first:pt-0">
-  <a href={`/blog/${post.id}`} class="group no-underline hover:no-underline block">
-    <div class="flex items-baseline justify-between gap-4">
-      <h2 class="text-lg font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-accent)] transition-colors">
+<div class="group grid grid-cols-[4.5rem_minmax(0,1fr)] sm:grid-cols-[6.875rem_minmax(0,1fr)_auto] gap-x-5 gap-y-1 items-baseline py-5 border-b border-[var(--color-line)]">
+  <time datetime={iso} class="font-mono text-xs text-[var(--color-ink-dim)]">
+    {fullDate ? iso : iso.slice(5)}
+  </time>
+  <div class="min-w-0">
+    <a href={`/blog/${post.id}`} class="no-underline hover:no-underline text-[var(--color-ink)]">
+      <span class="text-[1.0625rem] font-semibold leading-snug hover:text-[var(--color-accent)] transition-colors">
         {title}
-      </h2>
-      <time datetime={dateStr} class="font-mono text-xs text-[var(--color-ink-dim)] shrink-0">{dateStr}</time>
-    </div>
-    <p class="text-[var(--color-ink-dim)] text-sm mt-2">{description}</p>
-  </a>
-  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 font-mono text-xs text-[var(--color-ink-dim)]">
-    {
-      tags.map((t) => (
+      </span>
+    </a>
+    <div class="mt-1.5 font-mono text-[11px] text-[var(--color-ink-dim)] flex flex-wrap gap-x-2">
+      {tags.map((t) => (
         <a
           href={`/blog/tags/${tagSlug(t)}`}
-          class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors"
+          class="no-underline hover:no-underline text-[var(--color-ink-dim)] hover:text-[var(--color-accent)] transition-colors"
         >
           #{t}
         </a>
-      ))
-    }
-    <span class="text-[var(--color-ink-dim)]/60">{mins} min read</span>
-    {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
+      ))}
+      {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
+    </div>
   </div>
-</article>
+  <div class="hidden sm:block font-mono text-[11px] text-[var(--color-ink-dim)] whitespace-nowrap">
+    {mins} min
+  </div>
+</div>

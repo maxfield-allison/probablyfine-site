@@ -33,7 +33,7 @@ Then OSDs started going down.
 The first symptom was boring: two OSDs down. So I did the boring thing and restarted them
 and read the journal. One of them said this:
 
-```
+```text title="journalctl · ceph-osd@8" kind=output
 auth: unable to find a keyring on /var/lib/ceph/osd/ceph-8/keyring:
 (2) No such file or directory
 ```
@@ -41,7 +41,7 @@ auth: unable to find a keyring on /var/lib/ceph/osd/ceph-8/keyring:
 Missing keyring after a reboot. That's an obvious fix: pull the key back out of Ceph auth,
 fix the permissions, start the OSD.
 
-```bash
+```bash host=pve-00 kind=bash
 ceph auth get osd.8 -o /var/lib/ceph/osd/ceph-8/keyring
 chown ceph:ceph /var/lib/ceph/osd/ceph-8/keyring
 chmod 600 /var/lib/ceph/osd/ceph-8/keyring
@@ -58,7 +58,7 @@ The restart attempts tripped systemd's start-rate limiter, which then masked the
 failure behind "start request repeated too quickly." So the next step wasn't a fix, it was
 getting systemd out of the way so I could see the truth:
 
-```bash
+```bash host=pve-00 kind=bash
 systemctl reset-failed ceph-osd@8.service
 systemctl start ceph-osd@8.service
 journalctl -u ceph-osd@8.service -n 50 --no-pager
@@ -66,7 +66,7 @@ journalctl -u ceph-osd@8.service -n 50 --no-pager
 
 And there it was:
 
-```
+```text title="journalctl · ceph-osd@27" kind=output
 missing 'type' file and unable to infer osd type
 ```
 
@@ -109,7 +109,7 @@ capture the BMC event log at the time, and by the time I thought to look, the lo
 So: the setting was wrong, and I can't tell you whether the board did it or I did. The fix was
 in firmware either way, not in Ceph:
 
-```bash
+```bash host=pve-00 kind=bash
 # nudge the bus
 echo 1 > /sys/bus/pci/rescan
 
@@ -130,7 +130,7 @@ genuine crash loop. This one had nothing to do with the GPU directly, but I doub
 was a coincidence. Recovery load is what tends to find the next-weakest drive, and latent
 BlueStore corruption usually surfaces right when backfill starts hammering it.
 
-```
+```text title="ceph -s" kind=output
 ceph-osd@27.service: Main process exited, code=killed, status=6/ABRT
 ceph-osd@27.service: Start request repeated too quickly
 failed to start osd.27
@@ -165,7 +165,7 @@ identical. That's the whole trap.
 I asked the question out loud, checking for the two states that mean
 loss:
 
-```bash
+```bash host=pve-00 kind=bash
 ceph health detail
 ceph pg dump | grep -i incomplete
 ceph pg dump | grep -i unfound
@@ -187,7 +187,7 @@ watching it work and misreading the symptoms.
 The one useful lever I found: you can throttle Ceph recovery so it stops
 starving your clients of I/O. Recovery will take longer, but your VMs will actually boot.
 
-```bash
+```bash host=pve-00 kind=bash
 ceph tell osd.* config set osd_max_backfills 1
 ceph tell osd.* config set osd_recovery_max_active 1
 ceph tell osd.* config set osd_recovery_sleep_hdd 0.1

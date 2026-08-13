@@ -76,6 +76,14 @@ const siteLd = {
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
 
+    {/* Self-hosted fonts. Preloaded because they are referenced from the CSS,
+        which the browser only parses after fetching it — without these the
+        first paint swaps fonts visibly. Both faces carry visible text above the
+        fold here: mono does real work in the prompt grammar and session blocks,
+        not just labels. */}
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />

@@ -22,7 +22,7 @@ const { tag, posts } = Astro.props;
 ---
 
 <Layout title={`#${tag} · ProbablyFine`} description={`Posts tagged ${tag}.`}>
-  <section class="max-w-3xl mx-auto px-6 pt-16 pb-8">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
     <p class="font-mono text-sm text-[var(--color-accent)]">$ grep -rl "#{tag}" ./blog</p>
     <h1 class="text-3xl font-bold mt-3">
       <span class="text-[var(--color-ink-dim)]">#</span>{tag}
@@ -36,7 +36,7 @@ const { tag, posts } = Astro.props;
     </p>
   </section>
 
-  <section class="max-w-3xl mx-auto px-6 pb-16">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-16">
     {posts.map((post) => <PostCard post={post} />)}
   </section>
 </Layout>

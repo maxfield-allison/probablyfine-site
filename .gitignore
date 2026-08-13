@@ -20,3 +20,6 @@ Thumbs.db
 
 # Generated per-post OG cards (build artifact)
 public/og/
+
+# Self-hosted webfonts copied from node_modules (build artifact)
+public/fonts/
