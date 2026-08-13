@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Topology from '../components/Topology.astro';
+import rack from '../content/posts/img/2025-basement-rack.jpg';
 
 // A living tour of the hardware. Specs are captured periodically and drift over
 // time. Network addressing, VLAN IDs, and subnets are deliberately left out.
@@ -33,13 +34,13 @@ const power = [
 ];
 
 // Aggregate scale, the numbers that make the point without a spec dump.
-const stats = [
+const stats: { value: string; unit?: string; label: string }[] = [
   { value: '9', label: 'Talos K8s nodes' },
-  { value: '~38', label: 'services under GitOps' },
-  { value: '~230 TiB', label: 'Ceph raw storage' },
+  { value: '~38', label: 'services, GitOps' },
+  { value: '~230', unit: 'TiB', label: 'Ceph raw' },
   { value: '3', label: 'GPU generations' },
-  { value: '40C / 80T', label: 'cluster CPU' },
-  { value: '528 GB', label: 'cluster RAM' },
+  { value: '40C/80T', label: 'cluster CPU' },
+  { value: '528', unit: 'GB', label: 'cluster RAM' },
 ];
 
 // The software that actually earns its keep. Grouped, not exhaustive, and it
@@ -69,51 +70,68 @@ const services = [
 ---
 
 <Layout title="Labs · ProbablyFine" description="A living tour of the hardware behind the homelab: a five-node Proxmox cluster, Ceph storage, a 10GbE fabric, three GPU generations, and a fleet of Raspberry Pis.">
+  {/* Hero: the claim on the left, the evidence on the right. The rack photo
+      belongs above the fold because this page's whole job is making "I actually
+      run this" undeniable, and a picture of the thing does that faster than any
+      amount of prose about it. */}
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
-    <p class="font-mono text-sm text-[var(--color-accent)]">$ lscpu --lab</p>
-    <h1 class="text-3xl font-bold mt-3">The lab</h1>
-    <p class="text-[var(--color-ink-dim)] mt-4 max-w-2xl leading-relaxed">
-      This is the hardware the blog keeps talking about. Five Proxmox nodes, a Ceph pool
-      measured in hundreds of terabytes, a 10GbE fabric with jumbo frames, three different
-      NVIDIA generations, and a small fleet of Raspberry Pis doing the jobs that should never
-      share a failure domain with everything else. It's over-built on purpose. That's the
-      whole point.
-    </p>
-    <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4">
-      captured {captured} · addressing and VLAN details left out on purpose
-    </p>
+    <div class="grid gap-8 md:gap-10 md:grid-cols-[1.15fr_1fr] items-start">
+      <div>
+        <p class="font-mono text-sm text-[var(--color-accent)] m-0">$ lscpu --lab</p>
+        <h1 class="text-[2.125rem] font-bold mt-3.5 mb-0 tracking-[-0.015em]">The lab</h1>
+        <p class="text-[var(--color-ink-dim)] mt-4 mb-0 leading-[1.65] text-pretty">
+          This is the hardware the blog keeps talking about. Five Proxmox nodes, a Ceph pool
+          measured in hundreds of terabytes, a 10GbE fabric with jumbo frames, three different
+          NVIDIA generations, and a small fleet of Raspberry Pis doing the jobs that should never
+          share a failure domain with everything else. It's over-built on purpose. That's the
+          whole point.
+        </p>
+        <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4 mb-0">
+          captured {captured} · addressing and VLAN details left out on purpose
+        </p>
+      </div>
+
+      <figure class="m-0">
+        <img
+          src={rack.src}
+          width={rack.width}
+          height={rack.height}
+          alt="The homelab rack in a basement corner: a 4U EPYC node, three small form-factor machines, and a switch"
+          loading="eager"
+          decoding="async"
+          class="w-full h-auto border border-[var(--color-line)] rounded-md block"
+        />
+        <figcaption class="flex gap-2.5 mt-2.5 font-mono text-[11px] text-[var(--color-ink-dim)] leading-[1.6]">
+          <span class="text-[var(--color-accent)] shrink-0">fig 01</span>
+          <span>The whole cluster, in one corner of a basement. It is probably fine.</span>
+        </figcaption>
+      </figure>
+    </div>
   </section>
 
-  {/* Inventory panel. Deliberately in the present tense: this is what is
-      running, not what was built. The status dot and the panel chrome are the
-      difference between this site's diagrams and the sibling's — same hairline
-      vocabulary, reporting rather than explaining. */}
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-6">
-    <div class="border border-[var(--color-line)] rounded-md overflow-hidden">
-      <div class="flex items-center justify-between gap-4 px-4 py-2 border-b border-[var(--color-line)] font-mono text-[11px] text-[var(--color-ink-dim)]">
-        <span class="flex items-center gap-2">
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
-          inventory
-        </span>
-        <span class="opacity-60">captured {captured}</span>
-      </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3">
-        {
-          stats.map((s, i) => (
-            <div
-              class:list={[
-                'p-4 border-[var(--color-line)]',
-                i % 2 === 0 && 'border-r sm:border-r',
-                i % 3 !== 2 && 'sm:border-r',
-                i < stats.length - 2 && 'border-b',
-              ]}
-            >
-              <div class="font-mono text-xl text-[var(--color-accent)]">{s.value}</div>
-              <div class="text-[var(--color-ink-dim)] text-xs mt-1">{s.label}</div>
+  {/* Stats strip. A single ruled row, hairlines between cells, top and bottom
+      rules closing it: the aggregate scale stated plainly. Units drop to a
+      smaller step inside the number so the figure stays the thing you read.
+
+      Dividers are driven by nth-child rather than the loop index, because which
+      cell starts a row changes with the column count at each breakpoint. Every
+      cell carries a left rule; the first in each row drops it, and rows after
+      the first gain a top rule. */}
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 mt-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-t border-b border-[var(--color-line)]">
+      {
+        stats.map((s, i) => (
+          <div
+            class="py-5 px-4 border-[var(--color-line)] border-l [&:nth-child(2n+1)]:border-l-0 [&:nth-child(n+3)]:border-t sm:[&:nth-child(2n+1)]:border-l sm:[&:nth-child(3n+1)]:border-l-0 sm:[&:nth-child(n+3)]:border-t-0 sm:[&:nth-child(n+4)]:border-t lg:[&:nth-child(3n+1)]:border-l lg:[&:nth-child(6n+1)]:border-l-0 lg:[&:nth-child(n+4)]:border-t-0"
+          >
+            <div class="font-mono text-2xl text-[var(--color-accent)] leading-none">
+              {s.value}
+              {s.unit && <span class="text-sm">{' '}{s.unit}</span>}
             </div>
-          ))
-        }
-      </div>
+            <div class="font-mono text-[11px] text-[var(--color-ink-dim)] mt-1.5 leading-snug">{s.label}</div>
+          </div>
+        ))
+      }
     </div>
   </section>
 

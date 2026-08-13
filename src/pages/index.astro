@@ -53,38 +53,29 @@ const tiles = [
     </div>
   </section>
 
-  {/* Panel chrome, matching the labs inventory and the session blocks: a status
-      dot and a label bar, then the contents. Present tense — this is what is
-      here, not what was built. */}
+  {/* The paths, set as a ruled strip in the same vocabulary /labs uses for its
+      stats: hairlines between cells, top and bottom rules closing the block. No
+      design frame exists for this page, so this deliberately borrows the
+      system's real treatment rather than inventing chrome for it.
+
+      Dividers come from nth-child, not the loop index, because which cell
+      starts a row changes with the column count at each breakpoint. */}
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-4">
-    <div class="border border-[var(--color-line)] rounded-md overflow-hidden">
-      <div class="flex items-center justify-between gap-4 px-4 py-2 border-b border-[var(--color-line)] font-mono text-[11px] text-[var(--color-ink-dim)]">
-        <span class="flex items-center gap-2">
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
-          ls -1
-        </span>
-        <span class="opacity-60">{tiles.length} paths</span>
-      </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4">
-        {
-          tiles.map((t, i) => (
-            <a
-              href={t.href}
-              rel={t.external ? 'noopener' : undefined}
-              data-umami-event={t.umami}
-              class:list={[
-                'no-underline hover:no-underline block p-5 font-mono text-sm border-[var(--color-line)] hover:bg-[var(--color-surface)]/60 transition-colors',
-                i % 2 === 0 && 'border-r sm:border-r',
-                i % 4 !== 3 && 'sm:border-r',
-                i < 2 && 'border-b sm:border-b-0',
-              ]}
-            >
-              <div class="text-[var(--color-accent)]">{t.path}</div>
-              <p class="text-[var(--color-ink-dim)] mt-2 mb-0 text-xs leading-normal">{t.blurb}</p>
-            </a>
-          ))
-        }
-      </div>
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-4"># where to start</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 border-t border-b border-[var(--color-line)]">
+      {
+        tiles.map((t) => (
+          <a
+            href={t.href}
+            rel={t.external ? 'noopener' : undefined}
+            data-umami-event={t.umami}
+            class="no-underline hover:no-underline block p-5 font-mono text-sm border-[var(--color-line)] border-l [&:nth-child(2n+1)]:border-l-0 [&:nth-child(n+3)]:border-t sm:[&:nth-child(2n+1)]:border-l sm:[&:nth-child(4n+1)]:border-l-0 sm:[&:nth-child(n+3)]:border-t-0 hover:bg-[var(--color-surface)]/60 transition-colors"
+          >
+            <div class="text-[var(--color-accent)]">{t.path}</div>
+            <p class="text-[var(--color-ink-dim)] mt-2 mb-0 text-xs leading-normal">{t.blurb}</p>
+          </a>
+        ))
+      }
     </div>
   </section>
 
