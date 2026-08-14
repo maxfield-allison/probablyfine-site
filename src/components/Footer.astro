@@ -12,7 +12,10 @@ const year = new Date().getFullYear();
   <div
     class="max-w-[var(--container-shell)] mx-auto px-6 py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 font-mono text-xs text-[var(--color-ink-dim)]"
   >
-    <p>© {year} Maxfield Allison · it's probably fine</p>
+    <div>
+      <p>© {year} Maxfield Allison · it's probably fine</p>
+      <p class="mt-1 text-[var(--color-ink-dim)]/80">Feel free to reach out.</p>
+    </div>
     <div class="flex flex-wrap gap-x-5 gap-y-2">
       <a href="mailto:hello@maxfieldallison.com" rel="me" data-umami-event="email-click" class="inline-flex items-center gap-1.5">
         <Icon name="email" size={14} /> Email
