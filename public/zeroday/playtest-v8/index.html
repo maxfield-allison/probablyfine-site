@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZERO/DAY — playtest v8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --substrate:#0a0d12;--panel:#10151d;--panel-2:#151c26;--line:#233042;
+    --ink:#c6d0da;--ink-dim:#66788c;--amber:#ffb454;--amber-dim:#8a6535;
+    --cyan:#45d6c0;--red:#ff5c57;--red-dim:#7a3634;--magenta:#c678dd;--magenta-dim:#6b4477;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--substrate);color:var(--ink);font-family:var(--mono);font-size:12.5px;line-height:1.4;height:100%}
+  body{display:flex;flex-direction:column;overflow:hidden}
+  header{display:flex;align-items:center;gap:14px;padding:7px 16px;border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap}
+  .brand{font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--amber);white-space:nowrap}
+  .brand span{color:var(--ink-dim);font-weight:400;font-size:11px}
+  .hud{display:flex;align-items:center;gap:13px;margin-left:auto;flex-wrap:wrap}
+  .stat{display:flex;align-items:baseline;gap:5px;white-space:nowrap}
+  .stat .k{font-size:9px;letter-spacing:.1em;color:var(--ink-dim);text-transform:uppercase}
+  .stat .v{font-weight:700;font-size:14px}
+  .stat .v.amber{color:var(--amber)}.stat .v.cyan{color:var(--cyan)}.stat .v.mag{color:var(--magenta)}
+  .rivalstat{font-size:10.5px;color:var(--magenta);white-space:nowrap}
+  .rivalstat.gone{color:var(--ink-dim);text-decoration:line-through}.rivalstat.dark{color:var(--magenta-dim)}
+  .alert{font-size:10.5px;color:var(--red);letter-spacing:.1em;white-space:nowrap}
+  .tracewrap{display:flex;align-items:center;gap:6px;min-width:200px}
+  .tracebar{position:relative;flex:1;height:12px;background:var(--panel-2);border:1px solid var(--line);overflow:hidden}
+  .tracefill{position:absolute;top:0;bottom:0;left:0;width:0%;background:linear-gradient(90deg,var(--amber),var(--red));transition:width .3s}
+  .ceilmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--magenta);opacity:.95;transition:left .3s}
+  .heatbadge{font-size:10px;color:var(--ink-dim);border:1px solid var(--line);padding:3px 7px;white-space:nowrap}
+  .heatbadge.hot{color:var(--magenta);border-color:var(--magenta-dim)}
+  .tracepct{font-weight:700;min-width:34px;text-align:right;font-size:12px}.tracepct.hot{color:var(--red)}
+  main{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(238px,.85fr);gap:10px;padding:10px 16px;flex:1;min-height:0}
+  .boardpane{background:var(--panel);border:1px solid var(--line);position:relative;display:flex;flex-direction:column;min-height:0}
+  .panehead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 11px;border-bottom:1px solid var(--line);font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-dim);flex-wrap:wrap;flex-shrink:0}
+  .panehead .warn{color:var(--red)}.panehead .riv{color:var(--magenta)}
+  svg{width:100%;height:100%;display:block;flex:1;min-height:0}
+  .side{display:flex;flex-direction:column;gap:10px;min-height:0}
+  .card-panel{background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  .obj{padding:8px 11px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+  .obj .item{display:flex;gap:7px;align-items:baseline;font-size:11px}
+  .obj .box{color:var(--ink-dim)}
+  .obj .item.done .box,.obj .item.done .txt{color:var(--cyan)}
+  .obj .item.bonus .txt,.obj .item.bonus .box{color:var(--amber)}
+  .obj .item.threat .txt,.obj .item.threat .box{color:var(--magenta)}
+  .obj .item.corp .txt,.obj .item.corp .box{color:var(--red)}
+  .obj .item.threat.gone .txt{color:var(--ink-dim);text-decoration:line-through}
+  .syslog{flex:1;min-height:0;overflow-y:auto;padding:7px 11px;font-size:11px;display:flex;flex-direction:column;gap:2px}
+  .syslog .ln{color:var(--ink-dim)}.syslog .ln b{color:var(--ink);font-weight:500}
+  .syslog .ln.amber b{color:var(--amber)}.syslog .ln.red b{color:var(--red)}
+  .syslog .ln.cyan b{color:var(--cyan)}.syslog .ln.magenta b{color:var(--magenta)}
+  .syslog .ln.muffled b{color:var(--ink-dim);font-style:italic}
+  .syslog .ln.phase{opacity:.5;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+  footer{padding:7px 16px 9px;border-top:1px solid var(--line);flex-shrink:0}
+  .handrow{display:flex;gap:7px;align-items:stretch;flex-wrap:nowrap;overflow-x:auto}
+  .card{width:118px;min-width:118px;min-height:104px;background:var(--panel);border:1px solid var(--line);padding:6px 7px;cursor:pointer;position:relative;display:flex;flex-direction:column;gap:3px;transition:transform .1s,border-color .1s}
+  .card:hover{transform:translateY(-3px)}
+  .card.playable{border-color:var(--amber-dim)}
+  .card.playable:hover{border-color:var(--amber);box-shadow:0 0 10px rgba(255,180,84,.12)}
+  .card.dead{opacity:.4;cursor:not-allowed}
+  .card.targeting{border-color:var(--cyan);box-shadow:0 0 10px rgba(69,214,192,.2)}
+  .card .top{display:flex;justify-content:space-between;align-items:center}
+  .cost{width:17px;height:17px;border:1px solid var(--amber);color:var(--amber);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:11px}
+  .noise{display:flex;gap:2px}.noise i{width:4px;height:4px;background:var(--red);display:block}
+  .noise.silent i{background:var(--cyan);width:12px;height:4px}
+  .cname{font-weight:700;font-size:11px}
+  .cclass{font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-dim)}
+  .cclass.zd{color:var(--red)}.cclass.ag{color:var(--cyan)}.cclass.ob{color:var(--magenta)}.cclass.en{color:var(--amber)}
+  .ctext{font-size:9.5px;color:var(--ink-dim);flex:1;line-height:1.3}
+  .card .why{position:absolute;left:0;right:0;bottom:-15px;font-size:8px;color:var(--ink-dim);text-align:center;opacity:0;transition:opacity .1s}
+  .card.dead:hover .why{opacity:1}
+  .btnrow{display:flex;gap:8px;margin-left:auto;align-self:center;flex-wrap:wrap}
+  .btn{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:none;border:1px solid var(--amber);color:var(--amber);padding:8px 13px;cursor:pointer;font-weight:700}
+  .btn:hover{background:rgba(255,180,84,.09)}
+  .btn.ghost{border-color:var(--line);color:var(--ink-dim)}
+  .btn.cyan{border-color:var(--cyan);color:var(--cyan)}.btn.cyan:hover{background:rgba(69,214,192,.09)}
+  .btn.action{border-color:var(--ink-dim);color:var(--ink)}.btn.action:hover{background:rgba(198,208,218,.07)}
+  .btn.qe{border-color:var(--amber);box-shadow:0 0 8px rgba(255,180,84,.2)}
+  .btn:disabled{opacity:.32;cursor:not-allowed}
+  .foot-left{display:flex;align-items:center;gap:14px}
+  .pilecounts{font-size:9px;color:var(--ink-dim);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .fbbtn{font-family:var(--mono);font-size:10px;background:none;border:1px solid var(--line);color:var(--ink-dim);padding:5px 9px;cursor:pointer}
+  .fbbtn:hover{border-color:var(--amber);color:var(--amber)}
+  .edge{stroke:var(--line);stroke-width:1.5}
+  .edge.dim{stroke-opacity:.3;stroke-dasharray:2 4}
+  .edge.ghostline{stroke-opacity:.11;stroke-dasharray:2 7}
+  .edge.adj{stroke:var(--cyan);stroke-dasharray:4 4;animation:dash 1.2s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-16}}
+  .node circle.body{fill:var(--panel-2);stroke:var(--line);stroke-width:1.5}
+  .node text{fill:var(--ink);font-family:var(--mono);font-size:9px;text-anchor:middle;pointer-events:none}
+  .node text.sub{fill:var(--ink-dim);font-size:7px}.node text.trait{fill:var(--cyan);font-size:6.5px}
+  .node.ghost circle.body{stroke-dasharray:2 4;stroke-opacity:.5;fill:transparent}
+  .node.ghost text{fill:var(--ink-dim)}
+  .node.reachable{cursor:pointer}
+  .node.reachable circle.body{stroke:var(--cyan)}
+  .node.reachable:hover circle.body{fill:rgba(69,214,192,.14)}
+  .node.reachpulse circle.body{animation:reachpulse 1.6s ease-in-out infinite}
+  @keyframes reachpulse{0%,100%{stroke:var(--cyan)}50%{stroke:var(--ink-dim)}}
+  .node.blocked circle.body{stroke:var(--red)}
+  .node.captured circle.body{stroke:var(--cyan)}
+  .node.targetable circle.body{stroke:var(--cyan);cursor:crosshair;stroke-width:2.5}
+  .node.targetable:hover circle.body{fill:rgba(69,214,192,.2)}
+  .playerring{fill:none;stroke:var(--amber);stroke-width:2;animation:pulse 1.6s ease-in-out infinite}
+  .rivalring{fill:none;stroke:var(--magenta);stroke-width:2;animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.35}}
+  .icehex{fill:rgba(255,92,87,.08);stroke:var(--red);stroke-width:1.5}
+  .sentryring{fill:none;stroke:var(--red);stroke-width:1.5;stroke-dasharray:3 4}
+  .lockglyph{fill:var(--red);font-size:10px;text-anchor:middle;font-family:var(--mono);font-weight:700}
+  .critbanner{display:none;padding:5px 11px;border-bottom:1px solid var(--red);background:rgba(255,92,87,.13);color:var(--red);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;flex-shrink:0;animation:critpulse 1.1s ease-in-out infinite}
+  .critbanner.show{display:block}
+  @keyframes critpulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .legend{display:flex;gap:13px;flex-wrap:wrap;padding:4px 11px;border-bottom:1px solid var(--line);font-size:9px;color:var(--ink-dim);flex-shrink:0}
+  .legend b{font-weight:500}
+  .lg-you{color:var(--amber)} .lg-riv{color:var(--magenta)} .lg-gate{color:var(--red)} .lg-move{color:var(--cyan)}
+  .icehex.brokenice{fill:none;stroke:var(--red-dim);stroke-dasharray:3 5}
+  .icelabel{fill:var(--red);font-size:8px;text-anchor:middle;font-family:var(--mono)}
+  .icelabel.brokenice{fill:var(--red-dim);text-decoration:line-through}
+  .rivallabel{fill:var(--magenta);font-size:8px;text-anchor:middle;font-family:var(--mono)}
+  .prowlerbody{fill:rgba(255,92,87,.15);stroke:var(--red);stroke-width:1.5}
+  .agentbox{fill:rgba(255,180,84,.12);stroke:var(--amber);stroke-width:1}
+  .agentbox.mimic{stroke:var(--cyan);stroke-dasharray:2 2}
+  .agentlabel{fill:var(--amber);font-size:7px;text-anchor:middle;font-family:var(--mono)}
+  .scanping{fill:none;stroke:var(--cyan);stroke-width:1.5;opacity:0;pointer-events:none}
+  .scanping.go{animation:scanping .9s ease-out forwards}
+  @keyframes scanping{0%{r:12;opacity:.8}100%{r:130;opacity:0}}
+  .flash{animation:flash .4s ease}
+  @keyframes flash{0%{filter:brightness(2.2)}100%{filter:none}}
+  .overlay{position:absolute;inset:0;background:rgba(10,13,18,.94);display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:22px;z-index:10;overflow-y:auto}
+  .overlay.show{display:flex}
+  .overlay h2{font-size:19px;letter-spacing:.1em}
+  .overlay h2.win{color:var(--cyan)}.overlay h2.lose{color:var(--red)}.overlay h2.amber{color:var(--amber)}
+  .overlay p{color:var(--ink-dim);max-width:520px;font-size:12px}
+  .overlay .lore{color:var(--ink);max-width:540px;font-size:12px;line-height:1.6;font-style:italic;border-left:2px solid var(--amber-dim);padding-left:14px;text-align:left}
+  .overlay .lore .who{color:var(--amber);font-style:normal;font-weight:700;font-size:10px;letter-spacing:.1em;display:block;margin-bottom:5px}
+  .entryrow,.draftrow{display:flex;gap:11px;flex-wrap:wrap;justify-content:center;max-width:660px}
+  .entrycard{width:190px;background:var(--panel);border:1px solid var(--amber-dim);padding:12px;cursor:pointer;text-align:left}
+  .entrycard:hover{border-color:var(--amber);box-shadow:0 0 12px rgba(255,180,84,.14)}
+  .entrycard .en{font-weight:700;color:var(--amber);font-size:12px}
+  .entrycard .ed{font-size:10px;color:var(--ink-dim);margin-top:5px;line-height:1.4}
+  .entrycard .tags{font-size:9px;margin-top:7px}
+  .entrycard .tags .loud{color:var(--red)}.entrycard .tags .quiet{color:var(--cyan)}
+  .draftrow .card{cursor:pointer;border-color:var(--amber-dim)}
+  .draftrow .card:hover{border-color:var(--amber)}
+  .fbq{margin-bottom:13px;text-align:left;max-width:560px}
+  .fbq .qt{font-size:12px;color:var(--ink);margin-bottom:5px}
+  .fbq .qh{font-size:9.5px;color:var(--ink-dim);margin-bottom:6px}
+  .scalebtns{display:flex;gap:5px}
+  .scalebtns button{font-family:var(--mono);width:34px;height:30px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);cursor:pointer}
+  .scalebtns button.sel{border-color:var(--amber);color:var(--amber);background:rgba(255,180,84,.1)}
+  .fbq textarea{width:100%;min-height:52px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:11px;padding:6px;resize:vertical}
+  .fbnote{font-size:10px;color:var(--ink-dim);max-width:560px;margin-bottom:12px;line-height:1.5}
+  .reportbox{width:100%;max-width:560px;min-height:120px;font-size:9.5px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:8px}
+  @media (max-width:1120px){main{grid-template-columns:1fr;grid-template-rows:minmax(0,1.4fr) minmax(0,1fr)}}
+  @media (max-height:760px){.card{min-height:92px}.ctext{display:none}svg{min-height:240px}}
+  @media (prefers-reduced-motion:reduce){.edge.adj,.playerring,.rivalring,.node.reachpulse circle.body,.scanping.go{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="brand">ZERO/DAY <span>// playtest v8</span></div></div>
+  <div class="hud">
+    <div class="stat"><span class="k">Op</span><span class="v cyan" id="opname">—</span></div>
+    <div class="stat"><span class="k">Job</span><span class="v" id="jobn">1/3</span></div>
+    <div class="stat"><span class="k">Turn</span><span class="v" id="turn">1</span></div>
+    <div class="stat"><span class="k">Cycles</span><span class="v amber" id="cycles">3</span></div>
+    <span class="heatbadge" id="heatbadge">HEAT 0 → ceiling 100%</span>
+    <div class="rivalstat" id="rivalstat"></div>
+    <div class="alert" id="alertui"></div>
+    <div class="tracewrap" title="Session trace fills toward the magenta mark — your Heat ceiling. Hotter handle = less room.">
+      <span class="stat"><span class="k">Trace</span></span>
+      <div class="tracebar"><div class="tracefill" id="tracefill"></div><div class="ceilmark" id="ceilmark" style="left:100%"></div></div>
+      <span class="tracepct" id="tracepct">0%</span>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="boardpane">
+    <div class="panehead"><span id="boardtitle">network map</span><span id="telegraph"></span></div>
+    <div class="critbanner" id="critbanner"></div>
+    <div class="legend"><b class="lg-you">◉ you</b><b class="lg-riv">◉ GRTHT</b><b class="lg-move">○ cyan ring = can hop there</b><b class="lg-gate">⬡ gate ICE — ⊘ blocks the hop until killed</b><b class="lg-gate">◌ dashed = sentry, ◆ = patrol — enterable, but they cost trace</b><b>? = charted, not scanned — the topology is bought intel; contents are not</b><b class="lg-move">[legacy] your noise −1 · [unpatched] your breakers ×2 · [siem] noise +1 nearby</b></div>
+    <svg id="board" viewBox="0 0 760 470" role="img" aria-label="Network board"></svg>
+    <div class="overlay" id="introov">
+      <h2 class="amber" id="introtitle">NEW OPERATOR</h2>
+      <div class="lore" id="introlore"></div>
+      <button class="btn" id="introbtn" onclick="closeIntro()">Pick up the handle</button>
+    </div>
+    <div class="overlay" id="briefov">
+      <h2 class="amber">HOW A RUN WORKS</h2>
+      <div class="lore" style="font-style:normal">
+        <span class="who">the fixer · read once, then forget it</span>
+        <b style="color:var(--cyan)">Goal:</b> reach the objective host, take what you came for, then reach <b>EXIT</b>. Both are listed top-right. Big vaults take a <b>2-tick channel</b>: siphon once per turn for two turns while holding the node — playing cards is fine, moving resets it.<br><br>
+        <b style="color:var(--cyan)">Moving:</b> click any <span style="color:var(--cyan)">cyan-outlined</span> node next to you. Every hop costs a cycle.<br><br>
+        <b style="color:var(--cyan)">Cards:</b> click one in your hand to run it. Red pips = how much <b>noise</b> it makes; noise raises your <b>trace</b>. Breakers kill ICE and rival rigs — if two targets are in range you'll be asked to click one.<br><br>
+        <b style="color:var(--red)">Red shapes:</b> a solid hex marked ⊘ is a <b>gate</b> — it blocks the hop until you kill it. Dashed rings (sentries) and diamonds (patrols) are hostile but <b>enterable</b> — they cost trace, not passage.<br><br>
+        <b style="color:var(--red)">Trace</b> is the bar up top. Hit the <span style="color:var(--magenta)">magenta ceiling</span> and this operator is burned. The ceiling isn't always 100% — the hotter the handle, the less room you get.<br><br>
+        <b style="color:var(--amber)">You can win loud or quiet — both are real strategies.</b> LOUD doors are closer to the target (speed); QUIET doors start you cold (safety). Every win builds the handle\u2019s reputation; a <b>clean exit</b> (finish under the trace &amp; noise limit — possible from either door) pays <b>double reputation and cools your Heat −6</b>. Loud-and-fast or slow-and-spotless both work; loud-and-slow is how you burn.
+      </div>
+      <button class="btn" onclick="closeBriefing()">Jack in</button>
+    </div>
+    <div class="overlay" id="entryov">
+      <h2 class="amber">CHOOSE YOUR WAY IN</h2>
+      <p id="entryctx"></p>
+      <div class="entryrow" id="entryrow"></div>
+      <p style="font-size:10px">The door you pick shapes the board. Loud is fast and central; quiet is slow and costs tempo — but the corp barely feels it. (In the full game, hitting a corp the same way twice sharpens their file on you.)</p>
+    </div>
+    <div class="overlay" id="draft">
+      <h2 class="amber" style="font-size:15px" id="drafttitle">BETWEEN JOBS — take one tool</h2>
+      <div class="draftrow" id="draftrow"></div>
+      <button class="btn cyan" onclick="lieLow()">LIE LOW — take no tool; Heat −8</button>
+    </div>
+    <div class="overlay" id="jobend">
+      <h2 id="jetitle"></h2><p id="jetext"></p>
+      <div class="lore" id="jelore" style="display:none"></div>
+      <button class="btn" id="jebtn" onclick="nextJob()">Continue</button>
+    </div>
+    <div class="overlay" id="feedback">
+      <h2 class="amber" style="font-size:15px">FEEDBACK</h2>
+      <div class="fbnote">Play data (drafts, plays, entry-vector choices, your trace/Heat curve, timings) is captured automatically — that's the most useful part, so please send it even if you skip questions. Nothing uploads; hit <b>Build report</b>, then copy or download and send to Max.</div>
+      <div id="fbqs" style="max-height:44vh;overflow-y:auto"></div>
+      <div style="display:flex;gap:9px;margin-top:6px">
+        <button class="btn cyan" onclick="buildReport()">Build report</button>
+        <button class="btn ghost" onclick="closeFeedback()">Back</button>
+      </div>
+      <div id="reportwrap" style="display:none;flex-direction:column;gap:8px;margin-top:10px;align-items:center">
+        <textarea class="reportbox" id="reportbox" readonly></textarea>
+        <div style="display:flex;gap:9px">
+          <button class="btn cyan" onclick="copyReport()">Copy</button>
+          <button class="btn" onclick="downloadReport()">Download .txt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="side">
+    <div class="card-panel" style="flex-shrink:0">
+      <div class="panehead"><span>contract &amp; threats</span><span id="cleanstate"></span></div>
+      <div class="obj" id="objlist"></div>
+    </div>
+    <div class="card-panel" style="flex:1">
+      <div class="panehead"><span>syslog — fog-aware</span></div>
+      <div class="syslog" id="syslog"></div>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="handrow" id="hand"></div>
+  <div class="handrow" style="margin-top:8px;flex-wrap:wrap">
+    <div class="foot-left">
+      <span class="pilecounts" id="piles"></span>
+      <button class="fbbtn" onclick="openFeedback(false)">⚑ Feedback</button>
+    </div>
+    <div class="btnrow">
+      <button class="btn ghost" onclick="hardRestart()">Restart career</button>
+      <button class="btn cyan" id="ln2btn" onclick="useLN2()" title="Emergency coolant pour: +4 cycles RIGHT NOW, +3 trace (thermal spike). Once per job. For sprints and getaways.">LN2 ×1</button>
+      <button class="btn action" id="scanbtn" onclick="doScan()">Scan (1)</button>
+      <button class="btn action" id="siphonbtn" onclick="doSiphon()" style="display:none">Siphon (2)</button>
+      <button class="btn" id="endbtn" onclick="endTurn()">End turn</button>
+    </div>
+  </div>
+</footer>
+<script>
+/* ===== TELEMETRY ===== */
+const T0=Date.now();
+const T={build:'ZERO/DAY playtest v8',session:Math.random().toString(36).slice(2,10),
+  started:new Date().toISOString(),events:[],survey:{},viewport:window.innerWidth+'x'+window.innerHeight};
+function tlog(kind,data){T.events.push({t:Date.now()-T0,kind:kind,...(data||{})});}
+window.addEventListener('resize',()=>{T.viewport=window.innerWidth+'x'+window.innerHeight;});
+
+/* ===== CONTENT ===== */
+const OPERATORS=[
+  {name:'HOLLOWPOINT',intro:"You never met the last one. A storage-unit key came in the mail, no note. Inside: a rig still warm in its foam, a cage with a grey parrot that says a name you don't recognize, and a cat that acts like it owns you. The handle is <b>NOMAD</b>. The boards know it. Now you are it."},
+  {name:'DIALTONE',intro:"NOMAD's last operator went quiet three weeks ago. The bird's been saying their name. You signed the same paper they did — the one about who gets the cage if you go dark. Then you opened the boards, and there was already work waiting for the handle."},
+  {name:'SALEM',intro:"You inherited a keyboard with the letters worn off and a reputation you didn't earn. Somewhere a corp keeps a file with NOMAD's name on it and your predecessor's face. That's fine. The face is the part that's replaceable."}
+];
+const MENTOR="the fixer";
+const CARDS={
+  chisel:{name:'CHISEL',cls:'breaker',cost:1,noise:0,dmg:1,text:'1 dmg to a target in range. The quiet way. Slowly.'},
+  bruteforce:{name:'BRUTEFORCE',cls:'breaker',cost:2,noise:3,dmg:4,text:'4 dmg to a target in range. The segment hears it.'},
+  worm:{name:'WORM',cls:'breaker',cost:2,noise:2,text:'2 dmg to EVERY hostile on/adjacent to your node.'},
+  spoof:{name:'SPOOF',cls:'obfuscation',cost:1,noise:0,text:'Session trace -8. Scrub the logs.'},
+  launder:{name:'LAUNDER',cls:'obfuscation',cost:2,noise:0,text:'Trace -6, alert -1, cool Heat a little. Nobody saw.'},
+  patch:{name:'PATCH',cls:'obfuscation',cost:1,noise:0,text:'Trace -5. Draw 1.'},
+  tunnel:{name:'TUNNEL',cls:'script',cost:1,noise:1,text:'Next 2 hops cost no cycles.'},
+  fork:{name:'FORK',cls:'script',cost:1,noise:1,text:'Draw 2.'},
+  quietexec:{name:'QUIET EXEC',cls:'enhancer',cost:1,noise:0,text:'Next board action (scan/siphon) free & silent.'},
+  sentryd:{name:'SENTRY.D',cls:'agent',cost:2,noise:1,agent:{hp:3,kind:'sentry'},text:'Deploy: a camera you leave behind — you keep LIVE sight of this node + neighbors after you move on (see GRTHT & patrols there). INT 3.'},
+  mimicd:{name:'MIMIC.D',cls:'agent',cost:2,noise:0,agent:{hp:2,kind:'mimic'},text:'Deploy: silent decoy. Sweeps/patrols hit it, not you. INT 2.'},
+  framejob:{name:'FRAME JOB',cls:'obfuscation',cost:1,noise:0,text:'Shift 10 session trace onto the rival.'},
+  killswitch:{name:'KILLSWITCH',cls:'zero-day',cost:1,noise:4,exhaust:true,text:'Corp SYSOP dark 3 ticks. Burns.'}
+};
+const START_DECK=['chisel','chisel','bruteforce','spoof','patch','tunnel','fork','quietexec','sentryd','spoof'];
+const DRAFT_POOL=['bruteforce','worm','chisel','fork','spoof','launder','patch','tunnel','quietexec','sentryd','mimicd','framejob','killswitch'];
+
+const BOARDS={
+  job1:{name:'contract 01 — skip trace · vantage credit union',
+    fixer:"Easy one to shake the rust off. Client wants a debtor's new address off Vantage's servers. In, grab it, out. Try not to make the whole city notice — you carry NOMAD's name now, and names remember.",
+    nodes:{FRONT:{x:110,y:90,label:'WWW',sub:'public portal',entry:'loud'},VPN:{x:110,y:380,label:'VPN',sub:'legacy vpn',entry:'quiet',trait:'legacy'},
+      R1:{x:250,y:150,label:'R1',sub:'router'},R2:{x:250,y:330,label:'R2',sub:'host',trait:'unpatched'},CORE:{x:400,y:240,label:'CORE',sub:'core switch'},
+      DATA:{x:560,y:180,label:'DATA',sub:'records db'},LOG:{x:560,y:340,label:'LOG',sub:'log server',trait:'siem'},EXFIL:{x:690,y:250,label:'EXIT',sub:'dropbox'}},
+    edges:[['FRONT','R1'],['FRONT','CORE'],['VPN','R2'],['R1','CORE'],['R2','CORE'],['R1','R2'],['CORE','DATA'],['CORE','LOG'],['DATA','LOG'],['DATA','EXFIL'],['LOG','EXFIL']],
+    entries:{loud:{node:'FRONT',desc:'The public web portal. Central, fast, one hop from the core — but watched, and you start hot.',startTrace:8},
+             quiet:{node:'VPN',desc:'A forgotten VPN on the edge. Long way in, costs a turn of ground — but you enter cold and the logs are thin.',startTrace:0}},
+    objectiveNode:'DATA',objective:'Pull the debtor record from DATA',
+    ice:{PALISADE:{node:'DATA',kind:'barrier',hp:3,max:3}},
+    rival:{start:'LOG',hp:8,target:'DATA',crack:2},sysopFrom:2,cleanUnder:22,siphonTicks:1},
+  job2:{name:'contract 02 — corporate espionage · helix logistics',
+    fixer:"Unknown client, good money. They want a shipping manifest out of Helix — and they want Helix to know it was taken. Another handle's sniffing the same job; boards call them GRTHT. Beat them to it or burn them off it.",
+    nodes:{FRONT:{x:100,y:80,label:'WWW',sub:'edge gateway',entry:'loud'},WIFI:{x:100,y:250,label:'WIFI',sub:'guest wifi',entry:'quiet'},VEND:{x:100,y:400,label:'VND',sub:'vendor link',entry:'quiet',trait:'legacy'},
+      R1:{x:245,y:160,label:'R1',sub:'router'},R2:{x:245,y:330,label:'R2',sub:'host',trait:'unpatched'},WELL:{x:370,y:90,label:'WELL',sub:'cycle well'},CORE:{x:390,y:250,label:'CORE',sub:'core'},
+      GATE:{x:400,y:400,label:'GATE',sub:'subnet gate'},DATA:{x:560,y:200,label:'DATA',sub:'manifest db'},IDS:{x:560,y:370,label:'IDS',sub:'ids appliance',trait:'siem'},EXFIL:{x:690,y:280,label:'EXIT',sub:'dropbox'}},
+    edges:[['FRONT','R1'],['R1','DATA'],['WIFI','R2'],['VEND','R2'],['R1','WELL'],['R1','CORE'],['R2','CORE'],['R2','GATE'],['WELL','CORE'],['CORE','DATA'],['CORE','GATE'],['GATE','IDS'],['DATA','IDS'],['DATA','EXFIL'],['IDS','EXFIL']],
+    entries:{loud:{node:'FRONT',desc:'Straight through the edge gateway. Quick to the core, well-lit, well-logged. You start hot.',startTrace:8},
+             quiet:{node:'WIFI',desc:'Guest wi-fi nobody rotated. Middle path, moderate cover.',startTrace:2},
+             quiet2:{node:'VEND',desc:'A third-party vendor link — the supply-chain side door. Slow and roundabout, almost no eyes.',startTrace:0}},
+    objectiveNode:'DATA',objective:'Exfiltrate the manifest from DATA',
+    ice:{BULWARK:{node:'GATE',kind:'barrier',hp:5,max:5},PROWLER:{kind:'patrol',hp:4,max:4,pos:'WELL',route:['WELL','CORE','R1','R2']}},
+    rival:{start:'WELL',hp:9,target:'DATA',crack:3},sysopFrom:1,cleanUnder:32,siphonTicks:2},
+  job3:{name:'contract 03 — black-site · meridian biotech',
+    fixer:"This one makes a name or ends one. Meridian's black-site holds something a client will pay a fortune for — and Meridian will pay more to find who took it. Two ways past the perimeter. GRTHT wants this too, and they've learned from last time. Whatever you do down there: mean it.",
+    nodes:{FRONT:{x:95,y:90,label:'WWW',sub:'perimeter',entry:'loud'},POSTERN:{x:95,y:380,label:'PSTN',sub:'postern host',entry:'quiet',trait:'legacy'},
+      R1:{x:225,y:150,label:'R1',sub:'router'},HPOT:{x:225,y:300,label:'H1',sub:'file server?'},R2:{x:230,y:420,label:'R2',sub:'host',trait:'unpatched'},
+      CMP:{x:355,y:110,label:'CMP',sub:'build server'},CORE:{x:370,y:250,label:'CORE',sub:'core switch'},GATE:{x:390,y:400,label:'GATE',sub:'inner gate'},
+      SIEM:{x:520,y:150,label:'SIEM',sub:'collector',trait:'siem'},DATA:{x:575,y:290,label:'DATA',sub:'r&d vault'},IDS:{x:540,y:420,label:'IDS',sub:'ids appliance'},EXFIL:{x:695,y:250,label:'EXIT',sub:'dropbox'}},
+    edges:[['FRONT','R1'],['R1','SIEM'],['POSTERN','R2'],['POSTERN','HPOT'],['R1','CMP'],['R1','CORE'],['HPOT','CORE'],['R2','GATE'],['HPOT','GATE'],['CMP','SIEM'],['CMP','CORE'],['CORE','SIEM'],['CORE','GATE'],['SIEM','DATA'],['GATE','IDS'],['DATA','IDS'],['DATA','EXFIL'],['IDS','EXFIL']],
+    entries:{loud:{node:'FRONT',desc:'The perimeter gateway. Fast, direct, watched around the clock. You start hot and it climbs.',startTrace:10},
+             quiet:{node:'POSTERN',desc:'A postern host past a file server that is probably a honeypot. The long, cold way — but that server bites.',startTrace:0}},
+    objectiveNode:'DATA',objective:'Siphon the R&D vault at DATA',
+    ice:{BULWARK:{node:'GATE',kind:'barrier',hp:5,max:5},PALISADE:{node:'SIEM',kind:'barrier',hp:4,max:4},
+         ARGUS:{node:'IDS',kind:'sentry',hp:3,max:3,every:3},PROWLER:{kind:'patrol',hp:5,max:5,pos:'CORE',route:['CORE','CMP','R1','HPOT']}},
+    rival:{start:'CMP',hp:11,target:'DATA',crack:3},sysopFrom:1,cleanUnder:42,siphonTicks:2}
+};
+const JOB_ORDER=['job1','job2','job3'];
+/* ===== CAREER STATE (persists across jobs) ===== */
+let C;
+function newCareer(){
+  C={opIndex:0,jobIndex:0,heat:0,notoriety:0,deck:[...START_DECK],history:[],entryChoices:[],burnedRivals:0,cleanExits:0,framed:0};
+  tlog('career_start',{});showIntro();
+}
+function showIntro(){
+  const op=OPERATORS[C.opIndex];
+  document.getElementById('introtitle').textContent='OPERATOR: '+op.name;
+  document.getElementById('introlore').innerHTML='<span class="who">'+MENTOR+' · handle: NOMAD</span>'+op.intro;
+  document.getElementById('introbtn').textContent=C.jobIndex===0?'Pick up the handle':'Continue the handle';
+  showOverlay('introov');tlog('operator_intro',{op:op.name,jobIndex:C.jobIndex});
+}
+function closeIntro(){hideOverlay('introov');if(C.jobIndex===0){showBriefing();}else openDraft();}
+
+/* ===== PER-JOB STATE ===== */
+let S;
+function consequenceLine(){
+  const h=C.history[C.history.length-1];
+  if(!h)return '';
+  if(h.result==='rival')return 'GRTHT\u2019s crew is crowing about the last one all over the boards. ';
+  if(h.result==='trace')return 'I scrubbed what I could of the last operator\u2019s trail. You\u2019re carrying their heat either way. ';
+  if(h.rivalBurned)return 'Word about GRTHT\u2019s fried rig got around. Corps in this sector are patching faster. ';
+  if(h.clean)return 'Clean work travels. This client asked for NOMAD by name. ';
+  return 'The last job made some noise. They\u2019re listening for you now. ';
+}
+function notorietyLine(){
+  if(C.notoriety>=5)return 'The boards have started telling stories about the handle. Some are even true. ';
+  if(C.notoriety>=3)return 'People are starting to say the name like it means something. ';
+  return '';
+}
+function openEntry(){
+  const board=BOARDS[JOB_ORDER[C.jobIndex]];
+  document.getElementById('entryctx').textContent=consequenceLine()+notorietyLine()+board.fixer;
+  const row=document.getElementById('entryrow');row.innerHTML='';
+  function entHops(from){const q=[[from]],seen=new Set([from]);while(q.length){const pth=q.shift(),l=pth[pth.length-1];if(l===board.objectiveNode)return pth.length-1;for(const ed of board.edges){let nb=null;if(ed[0]===l)nb=ed[1];else if(ed[1]===l)nb=ed[0];if(nb&&!seen.has(nb)){seen.add(nb);q.push([...pth,nb]);}}}return '?';}
+  Object.entries(board.entries).forEach(([key,e])=>{
+    const d=document.createElement('div');d.className='entrycard';
+    const loud=e.startTrace>=8;const hops=entHops(e.node);
+    d.innerHTML='<div class="en">'+board.nodes[e.node].label+' — '+(loud?'LOUD':e.startTrace<=2?'QUIET':'MIXED')+'</div>'
+      +'<div class="ed">'+e.desc+'</div><div class="tags">start trace <b class="'+(loud?'loud':'quiet')+'">'+e.startTrace+'%</b> · <b>'+hops+' hops</b> to target</div>';
+    d.onclick=()=>{tlog('entry_pick',{job:C.jobIndex+1,entry:key,node:e.node,startTrace:e.startTrace});C.entryChoices.push(key);startJob(key);};
+    row.appendChild(d);
+  });
+  showOverlay('entryov');tlog('entry_open',{job:C.jobIndex+1,options:Object.keys(board.entries)});
+}
+function startJob(entryKey){
+  hideOverlay('entryov');
+  const bd=BOARDS[JOB_ORDER[C.jobIndex]];
+  const entry=bd.entries[entryKey];const startNode=entry.node;
+  const ceiling=100;
+  const heatFloor=Math.min(70,Math.round(C.heat*0.6+C.notoriety*4));
+  S={board:bd,entryKey:entryKey,pos:startNode,trace:entry.startTrace,heatFloorTrace:heatFloor,ceiling:ceiling,
+    cycles:3,baseCycles:3,freeMoves:0,turn:1,over:false,cache:'intact',scanIn:3,hpotSprung:false,ln2:1,qe:false,sysopDark:0,
+    discovered:new Set(),alertPool:0,startTrace:entry.startTrace,ice:JSON.parse(JSON.stringify(bd.ice)),agents:{},
+    rival:{alive:true,pos:bd.rival.start,hp:bd.rival.hp,max:bd.rival.hp,trace:0,state:'toData',crack:bd.rival.crack,crackLeft:bd.rival.crack,
+      cycles:0,freeMoves:0,deck:shuffle(['bruteforce','bruteforce','chisel','chisel','spoof','tunnel','fork','patch']),hand:[],discard:[],muffled:false,acted:0},
+    deck:shuffle([...C.deck]),hand:[],discard:[],burned:[],target:null,noiseThisJob:0,cardsPlayed:{},scans:0,turnMs:[],turnT0:Date.now(),seenCards:{},siphonProg:0,lastSiphonTurn:-1,breachTaxed:{},actions:{scan:0,move:0,ln2:0,endTurn:0}};
+  discover(startNode);for(const n of adj(startNode))discover(n);
+  document.getElementById('syslog').innerHTML='';
+  draw(5);rivalDraw();
+  log('session opened → '+bd.name.split('·')[1].trim()+' via '+bd.nodes[startNode].label+'.','amber');
+  log('handle: NOMAD. '+(entry.startTrace>=8?'You came in the front. They already see you.':'You came in cold and quiet.'),entry.startTrace>=8?'red':'cyan');
+  if(C.heat>0)log('inherited Heat — your trace ceiling this job is '+(ceiling-heatFloor)+'%, not 100%.','magenta');
+  tlog('job_start',{job:C.jobIndex+1,board:bd.name,entry:entryKey,startTrace:entry.startTrace,heat:C.heat,notoriety:C.notoriety,ceilingRoom:ceiling-heatFloor});
+  render();
+}
+
+/* ===== HELPERS ===== */
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function draw(n){for(let i=0;i<n;i++){if(!S.deck.length){if(!S.discard.length)return;S.deck=shuffle(S.discard);S.discard=[];log('deck recompiled.');}S.hand.push(S.deck.pop());}}
+function rivalDraw(){const r=S.rival;while(r.hand.length<4){if(!r.deck.length){if(!r.discard.length)return;r.deck=shuffle(r.discard);r.discard=[];}r.hand.push(r.deck.pop());}}
+const adj=id=>S.board.edges.filter(e=>e.includes(id)).map(e=>e[0]===id?e[1]:e[0]);
+const barrierBlocked=id=>Object.values(S.ice).some(ic=>ic.kind==='barrier'&&ic.hp>0&&ic.node===id);
+const disc=id=>S.discovered.has(id);
+function discover(id){S.discovered.add(id);}
+const nodesOf=()=>S.board.nodes;
+const alertLevel=()=>Math.min(5,Math.floor(S.alertPool/8));
+const costMod=()=>nodesOf()[S.pos].trait==='hardened'?1:0;
+function hopsFrom(start,depth){const s=new Set([start]);let f=[start];for(let d=0;d<depth;d++){const nx=[];for(const n of f)for(const nb of adj(n))if(!s.has(nb)){s.add(nb);nx.push(nb);}f=nx;}return s;}
+function liveVis(id){if(hopsFrom(S.pos,1).has(id))return true;for(const n in S.agents)if(n===id||adj(n).includes(id))return true;return false;}
+function bfs(from,to,ignoreB){const q=[[from]],seen=new Set([from]);while(q.length){const p=q.shift(),last=p[p.length-1];if(last===to)return p;for(const nb of adj(last)){if(seen.has(nb))continue;if(!ignoreB&&barrierBlocked(nb))continue;seen.add(nb);q.push([...p,nb]);}}return null;}
+function log(msg,color){const el=document.getElementById('syslog');if(!el)return;const d=document.createElement('div');d.className='ln'+(color?' '+color:'');d.innerHTML='[t'+String(S.turn).padStart(2,'0')+'] <b>'+msg+'</b>';el.prepend(d);}
+function flashBoard(){const svg=document.getElementById('board');svg.classList.remove('flash');void svg.offsetWidth;svg.classList.add('flash');}
+function addTrace(n,why){if(S.over)return;const room=S.ceiling-S.heatFloorTrace;const before=S.trace;S.trace=Math.max(0,Math.min(room,S.trace+n));if(n>0)log('trace +'+n+' — '+why,'red');else if(n<0)log('trace '+n+' — '+why,'cyan');if(n>0)S.noiseThisJob+=n;if(before<room*0.5&&S.trace>=room*0.5)log('ESCALATION: forensics paged.','red');if(S.trace>=room)lose('trace');}
+function rivalTrace(n,why){const r=S.rival;if(!r.alive)return;r.trace=Math.max(0,Math.min(100,r.trace+n));if(why&&liveVis(r.pos))log('GRTHT trace '+(n>0?'+':'')+n+' — '+why,'magenta');if(r.trace>=100)burnRival('the corp traced GRTHT first');}
+function makeNoise(who,amount,atNode,label){if(amount<=0)return;let n=amount;if(nodesOf()[atNode].trait==='legacy')n-=1;if(['LOG','IDS','SIEM'].includes(atNode)||adj(atNode).some(x=>nodesOf()[x]&&nodesOf()[x].trait==='siem'))n+=1;if(n<=0){if(who==='player')log('noise from '+label+' muted — legacy host.','cyan');return;}S.alertPool+=n;if(who==='player')addTrace(n,'noise from '+label);else rivalTrace(n,null);}
+function damageIce(key,dmg,src){const ic=S.ice[key];ic.hp=Math.max(0,ic.hp-dmg);const where=ic.kind==='patrol'?ic.pos:ic.node;log(src+' → ICE "'+key+'" '+where+' -'+dmg+' ('+ic.hp+'/'+ic.max+')','amber');if(ic.hp===0){log('ICE "'+key+'" killed.','amber');if(ic.kind==='barrier')log('gate open ('+key+').','cyan');}}
+function damageRival(dmg,src){const r=S.rival;if(!r.alive)return;r.hp=Math.max(0,r.hp-dmg);log(src+' → GRTHT -'+dmg+' ('+r.hp+'/'+r.max+')','amber');if(r.hp===0)burnRival('rig integrity zeroed — you burned them');}
+function burnRival(why){const r=S.rival;if(!r.alive)return;r.alive=false;C.burnedRivals++;log('GRTHT BURNED — '+why+'.','magenta');S.alertPool+=4;addTrace(6,'a fried rig on their network — the corp now knows an operator is loose');tlog('rival_burned',{job:C.jobIndex+1,turn:S.turn,rivalActed:r.acted});}
+function exposeAgent(node,src){addTrace(5,'your binary on '+node+' was fingerprinted ('+src+')');}
+function spendAction(cost,noise,label){const c=cost+(S.qe?0:costMod());if(S.qe){S.qe=false;log('QUIET EXEC absorbs the '+label+' — free, silent.','cyan');return true;}if(S.cycles<c){log('not enough cycles for '+label+'.');return false;}S.cycles-=c;makeNoise('player',noise,S.pos,label);return true;}
+/* ===== PLAYER ACTIONS ===== */
+function tryMove(id){
+  if(S.over)return;if(!adj(S.pos).includes(id))return;
+  if(barrierBlocked(id)){log('connection refused — gate ICE on '+id+'.','red');return;}
+  const mc=1+costMod();
+  if(S.freeMoves>0)S.freeMoves--;else if(S.cycles>=mc)S.cycles-=mc;else{log('no cycles to route.');return;}
+  if(S.siphonProg>0&&S.pos===S.board.objectiveNode&&id!==S.board.objectiveNode&&S.cache==='intact'){S.siphonProg=0;log('channel broken — the siphon resets.','red');}
+  S.actions.move++;
+  S.pos=id;discover(id);for(const n of adj(id))discover(n);
+  log('hop → '+id+' ('+nodesOf()[id].sub+')');
+  if(id==='HPOT'&&!S.hpotSprung){S.hpotSprung=true;nodesOf().HPOT.sub='honeypot!';addTrace(10,'HONEYPOT — that file server was bait');S.alertPool+=4;}
+  const bic=Object.entries(S.ice).find(([k,ic])=>ic.kind==='barrier'&&ic.hp===0&&ic.node===id&&ic.breachedBy==='rival');
+  if(bic&&!S.breachTaxed[bic[0]]){S.breachTaxed[bic[0]]=true;addTrace(4,'you slipped through GRTHT\u2019s breach — forensics tangle you together');tlog('breach_crossed',{job:C.jobIndex+1,gate:bic[0],turn:S.turn});}
+  const P=S.ice.PROWLER;if(P&&P.hp>0&&P.pos===id)addTrace(8,'you walked into PROWLER');
+  if(id==='EXFIL'){if(S.cache==='player')return winJob();log('exit reached — nothing to drop yet.','amber');}
+  render();
+}
+function doScan(){
+  if(S.over)return;if(!spendAction(1,1,'SCAN')){render();return;}
+  S.scans++;S.actions.scan++;const found=[];let frontier=[S.pos];const seen=new Set([S.pos]);
+  for(let d=0;d<2;d++){const next=[];for(const n of frontier){if(n!==S.pos&&barrierBlocked(n))continue;for(const nb of adj(n)){if(seen.has(nb))continue;seen.add(nb);next.push(nb);if(!disc(nb)){discover(nb);found.push(nb);}}}frontier=next;}
+  log(found.length?'SCAN → mapped: '+found.join(', '):'SCAN → nothing new in range.','cyan');render();fireScanPing();
+}
+function doSiphon(){
+  if(S.over||S.pos!==S.board.objectiveNode||S.cache!=='intact')return;
+  const need=S.board.siphonTicks||1;
+  if(need>1&&S.lastSiphonTurn===S.turn){log('the buffer needs a full tick to settle — one channel pulse per turn.','red');return;}
+  if(!spendAction(2,2,'SIPHON')){render();return;}
+  S.lastSiphonTurn=S.turn;S.siphonProg++;
+  if(S.siphonProg<need){log('SIPHON channeling — hold position, '+(need-S.siphonProg)+' more tick.','amber');tlog('siphon_channel',{job:C.jobIndex+1,turn:S.turn,prog:S.siphonProg});render();return;}
+  S.cache='player';log('SIPHON complete — payload captured. Get to EXIT.','cyan');
+  tlog('objective',{job:C.jobIndex+1,turn:S.turn,trace:S.trace});render();
+}
+function useLN2(){if(S.over||S.ln2<1)return;S.ln2--;S.actions.ln2++;S.cycles+=4;log('you look away from the monitor. the LN2 pour hisses over the loop. (+4 cycles)','cyan');addTrace(3,'rig thermal spike');render();}
+function inRange(){return [S.pos,...adj(S.pos)];}
+function hostilesInRange(){const range=inRange();const out=[];if(S.rival.alive&&range.includes(S.rival.pos))out.push({type:'rival',node:S.rival.pos,label:'GRTHT',hp:S.rival.hp});for(const [k,ic] of Object.entries(S.ice)){const where=ic.kind==='patrol'?ic.pos:ic.node;if(ic.hp>0&&range.includes(where))out.push({type:'ice',key:k,node:where,label:k,hp:ic.hp});}return out;}
+function cancelTarget(){if(S.target){S.target=null;log('targeting cancelled.','cyan');render();}}
+function playCard(i){
+  if(S.over)return;
+  if(S.target&&S.target.cardIdx===i){cancelTarget();return;}
+  const id=S.hand[i],c=CARDS[id],p=playability(id);
+  if(!p.ok){log('cannot run '+c.name+' — '+p.why);return;}
+  if(id==='chisel'||id==='bruteforce'){const h=hostilesInRange();if(h.length>1){S.target={cardIdx:i,cardId:id};log('choose a target for '+c.name+' — click a highlighted node (click the card again or press Esc to cancel).','cyan');render();return;}if(h.length===1){resolveBreaker(i,id,h[0]);return;}}
+  resolveOther(i,id,c);
+}
+function resolveBreaker(i,id,tgt){const c=CARDS[id];S.cycles-=c.cost+costMod();S.hand.splice(i,1);S.target=null;let dmg=c.dmg;if(nodesOf()[S.pos].trait==='unpatched')dmg*=2;const tag=nodesOf()[S.pos].trait==='unpatched'?' (unpatched ×2)':'';if(tgt.type==='rival')damageRival(dmg,c.name+tag);else damageIce(tgt.key,dmg,c.name+tag);S.discard.push(id);makeNoise('player',c.noise,S.pos,c.name);S.cardsPlayed[id]=(S.cardsPlayed[id]||0)+1;flashBoard();render();}
+function resolveOther(i,id,c){
+  S.cycles-=c.cost+costMod();S.hand.splice(i,1);
+  switch(id){
+    case 'worm':{let hit=0;const range=inRange();if(S.rival.alive&&range.includes(S.rival.pos)){damageRival(2,'WORM');hit++;}for(const [k,ic] of Object.entries(S.ice)){const where=ic.kind==='patrol'?ic.pos:ic.node;if(ic.hp>0&&range.includes(where)){damageIce(k,2,'WORM');hit++;}}if(!hit)log('WORM found nothing in range.');break;}
+    case 'spoof':addTrace(-8,'SPOOF');break;
+    case 'launder':addTrace(-6,'LAUNDER');S.alertPool=Math.max(0,S.alertPool-1);C.heat=Math.max(0,C.heat-2);log('Heat cooled a little (LAUNDER).','cyan');break;
+    case 'patch':addTrace(-5,'PATCH');draw(1);break;
+    case 'tunnel':S.freeMoves+=2;log('TUNNEL — next 2 hops free.','amber');break;
+    case 'fork':draw(2);log('FORK → drew 2.');break;
+    case 'quietexec':S.qe=true;log('QUIET EXEC primed.','amber');break;
+    case 'sentryd':case 'mimicd':S.agents[S.pos]={id:id,name:c.name,hp:c.agent.hp,max:c.agent.hp,kind:c.agent.kind,exposed:false};log(c.name+' deployed on '+S.pos+(id==='sentryd'?' — this node and its neighbors stay in live view even after you leave.':' — sweeps and patrols will hit the decoy, not you.'),'cyan');break;
+    case 'framejob':addTrace(-10,'FRAME JOB — planted on GRTHT');rivalTrace(10,'framed by you');C.framed++;break;
+    case 'killswitch':S.sysopDark=3;log('KILLSWITCH — SYSOP dark 3 ticks.','amber');break;
+  }
+  if(c.exhaust)S.burned.push(id);else if(!c.agent)S.discard.push(id);
+  makeNoise('player',c.noise,S.pos,c.name);S.cardsPlayed[id]=(S.cardsPlayed[id]||0)+1;render();
+}
+function clickNode(id){if(S.target){const h=hostilesInRange().find(x=>x.node===id);if(h){resolveBreaker(S.target.cardIdx,S.target.cardId,h);return;}}tryMove(id);}
+function playability(id){const c=CARDS[id];if(S.cycles<c.cost+costMod())return{ok:false,why:'not enough cycles'};if((id==='chisel'||id==='bruteforce')&&hostilesInRange().length===0)return{ok:false,why:'no hostile in range'};if(id==='worm'&&hostilesInRange().length===0)return{ok:false,why:'nothing in range'};if(c.agent&&S.agents[S.pos])return{ok:false,why:'node has an agent'};if(c.agent&&barrierBlocked(S.pos))return{ok:false,why:'blocked node'};if(id==='framejob'&&!S.rival.alive)return{ok:false,why:'no rival'};if(id==='quietexec'&&S.qe)return{ok:false,why:'already primed'};return{ok:true};}
+
+/* ===== END TURN / PHASES ===== */
+function endTurn(){
+  if(S.over)return;S.target=null;S.actions.endTurn++;
+  if(S.rival.alive){log('· rival ·','phase');S.rival.muffled=false;rivalPhase();if(S.over)return;}
+  log('· corp ·','phase');
+  const room=S.ceiling-S.heatFloorTrace;
+  addTrace(S.trace>=room*0.5?5:3,'background forensics');if(S.over)return;
+  if(S.sysopDark>0){S.sysopDark--;}
+  else{
+    if(S.ice.ARGUS&&S.ice.ARGUS.hp>0){S.scanIn--;if(S.scanIn<=0){S.scanIn=S.ice.ARGUS.every;const zone=['DATA','IDS','SIEM'];const decoy=Object.values(S.agents).some(a=>a.kind==='mimic');if(zone.includes(S.pos)&&!decoy){addTrace(12,'ARGUS sweep caught you');S.alertPool+=3;}else if(decoy)log('ARGUS swept — your MIMIC decoy ate it.','cyan');else log('ARGUS sweep — you were clear.','cyan');if(S.over)return;}}
+    prowlerPhase();if(S.over)return;sysopPhase();if(S.over)return;
+  }
+  const _now=Date.now();S.turnMs.push(_now-S.turnT0);S.turnT0=_now;
+  S.turn++;S.discard.push(...S.hand);S.hand=[];draw(5);S.cycles=S.baseCycles;log('— tick '+S.turn+' · cycles '+S.cycles+' —');render();
+}
+function prowlerPhase(){const P=S.ice.PROWLER;if(!P||P.hp<=0)return;const idx=P.route.indexOf(P.pos);const tgt=idx>=0?P.route[(idx+1)%P.route.length]:P.route[0];const path=bfs(P.pos,tgt,true);if(path&&path.length>1){P.pos=path[1];if(disc(P.pos))log('PROWLER → '+P.pos,'red');}if(S.pos===P.pos||adj(P.pos).includes(S.pos))addTrace(8,'PROWLER pinged your route');if(S.over)return;if(S.agents[P.pos]){const a=S.agents[P.pos];a.hp-=2;if(a.hp<=0){delete S.agents[P.pos];log('PROWLER killed your '+a.name+'.','red');}else exposeAgent(P.pos,'patrol');}}
+function sysopPhase(){const al=alertLevel();if(al<1)return;const dmgd=Object.entries(S.ice).filter(([k,ic])=>ic.hp>0&&ic.hp<ic.max).sort((a,b)=>a[1].hp-b[1].hp);if(dmgd.length){const [k,ic]=dmgd[0];ic.hp=Math.min(ic.max,ic.hp+2);const where=ic.kind==='patrol'?ic.pos:ic.node;if(disc(where))log('SYSOP patches "'+k+'" +2.','red');else log('a patch runs somewhere unseen…','muffled');}}
+
+/* ===== RIVAL AI (credible: distinct start ≥3 hops, real actions, fog-visible) ===== */
+function rivalNext(target){const r=S.rival;let p=bfs(r.pos,target,false);if(p&&p.length>1)return{move:p[1]};p=bfs(r.pos,target,true);if(p&&p.length>1)return barrierBlocked(p[1])?{attack:p[1]}:{move:p[1]};return null;}
+function rivalPlay(id){const r=S.rival,c=CARDS[id],i=r.hand.indexOf(id);if(i<0||r.cycles<c.cost)return false;r.cycles-=c.cost;r.hand.splice(i,1);r.discard.push(id);r.acted++;if(liveVis(r.pos))log('GRTHT runs '+c.name+'.','magenta');else if(c.noise>0)rivalMuffle('an intrusion spikes out of sight…');makeNoise('rival',c.noise,r.pos,c.name);return true;}
+function rivalMuffle(m){if(S.rival.muffled)return;S.rival.muffled=true;log(m,'muffled');}
+function rivalAttackBarrier(node){const r=S.rival;const ent=Object.entries(S.ice).find(([k,ic])=>ic.kind==='barrier'&&ic.hp>0&&ic.node===node);if(!ent)return false;const [k,ic]=ent;let acted=false;if(rivalPlay('bruteforce')){ic.hp=Math.max(0,ic.hp-4);acted=true;}else if(r.cycles>=1){r.cycles--;ic.hp=Math.max(0,ic.hp-1);acted=true;r.acted++;}if(ic.hp===0)ic.breachedBy='rival';if(acted){if(liveVis(node)||disc(node))log('GRTHT hammers '+k+' ('+ic.hp+'/'+ic.max+')','magenta');else rivalMuffle('something hammers a gate you cannot see…');if(ic.hp===0)log('gate "'+k+'" breached by GRTHT.','magenta');}return acted;}
+function rivalPhase(){
+  const r=S.rival;rivalDraw();r.cycles=3;r.freeMoves=0;
+  const near=adj(r.pos).includes(S.pos)||r.pos===S.pos;
+  if(r.hp<=r.max*0.5&&near&&r.hand.includes('bruteforce')&&rivalPlay('bruteforce')){addTrace(5,'GRTHT struck back at your position');}
+  if(!r.alive||S.over)return;
+  if(r.state==='toData'&&S.cache==='player'){r.state='venting';if(liveVis(r.pos))log('GRTHT sees the cache flip to you. Furious.','magenta');addTrace(6,'GRTHT doxxes one of your relays out of spite');if(S.over)return;}
+  const dest=r.state==='toData'?S.board.objectiveNode:(r.state==='toExfil'?'EXFIL':S.board.rival.start);
+  let guard=0;
+  while(guard++<6&&r.alive&&!S.over){
+    if(r.trace>=30&&rivalPlay('spoof')){r.trace=Math.max(0,r.trace-8);continue;}
+    const n=rivalNext(dest);if(n&&n.attack){if(rivalAttackBarrier(n.attack))continue;else break;}
+    if(r.hand.length<=2&&rivalPlay('fork')){rivalDraw();continue;}
+    break;
+  }
+  if(!r.alive||S.over)return;
+  if(r.state==='cracking'){if(S.cache!=='intact'){r.state='venting';}else{r.crackLeft--;r.acted++;if(r.crackLeft<=0){S.cache='rival';r.state='toExfil';log('GRTHT HAS THE CACHE. Running for EXIT.','magenta');}else if(liveVis('DATA'))log('GRTHT cracking… '+r.crackLeft+' left.','magenta');else rivalMuffle('a crack sequence echoes from the vault…');}}
+  else{let moves=0;while(moves<2&&(r.freeMoves>0||r.cycles>0)){const n=rivalNext(dest);if(!n||n.attack)break;if(r.freeMoves>0)r.freeMoves--;else r.cycles--;r.pos=n.move;moves++;r.acted++;if(liveVis(r.pos))log('GRTHT hop → '+r.pos+(S.cache==='rival'?' (carrying cache)':''),'magenta');if(r.pos===dest)break;}
+    if(r.state==='toData'&&r.pos===S.board.objectiveNode&&S.cache==='intact'){r.state='cracking';r.crackLeft=r.crack;if(liveVis(S.board.objectiveNode))log('GRTHT begins cracking — '+r.crack+' ticks.','magenta');else rivalMuffle('a crack sequence echoes from the vault…');}
+    if(r.state==='toExfil'&&r.pos==='EXFIL')return loseRival();
+    if(r.state==='venting'&&r.pos===S.board.rival.start){r.alive=false;log('GRTHT jacked out.','magenta');return;}}
+  rivalTrace(2,null);
+}
+/* ===== WIN / LOSE ===== */
+function jobStats(){const m=[...S.turnMs].sort((a,b)=>a-b);const med=m.length?m[Math.floor(m.length/2)]:0;
+  const never=Object.keys(S.seenCards).filter(k=>S.seenCards[k]>0&&!S.cardsPlayed[k]);
+  return {medianTurnMs:med,turns:S.turn,heldPlayableNeverPlayed:never,deckSize:C.deck.length,actions:S.actions};}
+
+function winJob(){
+  S.over=true;
+  const clean=S.trace<S.board.cleanUnder&&S.noiseThisJob<S.board.cleanUnder;
+  if(clean)C.cleanExits+=1;
+  const heatGain=Math.round(S.noiseThisJob*0.7+(S.rival.alive?0:5)+alertLevel()*2);
+  const heatCool=clean?6:0;
+  C.heat=Math.max(0,C.heat+heatGain-heatCool);
+  C.notoriety+=1+(clean?1:0);
+  C.history.push({job:C.jobIndex+1,result:'win',entry:S.entryKey,trace:S.trace,noise:S.noiseThisJob,clean:clean,heat:C.heat,rivalBurned:!S.rival.alive});
+  tlog('job_win',{job:C.jobIndex+1,...jobStats(),entry:S.entryKey,trace:S.trace,noise:S.noiseThisJob,clean:clean,heatAfter:C.heat,notorAfter:C.notoriety,scans:S.scans,rivalBurned:!S.rival.alive,rivalActed:S.rival.acted,cardsPlayed:S.cardsPlayed});
+  const t=document.getElementById('jetitle'),x=document.getElementById('jetext');
+  t.className='win';t.textContent=clean?'CLEAN EXIT':'EXTRACTED';
+  x.innerHTML=(clean?'You got out cold — trace '+S.trace+'%, the corp barely noticed. <b style="color:var(--cyan)">Clean-exit bonus: reputation ×2, Heat −6.</b> ':'Payload delivered — trace '+S.trace+'%, alert '+alertLevel()+'/5. You left a mess, but a win is a win — the handle\u2019s name still grows. ')+'<br><br>Heat is now '+C.heat+'. '+(C.heat>0?'Next job\u2019s trace ceiling will be lower.':'The handle is running cold.');
+  const lore=document.getElementById('jelore');
+  if(!S.rival.alive){lore.style.display='';lore.innerHTML='<span class="who">'+MENTOR+'</span>"You burned GRTHT. Word gets around — that\u2019s a name that won\u2019t forget yours. And a fried rig on a corp floor makes them start looking. Watch your Heat."';}
+  else lore.style.display='none';
+  const _b=document.getElementById('jebtn');_b.onclick=nextJob;_b.textContent=(C.jobIndex<2)?'Next contract':'Finish career';
+  showOverlay('jobend');render();
+}
+function loseRival(){
+  S.over=true;C.heat=Math.max(0,C.heat+2);
+  C.history.push({job:C.jobIndex+1,result:'rival',entry:S.entryKey,trace:S.trace,heat:C.heat});
+  tlog('job_lose',{job:C.jobIndex+1,cause:'rival',...jobStats(),entry:S.entryKey,trace:S.trace,rivalActed:S.rival.acted});
+  const t=document.getElementById('jetitle'),x=document.getElementById('jetext');
+  t.className='lose';t.textContent='OUTPLAYED';
+  x.innerHTML='GRTHT reached the exit with the cache. The contract is void — a rival handle beat NOMAD to it. The boards will hear about this one.<br><br><span style="color:var(--ink-dim)">Counterplay: GRTHT has to sit and crack the vault for several ticks — hit them there, FRAME JOB their trace up, or take the loud door and win the race.</span>';
+  document.getElementById('jelore').style.display='none';
+  const _b=document.getElementById('jebtn');_b.onclick=nextJob;_b.textContent=(C.jobIndex<2)?'Next contract':'Finish career';
+  showOverlay('jobend');render();
+}
+function lose(cause){
+  S.over=true;C.heat=Math.round(C.heat+6);
+  C.history.push({job:C.jobIndex+1,result:'trace',entry:S.entryKey,trace:S.trace,heat:C.heat});
+  tlog('job_lose',{job:C.jobIndex+1,cause:cause,...jobStats(),entry:S.entryKey,trace:S.trace,noise:S.noiseThisJob,heatAfter:C.heat});
+  const t=document.getElementById('jetitle'),x=document.getElementById('jetext');
+  t.className='lose';t.textContent='TRACE MAXED — SOFT BURN';
+  x.innerHTML='Trace hit your ceiling. This operator got out of the chair before the door came down — but the identity is torched and the handle runs hotter now (Heat '+C.heat+'). In the full game, the next operator inherits this heat and a cleanup contract scrubbing this one\u2019s trail.';
+  document.getElementById('jelore').style.display='none';
+  const _b3=document.getElementById('jebtn');_b3.onclick=nextJob;_b3.textContent=(C.jobIndex<2)?'Next contract (new operator)':'Finish career';
+  showOverlay('jobend');render();
+}
+function nextJob(){
+  hideOverlay('jobend');C.jobIndex++;
+  if(C.jobIndex>=3)return endCareer();
+  const lastLost=C.history[C.history.length-1].result!=='win';
+  if(lastLost&&C.opIndex<OPERATORS.length-1){C.opIndex++;showIntro();}else openDraft();
+}
+function ledgerRead(){
+  const loudPicks=C.entryChoices.filter(e=>e==='loud').length;
+  let who,detail;
+  if(C.burnedRivals>=2){who='ruthless';detail='Two fried rigs. The boards say NOMAD doesn\u2019t share a network.';}
+  else if(C.cleanExits>=2){who='a ghost';detail='Clean exits, thin logs. Half the boards aren\u2019t sure NOMAD was ever there.';}
+  else if(loudPicks===3){who='loud';detail='Front door, every time. Corps are starting to recognize the knock.';}
+  else if(C.framed>=1&&C.burnedRivals===0){who='a knife in the dark';detail='Never fired a shot on record. Somehow rivals keep taking the fall.';}
+  else if(loudPicks===0){who='careful';detail='Side doors and cold entries. The kind of handle that lasts.';}
+  else{who='hard to read';detail='Loud one job, silent the next. The corps can\u2019t agree on what NOMAD even is — which might be the point.';}
+  return {who:who,detail:detail};
+}
+function endCareer(){
+  const wins=C.history.filter(h=>h.result==='win').length;
+  const led=ledgerRead();
+  tlog('career_end',{wins:wins,jobs:3,heat:C.heat,notoriety:C.notoriety,cleanExits:C.cleanExits,burnedRivals:C.burnedRivals,framed:C.framed,entries:C.entryChoices,ledger:led.who});
+  const t=document.getElementById('jetitle'),x=document.getElementById('jetext');
+  t.className='amber';t.textContent='CAREER END — '+wins+'/3';
+  const sameDoor=C.entryChoices.length===3&&new Set(C.entryChoices).size===1;
+  x.innerHTML='<span style="color:var(--amber)">The boards\u2019 read on NOMAD after this run: <b>'+led.who+'</b>.</span><br>'+led.detail
+    +(sameDoor?'<br><br>You used the same door all three times. In the full game, corps compare notes — a consistent approach is how they build a file on you.':'')
+    +'<br><br>Heat '+C.heat+' · clean exits '+C.cleanExits+' · rivals burned '+C.burnedRivals+(C.framed?' · framed '+C.framed:'')
+    +'.<br>In the full game the handle passes to the next operator with all of this intact — and the world clock ticks one notch forward whether you won or lost.<br><br><b style="color:var(--amber)">Please hit the button below and send the report.</b>';
+  document.getElementById('jelore').style.display='none';
+  const btn=document.getElementById('jebtn');btn.textContent='Give feedback';btn.onclick=()=>{hideOverlay('jobend');openFeedback(true);};
+  showOverlay('jobend');
+}
+
+/* ===== RENDER ===== */
+function hexPath(cx,cy,r){let p='';for(let i=0;i<6;i++){const a=Math.PI/3*i-Math.PI/6;p+=(i?'L':'M')+(cx+r*Math.cos(a)).toFixed(1)+' '+(cy+r*Math.sin(a)).toFixed(1);}return p+'Z';}
+function cardHtml(c){const noiseHtml=c.noise>0?'<span class="noise">'+'<i></i>'.repeat(c.noise)+'</span>':'<span class="noise silent"><i></i></span>';const cls=c.cls==='zero-day'?'cclass zd':(c.cls==='agent'?'cclass ag':(c.cls==='obfuscation'?'cclass ob':(c.cls==='enhancer'?'cclass en':'cclass')));return '<div class="top"><span class="cost">'+c.cost+'</span>'+noiseHtml+'</div><div class="cname">'+c.name+'</div><div class="'+cls+'">'+c.cls+(c.exhaust?' · burns':'')+'</div><div class="ctext">'+c.text+'</div>';}
+function visibleNode(id){return disc(id)||adj(id).some(n=>disc(n));}
+function render(){
+  if(!S)return;
+  document.getElementById('opname').textContent=OPERATORS[C.opIndex].name;
+  document.getElementById('jobn').textContent=(C.jobIndex+1)+'/3';
+  document.getElementById('turn').textContent=S.turn;
+  document.getElementById('cycles').textContent=S.cycles;
+  const room=S.ceiling-S.heatFloorTrace;
+  document.getElementById('tracefill').style.width=S.trace+'%';
+  document.getElementById('ceilmark').style.left=room+'%';
+  const pct=document.getElementById('tracepct');pct.textContent=S.trace+'/'+room;pct.className='tracepct'+(S.trace>=room*0.5?' hot':'');
+  const hb=document.getElementById('heatbadge');
+  hb.textContent=C.heat>0?('HEAT '+C.heat+' → ceiling '+room+'%'):'HEAT 0 → ceiling 100%';
+  hb.className='heatbadge'+(C.heat>0?' hot':'');
+  const r=S.rival,rs=document.getElementById('rivalstat');const rvis=r.alive&&liveVis(r.pos);
+  rs.className='rivalstat'+(r.alive?(rvis?'':' dark'):' gone');
+  rs.textContent=!r.alive?'GRTHT ▸ offline':(rvis?('GRTHT ▸ '+r.hp+'/'+r.max+' · '+(r.state==='cracking'?'cracking':r.state==='toExfil'?'→EXIT':'→DATA')):'GRTHT ▸ no eyes on');
+  const al=alertLevel();document.getElementById('alertui').innerHTML='ALERT <b>'+'▮'.repeat(al)+'▯'.repeat(5-al)+'</b>';
+  const ol=document.getElementById('objlist');ol.innerHTML='';
+  const objDone=S.cache==='player';
+  const _sneed=S.board.siphonTicks||1;
+  const _chan=_sneed>1?(' — '+_sneed+'-tick channel: hold the node between ticks (cards OK, moving resets)'):'';
+  ol.innerHTML+='<div class="item'+(objDone?' done':'')+'"><span class="box">'+(objDone?'[x]':'[ ]')+'</span><span class="txt">'+S.board.objective+_chan+(S.siphonProg>0&&!objDone?' · <b style="color:var(--amber)">CHANNELING '+S.siphonProg+'/'+_sneed+' — do not move</b>':'')+'</span></div>';
+  ol.innerHTML+='<div class="item'+(objDone&&S.pos==='EXFIL'?' done':'')+'"><span class="box">[ ]</span><span class="txt">Reach EXIT before trace ceiling</span></div>';
+  const cleanPossible=S.trace<S.board.cleanUnder&&S.noiseThisJob<S.board.cleanUnder;
+  ol.innerHTML+='<div class="item bonus"><span class="box">'+(cleanPossible?'[≈]':'[ ]')+'</span><span class="txt">CLEAN-EXIT bonus (+rep ×2, Heat −6): under '+S.board.cleanUnder+' trace &amp; noise ('+(cleanPossible?'on track':'blown — noise '+S.noiseThisJob)+')</span></div>';
+  if(r.alive)ol.innerHTML+='<div class="item threat"><span class="box">[!]</span><span class="txt">Rival handle GRTHT is on this network</span></div>';
+  else ol.innerHTML+='<div class="item threat gone"><span class="box">[!]</span><span class="txt">GRTHT — burned</span></div>';
+  ol.innerHTML+='<div class="item corp"><span class="box">[!]</span><span class="txt">SYSOP alert '+al+'/5'+(S.sysopDark>0?' · DARK '+S.sysopDark:'')+'</span></div>';
+  const crit=document.getElementById('critbanner');
+  if(S.cache==='rival'&&S.rival.alive){crit.textContent='⚠ GRTHT HAS THE CACHE — CUT THEM OFF BEFORE EXIT';crit.className='critbanner show';}
+  else if(S.trace>=room*0.8&&!S.over){crit.textContent='⚠ TRACE CRITICAL — '+S.trace+'/'+room+' — GET OUT OR GO DARK';crit.className='critbanner show';}
+  else crit.className='critbanner';
+  document.getElementById('cleanstate').innerHTML=cleanPossible?'<span style="color:var(--cyan)">clean-run alive</span>':'<span style="color:var(--red)">loud run</span>';
+  document.getElementById('boardtitle').textContent=S.board.name.split('·')[1].trim();
+  const tg=[];const P=S.ice.PROWLER;if(P&&P.hp>0&&disc(P.pos)){const idx=P.route.indexOf(P.pos);const nx=idx>=0?P.route[(idx+1)%P.route.length]:P.route[0];tg.push('<span class="warn">PROWLER → '+nx+'</span>');}
+  if(S.ice.ARGUS&&S.ice.ARGUS.hp>0)tg.push('<span class="'+(S.scanIn===1?'warn':'')+'">ARGUS sweep in '+S.scanIn+'</span>');
+  if(r.alive)tg.push('<span class="riv">'+(rvis?'GRTHT visible':'GRTHT: signal lost')+'</span>');
+  document.getElementById('telegraph').innerHTML=tg.join(' · ')||'&nbsp;';
+  document.getElementById('piles').textContent='deck '+S.deck.length+' · disc '+S.discard.length+' · agents '+Object.keys(S.agents).length+' · mapped '+S.discovered.size+'/'+Object.keys(nodesOf()).length;
+  document.getElementById('ln2btn').disabled=S.ln2<1||S.over;document.getElementById('ln2btn').textContent='LN2 ×'+S.ln2;
+  const scanb=document.getElementById('scanbtn');scanb.disabled=S.over||(!S.qe&&S.cycles<1+costMod());scanb.className='btn action'+(S.qe?' qe':'');scanb.textContent=S.qe?'Scan (free)':'Scan ('+(1+costMod())+')';
+  const sip=document.getElementById('siphonbtn');sip.style.display=(S.pos===S.board.objectiveNode&&S.cache==='intact'&&!S.over)?'':'none';sip.disabled=(!S.qe&&S.cycles<2+costMod());sip.className='btn action'+(S.qe?' qe':'');
+  const _need=S.board.siphonTicks||1;
+  sip.textContent=(S.qe?'Siphon (free)':'Siphon ('+(2+costMod())+')')+(_need>1?' · '+S.siphonProg+'/'+_need:'');
+  sip.title=_need>1?'Multi-tick channel: siphon once per turn, '+_need+' turns total. HOLD this node between ticks — moving resets it. Playing cards is fine.':'One tick — grab and go.';
+  drawBoard();drawHand();
+}
+function edgePathD(a,b){
+  const N=nodesOf(),f=N[a],t=N[b];
+  const dx=t.x-f.x,dy=t.y-f.y,len=Math.sqrt(dx*dx+dy*dy);
+  if(len<235)return 'M '+f.x+' '+f.y+' L '+t.x+' '+t.y;
+  const mx=(f.x+t.x)/2,my=(f.y+t.y)/2,ox=-dy/len*34,oy=dx/len*34;
+  return 'M '+f.x+' '+f.y+' Q '+(mx+ox).toFixed(1)+' '+(my+oy).toFixed(1)+' '+t.x+' '+t.y;
+}
+function drawBoard(){
+  const svg=document.getElementById('board');const N=nodesOf();let h='';
+  const room=S.ceiling-S.heatFloorTrace;const heatRatio=Math.min(1,S.trace/room);
+  document.querySelector('.boardpane').style.background='linear-gradient(rgba(255,92,87,'+(heatRatio*0.10).toFixed(3)+'),rgba(255,92,87,'+(heatRatio*0.16).toFixed(3)+')),var(--panel)';
+  const reach=adj(S.pos);const targeting=!!S.target;const targNodes=targeting?hostilesInRange().map(x=>x.node):[];
+  for(const [a,b] of S.board.edges){const known=disc(a)||disc(b);const ghost=!known?' ghostline':'';const dim=(known&&(!disc(a)||!disc(b)))?' dim':'';const isAdj=(a===S.pos||b===S.pos)&&!S.over;h+='<path fill="none" class="edge'+(isAdj?' adj':(ghost||dim))+'" d="'+edgePathD(a,b)+'"/>';}
+  for(const id in N){
+    const n=N[id];const showRival=S.rival.alive&&S.rival.pos===id&&liveVis(id);
+    if(!disc(id)){h+='<g class="node ghost"><circle class="body" cx="'+n.x+'" cy="'+n.y+'" r="17"/>';if(showRival)h+='<circle class="rivalring" cx="'+n.x+'" cy="'+n.y+'" r="24"/><text class="rivallabel" x="'+n.x+'" y="'+(n.y-28)+'">GRTHT</text>';h+='<text x="'+n.x+'" y="'+(n.y+3)+'">?</text></g>';continue;}
+    const cls=['node'];
+    if(targeting&&targNodes.includes(id))cls.push('targetable');
+    else if(!S.over&&reach.includes(id)&&!barrierBlocked(id))cls.push('reachable','reachpulse');
+    if(barrierBlocked(id))cls.push('blocked');
+    if(id===S.board.objectiveNode&&S.cache==='player')cls.push('captured');
+    h+='<g class="'+cls.join(' ')+'" data-node="'+id+'">';
+    const staticIce=Object.entries(S.ice).find(([k,ic])=>ic.kind!=='patrol'&&ic.node===id);
+    const TRAITTIP={legacy:'legacy host — your noise −1 here (old gear, no logging)',unpatched:'unpatched host — your breakers deal ×2 from here',siem:'SIEM collector — noise +1 on and around this node'};
+    let tip=nodesOf()[id].sub+(n.trait?(' · '+TRAITTIP[n.trait]):'');
+    if(staticIce){const [k,ic]=staticIce,dead=ic.hp===0?' brokenice':'';
+      if(ic.kind==='barrier'){h+='<path class="icehex'+dead+'" d="'+hexPath(n.x,n.y,26)+'"/>';tip=ic.hp>0?('gate ICE "'+k+'" — blocks the hop until killed'):('gate "'+k+'" — breached, passable');}
+      else{h+='<circle class="sentryring'+(dead?' brokenice':'')+'" cx="'+n.x+'" cy="'+n.y+'" r="26"/>';tip='sentry "'+k+'" — you can enter; it sweeps for you';}
+      h+='<text class="icelabel'+dead+'" x="'+n.x+'" y="'+(n.y-32)+'">'+k+(ic.hp>0?' '+ic.hp+'/'+ic.max:'')+'</text>';}
+    h+='<title>'+tip+'</title>';
+    h+='<circle class="body" cx="'+n.x+'" cy="'+n.y+'" r="19"/>';
+    if(barrierBlocked(id))h+='<text class="lockglyph" x="'+(n.x+13)+'" y="'+(n.y-11)+'">⊘</text>';
+    if(id===S.pos)h+='<circle class="playerring" cx="'+n.x+'" cy="'+n.y+'" r="24"/>';
+    if(showRival)h+='<circle class="rivalring" cx="'+n.x+'" cy="'+n.y+'" r="28"/><text class="rivallabel" x="'+n.x+'" y="'+(n.y-34)+'">GRTHT '+S.rival.hp+'/'+S.rival.max+(S.cache==='rival'?' ±DATA':'')+'</text>';
+    h+='<text x="'+n.x+'" y="'+(n.y+3)+'">'+n.label+'</text>';
+    h+='<text class="sub" x="'+n.x+'" y="'+(n.y+31)+'">'+(id===S.board.objectiveNode?(S.cache==='intact'?(S.siphonProg>0?('channeling '+S.siphonProg+'/'+(S.board.siphonTicks||1)):n.sub):S.cache==='player'?'siphoned':'stolen!'):n.sub)+'</text>';
+    if(n.trait)h+='<text class="trait" x="'+n.x+'" y="'+(n.y+40)+'">['+n.trait+']</text>';
+    if(S.agents[id]){const a=S.agents[id];h+='<rect class="agentbox'+(a.kind==='mimic'?' mimic':'')+'" x="'+(n.x-36)+'" y="'+(n.y+6)+'" width="28" height="13" rx="2"/><text class="agentlabel" x="'+(n.x-22)+'" y="'+(n.y+15)+'">'+(a.kind==='mimic'?'DEC':'SEN')+' '+a.hp+'</text>';}
+    h+='</g>';
+  }
+  const P=S.ice.PROWLER;if(P&&P.hp>0&&disc(P.pos)){const pp=N[P.pos];h+='<path class="prowlerbody" d="M '+pp.x+' '+(pp.y-13)+' L '+(pp.x+11)+' '+pp.y+' L '+pp.x+' '+(pp.y+13)+' L '+(pp.x-11)+' '+pp.y+' Z"/><text class="icelabel" x="'+pp.x+'" y="'+(pp.y-40)+'">PROWLER '+P.hp+'/'+P.max+'</text>';}
+  // packet dots drifting along your adjacent edges (life without engine work)
+  if(!S.over){let _ei=0;for(const [a,b] of S.board.edges){if(a!==S.pos&&b!==S.pos)continue;if(!disc(a)||!disc(b))continue;
+    h+='<circle r="2.2" fill="var(--cyan)" opacity="0.7"><animateMotion dur="'+(1.5+(_ei++%3)*0.35).toFixed(2)+'s" repeatCount="indefinite" path="'+edgePathD(a,b)+'"/></circle>';}}
+  const rr=S.rival;if(rr.alive&&liveVis(rr.pos)){const rp=N[rr.pos];h+='<circle r="2.2" fill="var(--magenta)" opacity="0.8"><animateMotion dur="1.1s" repeatCount="indefinite" path="M '+(rp.x-16)+' '+(rp.y+16)+' L '+(rp.x+16)+' '+(rp.y-16)+' L '+(rp.x-16)+' '+(rp.y+16)+'"/></circle>';}
+  h+='<circle id="scanpingc" class="scanping" cx="'+N[S.pos].x+'" cy="'+N[S.pos].y+'" r="12"/>';
+  svg.innerHTML=h;
+  svg.querySelectorAll('.node.reachable,.node.targetable').forEach(g=>g.addEventListener('click',()=>clickNode(g.dataset.node)));
+}
+function drawHand(){const hand=document.getElementById('hand');hand.innerHTML='';S.hand.forEach((id,i)=>{const c=CARDS[id],p=playability(id),d=document.createElement('div');S.seenCards[id]=(S.seenCards[id]||0)+(p.ok?1:0);const ok=p.ok&&!S.over;const isTarget=S.target&&S.target.cardIdx===i;d.className='card '+(ok?'playable':'dead')+(isTarget?' targeting':'');d.innerHTML=cardHtml(c)+'<div class="why">'+(p.ok?'':p.why)+'</div>';if(ok)d.addEventListener('click',()=>playCard(i));hand.appendChild(d);});}
+function fireScanPing(){const c=document.getElementById('scanpingc');if(!c)return;c.classList.remove('go');void c.getBoundingClientRect();c.classList.add('go');}
+/* ===== DRAFT — between jobs; this is how C.deck grows across the career ===== */
+let _draftPicks=[];
+function openDraft(){
+  _draftPicks=shuffle([...DRAFT_POOL]).slice(0,3);
+  document.getElementById('drafttitle').textContent='BETWEEN JOBS — kit up, or cool off';
+  const row=document.getElementById('draftrow');row.innerHTML='';
+  _draftPicks.forEach(id=>{const c=CARDS[id];const d=document.createElement('div');d.className='card';
+    d.innerHTML=cardHtml(c);d.addEventListener('click',()=>closeDraft(id));row.appendChild(d);});
+  showOverlay('draft');
+  tlog('draft_open',{job:C.jobIndex+1,offered:_draftPicks,deckSize:C.deck.length});
+  _draftT0=Date.now();
+}
+let _draftT0=0;
+function closeDraft(id){
+  hideOverlay('draft');
+  const secs=_draftT0?Math.round((Date.now()-_draftT0)/1000):null;
+  if(id){C.deck.push(id);tlog('draft_pick',{job:C.jobIndex+1,picked:id,passed:_draftPicks.filter(x=>x!==id),secondsToDecide:secs,deckSize:C.deck.length});}
+  else tlog('draft_skip',{job:C.jobIndex+1,offered:_draftPicks,secondsToDecide:secs});
+  openEntry();
+}
+function lieLow(){
+  hideOverlay('draft');
+  const secs=_draftT0?Math.round((Date.now()-_draftT0)/1000):null;
+  const before=C.heat;C.heat=Math.max(0,C.heat-8);
+  tlog('draft_lielow',{job:C.jobIndex+1,passed:_draftPicks,heatBefore:before,heatAfter:C.heat,secondsToDecide:secs});
+  openEntry();
+}
+
+function showBriefing(){showOverlay('briefov');tlog('briefing_shown',{});}
+function closeBriefing(){hideOverlay('briefov');tlog('briefing_closed',{});openEntry();}
+
+/* ===== OVERLAYS ===== */
+function showOverlay(id){document.getElementById(id).classList.add('show');}
+function hideOverlay(id){document.getElementById(id).classList.remove('show');}
+function hardRestart(){if(confirm('Restart the whole career? Heat/Rep reset.')){tlog('career_restart',{});['introov','briefov','entryov','draft','jobend','feedback'].forEach(hideOverlay);newCareer();}}
+
+/* ===== FEEDBACK ===== */
+const FBQS=[
+ {id:'fun',type:'scale',q:'1. Overall — was it fun?',hint:'1 = no, 5 = yes'},
+ {id:'entry',type:'scale',q:'2. Did choosing your ENTRY VECTOR (which door you came in) feel like a meaningful decision?',hint:'1 = did not matter / did not notice, 5 = shaped my whole plan'},
+ {id:'loudquiet',type:'scale',q:'3. Did going LOUD vs staying QUIET feel like a real, legible choice this time?',hint:'1 = just ran in and killed things, 5 = deliberately played a lane'},
+ {id:'heat',type:'scale',q:'4. Did HEAT carrying between jobs (a lower trace ceiling next job) come across?',hint:'1 = never noticed it, 5 = it changed how I played'},
+ {id:'twolayer',type:'scale',q:'5. Managing session trace AND career Heat at once — rich or fussy?',hint:'1 = fussy/confusing, 5 = a rich extra layer'},
+ {id:'rival',type:'scale',q:'6. Did the rival GRTHT feel like a real threat this time? (this was the #1 problem last build)',hint:'1 = inert / died instantly, 5 = genuinely raced me'},
+ {id:'clarity',type:'scale',q:'7. Could you tell what to do and read the board?',hint:'1 = lost, 5 = totally clear'},
+ {id:'target',type:'scale',q:'8. Did click-to-target on breakers (when 2+ hostiles are near) work how you expected?',hint:'1 = confusing, 5 = natural'},
+ {id:'fit',type:'scale',q:'9. Did the whole screen fit WITHOUT scrolling? (big issue last build)',hint:'1 = constant scrolling, 5 = fit perfectly'},
+ {id:'lore',type:'scale',q:'10. Did the handle / operator / NOMAD framing land — did it feel like you inherited something?',hint:'1 = did not register, 5 = felt it'},
+ {id:'notoriety',type:'scale',q:'11. Did NOMAD\u2019s reputation feel like it grew — WITHOUT ever seeing a number for it?',hint:'1 = felt nothing, 5 = the world clearly reacted to the name'},
+ {id:'draft',type:'scale',q:'12. Between jobs: did picking a tool vs LYING LOW feel like a real trade?',hint:'1 = obvious/ignored it, 5 = genuinely torn'},
+ {id:'again',type:'scale',q:'13. Would you play another career?',hint:'1 = no, 5 = yes'},
+ {id:'best',type:'text',q:'Best moment?'},
+ {id:'worst',type:'text',q:'Most annoying / worst part?'},
+ {id:'entryfelt',type:'text',q:'Which entry vectors did you pick across the 3 jobs, and why? (loud / quiet / mixed)'},
+ {id:'heatfelt',type:'text',q:'Describe how Heat / the shrinking trace ceiling affected your choices, if at all.'},
+ {id:'confused',type:'text',q:'Anything you did not understand?'},
+ {id:'screen',type:'text',q:'Screen resolution / window size you played at?'},
+ {id:'anything',type:'text',q:'Anything else?'}
+];
+function openFeedback(auto){buildFbForm();showOverlay('feedback');if(auto)tlog('feedback_auto',{});else tlog('feedback_open',{});}
+function closeFeedback(){hideOverlay('feedback');}
+function buildFbForm(){
+  const wrap=document.getElementById('fbqs');if(wrap.dataset.built)return;wrap.dataset.built='1';wrap.innerHTML='';
+  FBQS.forEach(q=>{
+    const div=document.createElement('div');div.className='fbq';
+    let inner='<div class="qt">'+q.q+'</div>';if(q.hint)inner+='<div class="qh">'+q.hint+'</div>';
+    if(q.type==='scale')inner+='<div class="scalebtns" id="sc_'+q.id+'"></div>';
+    else inner+='<textarea id="tx_'+q.id+'" placeholder="type here…"></textarea>';
+    div.innerHTML=inner;wrap.appendChild(div);
+    if(q.type==='scale'){const sc=div.querySelector('#sc_'+q.id);for(let i=1;i<=5;i++){const b=document.createElement('button');b.textContent=i;b.onclick=()=>{T.survey[q.id]=i;sc.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');};sc.appendChild(b);}}
+    else div.querySelector('#tx_'+q.id).oninput=e=>T.survey[q.id]=e.target.value;
+  });
+}
+function buildReport(){
+  const rep={build:T.build,session:T.session,started:T.started,viewport:T.viewport,minutesActive:Math.round((Date.now()-T0)/60000),survey:T.survey,
+    career:C?{ops:OPERATORS.slice(0,C.opIndex+1).map(o=>o.name),notoriety:C.notoriety,heat:C.heat,cleanExits:C.cleanExits,burnedRivals:C.burnedRivals,entryChoices:C.entryChoices,history:C.history}:null,
+    events:T.events};
+  const txt='=== ZERO/DAY v8 PLAYTEST REPORT ===\nPaste this back to Max.\n\n'+JSON.stringify(rep,null,1);
+  document.getElementById('reportbox').value=txt;document.getElementById('reportwrap').style.display='flex';tlog('report_built',{});
+}
+function copyReport(){const t=document.getElementById('reportbox');t.select();try{document.execCommand('copy');}catch(e){}}
+function downloadReport(){const blob=new Blob([document.getElementById('reportbox').value],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zeroday-v8-'+T.session+'.txt';a.click();}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cancelTarget();});
+
+/* ===== BOOT ===== */
+newCareer();
+</script>
+</body>
+</html>
