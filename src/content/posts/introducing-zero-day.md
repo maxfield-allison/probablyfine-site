@@ -3,7 +3,7 @@ title: "ZERO/DAY, and why there's no code yet"
 description: "I'm building a hacker roguelike deckbuilder about the kind of networks I actually work on. Eleven commits in, none of them are gameplay. Here's the game, the rule it's built around, a browser prototype you can play right now, and the dev blog that's going to follow it."
 date: 2026-08-11
 tags: ["zeroday", "gamedev", "godot", "playtest"]
-aiAssisted: true
+aiRole: drafted
 draft: true
 ---
 

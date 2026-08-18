@@ -3,7 +3,7 @@ title: "If your post could have been written by anyone, it was written by no one
 description: "A post explaining LLMs, RAG, MCP, and agents came across my feed. Nobody wrote it. I complained about it on LinkedIn, and the first comment on my complaint about AI-sounding posts said it sounded like AI. From someone who uses AI to write: that reply is the whole problem."
 date: 2026-08-11
 tags: ["ai", "writing", "opinion"]
-aiAssisted: true
+aiRole: drafted
 draft: false
 ---
 

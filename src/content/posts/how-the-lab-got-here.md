@@ -3,7 +3,7 @@ title: "How the lab got here"
 description: "The homelab started as a $75 school-surplus desktop and a router I had no business flashing. Seven years later it's a nine-node Kubernetes cluster. This is the arc, evolution by evolution, scar by scar."
 date: 2026-07-28
 tags: ["homelab", "history", "retrospective"]
-aiAssisted: true
+aiRole: drafted
 draft: false
 ---
 

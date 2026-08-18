@@ -19,6 +19,7 @@ for (const post of archive) {
   if (!groups.has(month)) groups.set(month, []);
   groups.get(month)!.push(post);
 }
+import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
 ---
 
 <Layout title="Blog · ProbablyFine" description="Homelab and SRE engineering write-ups.">
@@ -45,7 +46,7 @@ for (const post of archive) {
             <span class="text-[var(--color-ink-dim)]">
               {iso(latest.data.date)} · {readingTime(latest.body)} min read
             </span>
-            {latest.data.aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
+            <span style={`color: ${aiRoleColor(latest.data.aiRole)}`}>{aiRoleLabel(latest.data.aiRole)}</span>
           </div>
           <a href={`/blog/${latest.id}`} class="group block mt-3.5 no-underline hover:no-underline text-[var(--color-ink)]">
             <h2 class="m-0 text-[1.6875rem] font-bold leading-[1.25] tracking-[-0.015em] text-pretty group-hover:text-[var(--color-accent)] transition-colors">

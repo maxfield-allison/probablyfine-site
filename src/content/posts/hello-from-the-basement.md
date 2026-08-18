@@ -3,7 +3,7 @@ title: "Hello from the basement"
 description: "Why this blog exists, what it runs on, and what to expect: architecture deep-dives, incident write-ups, and honest notes on AI-assisted engineering."
 date: 2026-07-28
 tags: ["homelab", "meta"]
-aiAssisted: true
+aiRole: drafted
 ---
 
 Welcome to ProbablyFine, a blog about running real infrastructure at home, breaking it

@@ -14,9 +14,10 @@ interface Props {
 }
 
 const { post, fullDate = true } = Astro.props;
-const { title, tags, date, aiAssisted } = post.data;
+const { title, tags, date, aiRole } = post.data;
 const iso = date.toISOString().slice(0, 10);
 const mins = readingTime(post.body);
+import { aiRoleLabel, aiRoleColor } from '../lib/aiRole';
 ---
 
 <div class="group grid grid-cols-[4.5rem_minmax(0,1fr)] sm:grid-cols-[6.875rem_minmax(0,1fr)_auto] gap-x-5 gap-y-1 items-baseline py-5 border-b border-[var(--color-line)]">
@@ -38,7 +39,7 @@ const mins = readingTime(post.body);
           #{t}
         </a>
       ))}
-      {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
+      <span style={`color: ${aiRoleColor(aiRole)}`}>{aiRoleLabel(aiRole)}</span>
     </div>
   </div>
   <div class="hidden sm:block font-mono text-[11px] text-[var(--color-ink-dim)] whitespace-nowrap">

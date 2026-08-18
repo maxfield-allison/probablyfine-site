@@ -33,7 +33,7 @@ export async function getStaticPaths() {
 }
 
 const { post, newer, older, related } = Astro.props;
-const { title, description, date, tags, aiAssisted } = post.data;
+const { title, description, date, tags, aiRole } = post.data;
 const { Content } = await render(post);
 const dateStr = date.toISOString().slice(0, 10);
 const mins = readingTime(post.body);
@@ -76,6 +76,7 @@ const breadcrumbLd = {
     { '@type': 'ListItem', position: 3, name: title, item: postUrl },
   ],
 };
+import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
 ---
 
 <Layout title={`${title} · ProbablyFine`} description={description} ogImage={ogImage} ogType="article">
@@ -102,7 +103,7 @@ const breadcrumbLd = {
         {tags.map((t) => (
           <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors">#{t}</a>
         ))}
-        {aiAssisted && <span class="text-[var(--color-warn)]">ai-assisted</span>}
+        <span style={`color: ${aiRoleColor(aiRole)}`}>{aiRoleLabel(aiRole)}</span>
       </div>
     </header>
 

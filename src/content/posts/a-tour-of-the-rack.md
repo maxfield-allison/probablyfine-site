@@ -3,7 +3,7 @@ title: "A tour of the rack"
 description: "The hardware behind the homelab, and why it looks the way it does. An EPYC flagship, a seven-year-old Threadripper that refuses to retire, three GPU generations, and a pile of storage that has caused me more grief than everything else combined."
 date: 2026-07-28
 tags: ["homelab", "hardware"]
-aiAssisted: true
+aiRole: drafted
 draft: false
 ---
 

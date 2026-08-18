@@ -3,7 +3,7 @@ title: "How installing a GPU took down my storage cluster"
 description: "I put a graphics card in a Proxmox node and afterward the NVMe drives on a bifurcation carrier wouldn't enumerate, which killed Ceph OSDs and left every VM hanging at the bootloader. Here's the whole incident, including the mechanism I got wrong."
 date: 2026-08-04
 tags: ["homelab", "ceph", "incident", "proxmox"]
-aiAssisted: true
+aiRole: drafted
 draft: true
 ---
 

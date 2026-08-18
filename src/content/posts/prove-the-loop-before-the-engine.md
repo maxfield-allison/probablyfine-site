@@ -3,7 +3,7 @@ title: "Prove the loop before the engine"
 description: "I'm building a game, and the honest first deliverable isn't gameplay code. It's a single HTML file that exists to answer one question: is the core loop worth building at all? The methodology, the playable prototype, and the telemetry design behind it."
 date: 2026-08-13
 tags: ["zeroday", "gamedev", "prototyping", "playtest"]
-aiAssisted: true
+aiRole: drafted
 draft: true
 ---
 
