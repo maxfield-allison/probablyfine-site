@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// The living AI policy. The essay at /blog/how-i-use-ai is where these rules
+// came from and stays frozen as a dated post; THIS page is what is currently
+// true. Rule changes land in the log at the bottom and old entries stay.
+// The aiRole chip on every post links here, so this page is the answer to
+// "according to what standard?" at the moment a reader asks it.
+const version = 'v1.0';
+const updated = '2026-08-18';
+
+const tags = [
+  {
+    label: 'written by hand',
+    body: 'I wrote the outline and every sentence. A model answered questions and checked facts, and wrote none of it.',
+  },
+  {
+    label: 'research assist',
+    body: 'I wrote the outline and every sentence, and a model gathered or verified source material that shaped the content.',
+  },
+  {
+    label: 'ai-drafted, edited by me',
+    body: 'Drafted to an outline I argued over first, against a large body of my own prior writing, then edited line by line until it said what I meant.',
+  },
+];
+
+const log = [
+  {
+    version: 'v1.0',
+    date: '2026-08-18',
+    body: 'First version. Replaced the aiAssisted boolean, which was true on all nine published posts and therefore said nothing, with the three-level tag. Backfilled every published post to "ai-drafted, edited by me" and added the per-post process notes.',
+  },
+];
+---
+
+<Layout title="AI policy · ProbablyFine" description="What the AI tag on every post means, where the lines are, and what happens when I get it wrong. Versioned, with a changelog.">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ cat ./ai-policy</p>
+    <h1 class="text-3xl font-bold mt-3">AI policy</h1>
+    <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+      This is the living version of the rules argued for in{' '}
+      <a href="/blog/how-i-use-ai" class="hover:text-[var(--color-ink)]">How I use AI</a>.
+      The post is where they came from and stays as written. This page is what's currently true.
+      When a rule changes, the change lands in the log at the bottom and the old entry stays visible.
+    </p>
+    <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4">{version} · updated {updated}</p>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-8">
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># scope</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        This covers writing I publish under my own name: this blog, and the copies of posts that go
+        out to social surfaces. It doesn't cover project documentation, which is mostly generated
+        from the code and reviewed the way code is. It doesn't cover my day job, which isn't mine
+        to write about.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># the tag</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Every post carries one of three labels:
+      </p>
+      {
+        tags.map((t) => (
+          <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+            <span class="font-mono text-sm text-[var(--color-ink)]">{t.label}</span> · {t.body}
+          </p>
+        ))
+      }
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        The labels are for scanning. Every post also carries a note at the bottom describing what
+        happened to that particular piece, and the note is the real disclosure.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Where that stands today: every post published so far is tagged "ai-drafted, edited by me,"
+        so the labels don't distinguish anything yet. They start working when the first hand-written
+        piece ships, and one is planned.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># the lines</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Writing gets the tag and the note. The standard doesn't change between categories, only the
+        method does.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Engineering uses AI heavily. I direct it, review what comes back, reject a lot of it, and
+        I'm responsible for all of it. I red-team what I ship, especially the parts a model wrote,
+        because those are the parts most likely to look right and be wrong.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Art, music, and voice: no generated assets in anything I ship. Narrative prose is held to
+        the same standard as the rest of my writing. Given the option on anything, I'll use
+        human-created, every time.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># when I get it wrong</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        A mislabeled post gets corrected in place, and the correction goes in the log below and
+        stays there. Shipped code that breaks is mine. "The model wrote that part" isn't a defense
+        I get to use, and I wouldn't want it.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># enforcement</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Nothing enforces any of this except me and the public record of whether I keep it. That's
+        thin, and it's what every personal policy amounts to. The record is the point.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># log</h2>
+      {
+        log.map((e) => (
+          <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+            <span class="font-mono text-sm text-[var(--color-ink)]">{e.version} · {e.date}</span> · {e.body}
+          </p>
+        ))
+      }
+    </div>
+  </section>
+</Layout>

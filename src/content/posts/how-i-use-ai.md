@@ -9,7 +9,7 @@ description: "A bot on reddit held my post until I said whether AI was involved.
 
 A bot on reddit pulled my post down about ten seconds after I submitted it.
 
-I posted to r/selfhosted about building a timeline of my homelab experience out of old purchase records. The subreddit runs an automated audit bot (shout-out u/asimovs-auditor!) that removes every submission on sight and holds it until the author leaves a comment about how AI was used in the post. So I left one. The whole comment was "Ai wasn't used to make this post." The bot put the post back, and it went on to do about 12,000 views.
+I posted to r/selfhosted about building a timeline of my homelab experience out of old purchase records. The subreddit runs an automated audit bot, u/asimovs-auditor, that removes every submission on sight and holds it until the author leaves a comment about how AI was used in the post. So I left one. The whole comment was "Ai wasn't used to make this post." The bot put the post back, and it went on to do about 12,000 views.
 
 The sentence was true, but it was worth almost nothing. The bot hadn't even asked me for a yes or a no. It asked how AI was used, and I typed five words into an open box, which is about as much thought as I had given the question at that point. It's the same low effort I'd have called out in somebody else's post, and it bought exactly what low effort buys. That small interaction sparked the thought processes that brought about this page.
 
@@ -21,11 +21,9 @@ There's a second problem underneath that one. Most of the time people can just t
 
 So as verification, it's theater. Useful theater, potentially, since it could make someone stop for a second. But any disclosure worth reading has to be voluntary and specific, and it's worth exactly as much as the track record behind it.
 
-The brigading from folks that are decidedly "anti-AI" definitely puts a hand on the scale in favor of keeping quiet about AI use, and I completely get that. Saying nothing costs nothing. Describing something specific gives people ammunition to argue with, and plenty will, especially on a site like reddit. After thinking about this topic for a relatively long time, I decided I'd rather hand them the bullets. A gate that can't verify anything provides you with a track record and basically nothing else. A track record only gets established one disclosure at a time.
+The brigading from folks that are decidedly "anti-AI" definitely puts a hand on the scale in favor of keeping quiet about AI use, and I completely get that. Saying nothing costs nothing. Describing something specific gives people ammunition to argue with, and plenty will, especially on a site like reddit. Some of that will be fair, and I want the fair kind. Some will come from people for whom any AI use is disqualifying no matter what surrounds it, and nothing I write here will move them. After thinking about this topic for a relatively long time, I decided I'd rather hand them the bullets anyway. A gate that can't verify anything provides you with a track record and basically nothing else. A track record only gets established one disclosure at a time.
 
-As my dad says, "The proof is in the pudding."
-
-So here's my pudding.
+Here's mine.
 
 ## What I think actually matters
 
@@ -49,6 +47,8 @@ That settles something I'd been stuck on. I talk to a model constantly while I w
 
 What I'll tell you instead is who did the work. I don't sign anything I wouldn't have come up with and stated myself.
 
+One difference I should be honest about: when a kernel contributor signs off, there's a maintainer, a review, and a revert waiting behind the signature. When I sign something here, there's nothing behind it but this page and the embarrassment of getting caught breaking it. That's thin. It's also all any personal policy has ever amounted to.
+
 ## What the tag on this blog means
 
 Every post here carries a tag describing how it was created. Until now that tag was a yes or no, which made it useless, because it said yes on everything. It now says one of three things, and it's applied to everything I've already published as well as everything new.
@@ -63,41 +63,45 @@ Still, three labels for something that doesn't really reduce to three labels, so
 
 This page is in the third category, and I think that's the right way to publish it.
 
+Full disclosure on the tag itself: as of today, every post on this blog is in that third category, so the new labels don't distinguish anything yet either. They start working when the first hand-written piece lands, and one is planned. The difference between this and the old boolean is that the old one could never say anything else, and this one is about to.
+
+The current version of these rules lives at [/ai](/ai), with a changelog. This post is where they came from. That page is what's true now.
+
 ## Where the lines are
 
 **Writing.** Covered by the tag and the note. The standard doesn't change between categories, only the method does.
 
-**Engineering.** I use AI heavily. I direct it, I review what comes back, I reject a lot of it, and I'm responsible for all of it. I go to extreme lengths to ensure anything I ship with my name attached is clean, professional, secure, and representative of an engineer that understands the foundations of what is being published.
+**Engineering.** I use AI heavily. I direct it, I review what comes back, I reject a lot of it, and I'm responsible for all of it. I red-team what I ship, especially the parts a model wrote, because those are the parts most likely to look right and be wrong. When something breaks anyway, it's mine, and "the model wrote that part" isn't a defense I get to use.
 
-**Art, music, and voice.** No generated assets, in anything I ship unless its a placeholder and I won't profit from it. Narrative prose is held to the same standard as the rest of my writing. Given the option on anything, I'll use human-created, every time.
+**Art, music, and voice.** No generated assets in anything I ship. Narrative prose is held to the same standard as the rest of my writing. Given the option on anything, I'll use human-created, every time.
 
-Standard disclaimer, none of this covers my day job, which isn't mine to write about here.
+For scope: this covers the writing I publish under my own name, here and on the social surfaces that carry it. Project documentation doesn't get this treatment, because most of it is generated from the code and reviewed the way code is. And the standard disclaimer, none of this covers my day job, which isn't mine to write about here.
 
 ## Don't take my word for the label
 
 A tag I assign myself is a self-report, and self-reports are exactly the kind of claim a skeptic should discount. The Linux kernel is currently arguing about deleting the attribution tag it just added, on the grounds that the signal is low and people don't all use it in good faith. Both of those objections apply to me too. I'm one person, so the population problem is smaller, but "trust me" is still what a label amounts to.
 
-Most of the apparatus behind this is private and you can't inspect it, so I'd rather say that than imply otherwise. What you can check:
+Most of the apparatus behind this is private and you can't inspect it, so I'd rather say that than imply otherwise. But as my dad says, "The proof is in the pudding." Here's the pudding:
 
-- The em dashes. I don't use them. Across roughly 650,000 words of my own writing going back to 2013, reading every instance in context, there's exactly one I can't rule out, and even that one is ambiguous. The rest are inside quotes or inside text I've already identified as machine-written. That figure includes about 12,700 words of private notes with no audience at all, some of it written during bad weeks and never meant to be read by anyone. So it isn't me editing carefully in public, it's a motor habit. Go look at anything I've published. If you find one that isn't in a quote, either I didn't post it or I did on purpose at the dawn of accessible AI tools (more on that in the last bullet below...)
+- The em dashes. I don't use them. Across roughly 650,000 words of my own writing going back to 2013, reading every instance in context, there's exactly one I can't rule out, and even that one is ambiguous. The rest are inside quotes or inside text I've already identified as machine-written. That figure includes about 12,700 words of private notes with no audience at all, some of it written during bad weeks and never meant to be read by anyone. So it isn't me editing carefully in public, it's a motor habit. Go look at anything I've published. If you find one that isn't in a quote, either I didn't post it or I did on purpose at the dawn of accessible AI tools (more on that in the last bullet below...). One limit worth stating plainly: this receipt only authenticates what I write unaided. On the drafted posts the model is explicitly told to write without em dashes, so the fingerprint there is manufactured, not evidence. That's part of why the tags exist at all. On assisted work the texture can't tell you anything, so a label and a track record are what's left.
 
 - The code. My contributions to OPNsense are public and dated, and I made them in PHP, which I didn't know then and still don't. The shapes are recognizable enough that the second one was easy. There's a fix of mine merged into a Plex database repair tool too, which is shell, and I worked that one out on my own broken database through research and testing before I sent it anywhere. That's the part of "I could do this without AI, it would just take longer" that doesn't require you to believe me.
 
 - The corrections. The history I write from is a sourced document with a provenance tag on every entry, and the entries I got wrong are still in it with the retractions attached, because I've never had a correction run in the flattering direction and I'd rather leave the evidence of that visible.
 
-- And the failures. There are AI-written posts in my own Facebook history from 2023 through 2025. I ran them deliberately, as experiments with what the tech could do at the time, and one of them is a comment where I typed "try gpt." and pasted the answer underneath. They're mechanically obvious now: eleven times longer than my own posts, thirteen times the em dashes, and not a single "lol" among them.
+- And the failures. There are AI-written posts in my own Facebook history from 2023 through 2025. I ran them partly to see what the tech could do and partly because it was easy, and calling them "experiments" now would be generous to past me, so I won't. They're mine, they're still up, and one of them is a comment where I typed "try gpt." and pasted the answer underneath. They're mechanically obvious now: eleven times longer than my own posts, thirteen times the em dashes, and not a single "lol" among them.
 
 ## On slop
 
 Linus Torvalds said recently there's zero point in talking about AI slop and that the kernel documentation should treat AI as a tool and nothing more. He's right about kernel patches, where tests and review settle what's true and it genuinely doesn't matter who typed it.
 
-But I don't think it transfers to everything. Prose, generally, has no test suite, so whether a person meant it is the question. And meaning it isn't enough on its own. Someone can sincerely mean a model's raw output, publish it untouched, and it can still be slop.
+He wasn't talking about prose, and I won't pretend he was. But that line travels, and it gets borrowed for everything now, so it's worth saying where it stops. Prose, generally, has no test suite, so whether a person meant it is the question. And meaning it isn't enough on its own. Someone can sincerely mean a model's raw output, publish it untouched, and it can still be slop.
 
 The things that separate craftsmanship from slop are all questions about process. Was the output trained on anything? Was it edited after generation? Did the user push back? More than once? Repeatedly? Did they throw the whole thing out and start over?
 
 And on the other hand, is the creator using manipulative tactics in their prompts to output engagement bait?
 
-Or, are they trying to build something that would otherwise cost more time than this economy gives them, which is a different situation entirely and deserves to be treated as one.
+Or, are they trying to build something that would otherwise cost more time than this economy gives them, which is a different situation entirely and deserves to be treated as one. That last one excuses reaching for the tool. It doesn't excuse publishing something you never read.
 
 Generative AI has no monopoly on low effort. It's just the fastest way anyone has ever had to produce a lot of it.
 
@@ -113,8 +117,10 @@ That's a different piece, and I'd rather write it by hand.
 
 **How this one was made.** The argument is mine and I'd been chewing on it for about a week before any of it got written down. The draft was written to an outline I argued over first, against a large body of my own prior writing, and then I went through it line by line.
 
-I sent it back twice. The passage where I implicate my own five word answer is there because I asked for it, and so is the paragraph about doing this anyway despite what it costs. The opening is my rewrite. The first version said the bot asks whether AI was involved. It actually asks how it was used, which changes the point of the whole section, because the question the bot asks is fine and the verification is what's missing.
+I sent it back more times than I planned to. The passage where I implicate my own five word answer is there because I asked for it, and so is the paragraph about doing this anyway despite what it costs. The opening is my rewrite. The first version said the bot asks whether AI was involved. It actually asks how it was used, which changes the point of the whole section, because the question the bot asks is fine and the verification is what's missing.
 
 Two claims got walked back during fact-checking, both in my favour before the check and not after it. I'd written that there are no em dashes anywhere in my writing; the accurate version is that there's one I can't rule out and it's ambiguous. And I'd credited two open source contributions as being in languages I didn't know. That's true of the OPNsense work, which is PHP. The other one is shell, which I do know, so the honest claim there is that I worked the fix out myself rather than that I learned a language to do it.
+
+Before it went up I ran it through two more reviews, one as a policy audit and one with the reviewer told to attack it. A review by the same model that drafted the thing has obvious limits, and it still turned up sixteen problems, including that my replacement tag currently says the same thing on every post that the old one did. The fixes are in the text above, and the rules now live at [/ai](/ai) with a changelog, so the next problem found gets fixed in the open instead of in an edit nobody sees.
 
 Tagged ai-drafted, edited by me. That's the honest label for it.
