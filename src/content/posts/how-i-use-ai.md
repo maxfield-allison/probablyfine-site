@@ -11,13 +11,17 @@ A bot on reddit pulled my post down about ten seconds after I submitted it.
 
 I posted to r/selfhosted about building a timeline of my homelab out of old purchase records. The subreddit runs an automated audit bot that removes every submission on sight and holds it until the author leaves a comment about how AI was used in the post. So I left one. The whole comment was "Ai wasn't used to make this post." The bot put the post back, and it went on to do about 12,000 views.
 
-The sentence was true, but it was worth almost nothing. That small interaction sparked the thought processes that brought about this page.
+The sentence was true, but it was worth almost nothing. The bot hadn't even asked me for a yes or a no. It asked how AI was used, and I typed five words into an open box, which is about as much thought as I had given the question at that point. It's the same low effort I'd have called out in somebody else's post, and it bought exactly what low effort buys. That small interaction sparked the thought processes that brought about this page.
 
 ## The check doesn't actually check anything
 
 The auditor accepts any string. It isn't analyzing the answer, it just confirms a person bothered to type something. Somebody who wants to get through dishonestly types "AI wasn't used to make this project/blog post/cool thing" and moves on. Somebody who spent three weeks on a piece a model helped with has to distill that experience and effort into something that will almost certainly get brigaded. There's no test on the receiving end that tells those two apart, and there isn't going to be one, because anyone willing to put in enough effort is undetectable by construction.
 
+There's a second problem underneath that one. Most of the time people can just tell. The texture gives it away and readers sort it out for themselves long before they reach any disclosure. And when somebody has covered it well enough that the texture doesn't give it away, the gate doesn't catch them either. So the check is either confirming something the reader had already worked out, or missing the exact case it exists to catch.
+
 So as verification, it's theater. Useful theater, possibly, in that it makes people stop for a second. But any disclosure worth reading has to be voluntary and specific, and it's worth exactly as much as the track record behind it.
+
+The brigading is the part that keeps people quiet, and I get it. Saying nothing costs you nothing. Saying something specific gives people something to argue with, and some of them will. I'd rather give them that. A gate that can't verify anything leaves you with a track record and nothing else, and a track record only gets built one disclosure at a time.
 
 Here's mine.
 
@@ -101,7 +105,7 @@ That's a different piece, and I'd rather write it by hand.
 
 **How this one was made.** The argument is mine and I'd been chewing on it for about a week before any of it got written down. The draft was written to an outline I argued over first, against a large body of my own prior writing, and then I went through it line by line.
 
-The opening is my rewrite. The first version said the bot asks whether AI was involved. It actually asks how it was used, which changes the point of the whole section, because the question the bot asks is fine and the verification is what's missing.
+I sent it back twice. The passage where I implicate my own five word answer is there because I asked for it, and so is the paragraph about doing this anyway despite what it costs. The opening is my rewrite. The first version said the bot asks whether AI was involved. It actually asks how it was used, which changes the point of the whole section, because the question the bot asks is fine and the verification is what's missing.
 
 Two claims got walked back during fact-checking, both in my favour before the check and not after it. I'd written that there are no em dashes anywhere in my writing; the accurate version is that there's one I can't rule out and it's ambiguous. And I'd credited two open source contributions as being in languages I didn't know, which is true of the OPNsense work and not established for the other one.
 
