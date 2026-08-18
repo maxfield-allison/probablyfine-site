@@ -3,7 +3,7 @@ title: "How I use AI"
 date: 2026-08-18
 tags: ["ai", "writing", "meta"]
 aiRole: drafted
-draft: true
+draft: false
 description: "A bot on reddit held my post until I said whether AI was involved. The full answer wouldn't have fit in the box it wanted so here's the long version: what the tag on this blog means now, where the lines are, and \"Did you just use AI to make this?\" is the wrong thing to be asking."
 ---
 
