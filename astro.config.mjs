@@ -104,6 +104,10 @@ const sessionBlock = {
 
 // https://astro.build/config
 export default defineConfig({
+  // Short stable alias for the AI policy. It is the URL that gets pasted into
+  // disclosure prompts and profiles, so it should not change if the post is
+  // ever renamed or replaced.
+  redirects: { '/ai': '/blog/how-i-use-ai' },
   site: 'https://probablyfine.dev',
   integrations: [sitemap()],
   markdown: {

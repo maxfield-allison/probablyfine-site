@@ -39,7 +39,7 @@ import { aiRoleLabel, aiRoleColor } from '../lib/aiRole';
           #{t}
         </a>
       ))}
-      <span style={`color: ${aiRoleColor(aiRole)}`}>{aiRoleLabel(aiRole)}</span>
+      <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline">{aiRoleLabel(aiRole)}</a>
     </div>
   </div>
   <div class="hidden sm:block font-mono text-[11px] text-[var(--color-ink-dim)] whitespace-nowrap">

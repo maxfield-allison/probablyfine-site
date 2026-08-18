@@ -24,6 +24,7 @@ So as verification, it's theater. Useful theater, potentially, since it could ma
 The brigading from folks that are decidedly "anti-AI" definitely puts a hand on the scale in favor of keeping quiet about AI use, and I completely get that. Saying nothing costs nothing. Describing something specific gives people ammunition to argue with, and plenty will, especially on a site like reddit. After thinking about this topic for a relatively long time, I decided I'd rather hand them the bullets. A gate that can't verify anything provides you with a track record and basically nothing else. A track record only gets established one disclosure at a time.
 
 As my dad says, "The proof is in the pudding."
+
 So here's my pudding.
 
 ## What I think actually matters
@@ -78,9 +79,9 @@ A tag I assign myself is a self-report, and self-reports are exactly the kind of
 
 Most of the apparatus behind this is private and you can't inspect it, so I'd rather say that than imply otherwise. What you can check:
 
-- The em dashes. I don't use them. Across roughly 650,000 words of my own writing going back to 2013, reading every instance in context, there's exactly one I can't rule out, and even that one is ambiguous. The rest are inside quotes or inside text I've already identified as machine-written. That figure includes about 12,700 words of private notes with no audience at all, some of it written during bad weeks and never meant to be read by anyone. So it isn't me editing carefully in public, it's a motor habit. Go look at anything I've published. If you find one that isn't in a quote, either i didn't post it or I did on purpose at the dawn of accessible AI tools (more on that in the last bullet below...)
+- The em dashes. I don't use them. Across roughly 650,000 words of my own writing going back to 2013, reading every instance in context, there's exactly one I can't rule out, and even that one is ambiguous. The rest are inside quotes or inside text I've already identified as machine-written. That figure includes about 12,700 words of private notes with no audience at all, some of it written during bad weeks and never meant to be read by anyone. So it isn't me editing carefully in public, it's a motor habit. Go look at anything I've published. If you find one that isn't in a quote, either I didn't post it or I did on purpose at the dawn of accessible AI tools (more on that in the last bullet below...)
 
-- The code. My contributions to OPNsense are public and dated, and I made them in a codebase and a language I didn't know when I started. There's a fix of mine merged into a Plex database repair tool too. That's the part of "I could do this without AI, it would just take longer" that doesn't require you to believe me.
+- The code. My contributions to OPNsense are public and dated, and I made them in PHP, which I didn't know then and still don't. The shapes are recognizable enough that the second one was easy. There's a fix of mine merged into a Plex database repair tool too, which is shell, and I worked that one out on my own broken database through research and testing before I sent it anywhere. That's the part of "I could do this without AI, it would just take longer" that doesn't require you to believe me.
 
 - The corrections. The history I write from is a sourced document with a provenance tag on every entry, and the entries I got wrong are still in it with the retractions attached, because I've never had a correction run in the flattering direction and I'd rather leave the evidence of that visible.
 
@@ -93,7 +94,9 @@ Linus Torvalds said recently there's zero point in talking about AI slop and tha
 But I don't think it transfers to everything. Prose, generally, has no test suite, so whether a person meant it is the question. And meaning it isn't enough on its own. Someone can sincerely mean a model's raw output, publish it untouched, and it can still be slop.
 
 The things that separate craftsmanship from slop are all questions about process. Was the output trained on anything? Was it edited after generation? Did the user push back? More than once? Repeatedly? Did they throw the whole thing out and start over?
+
 And on the other hand, is the creator using manipulative tactics in their prompts to output engagement bait?
+
 Or, are they trying to build something that would otherwise cost more time than this economy gives them, which is a different situation entirely and deserves to be treated as one.
 
 Generative AI has no monopoly on low effort. It's just the fastest way anyone has ever had to produce a lot of it.
@@ -112,6 +115,6 @@ That's a different piece, and I'd rather write it by hand.
 
 I sent it back twice. The passage where I implicate my own five word answer is there because I asked for it, and so is the paragraph about doing this anyway despite what it costs. The opening is my rewrite. The first version said the bot asks whether AI was involved. It actually asks how it was used, which changes the point of the whole section, because the question the bot asks is fine and the verification is what's missing.
 
-Two claims got walked back during fact-checking, both in my favour before the check and not after it. I'd written that there are no em dashes anywhere in my writing; the accurate version is that there's one I can't rule out and it's ambiguous. And I'd credited two open source contributions as being in languages I didn't know, which is true of the OPNsense work and not established for the other one.
+Two claims got walked back during fact-checking, both in my favour before the check and not after it. I'd written that there are no em dashes anywhere in my writing; the accurate version is that there's one I can't rule out and it's ambiguous. And I'd credited two open source contributions as being in languages I didn't know. That's true of the OPNsense work, which is PHP. The other one is shell, which I do know, so the honest claim there is that I worked the fix out myself rather than that I learned a language to do it.
 
 Tagged ai-drafted, edited by me. That's the honest label for it.
