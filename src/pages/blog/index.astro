@@ -46,7 +46,7 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
             <span class="text-[var(--color-ink-dim)]">
               {iso(latest.data.date)} · {readingTime(latest.body)} min read
             </span>
-            <a href="/ai" style={`color: ${aiRoleColor(latest.data.aiRole)}`} class="no-underline hover:underline">{aiRoleLabel(latest.data.aiRole)}</a>
+            <a href="/ai" style={`color: ${aiRoleColor(latest.data.aiRole)}`} class="no-underline hover:underline" data-umami-event="ai-role-chip" data-umami-event-role={latest.data.aiRole} data-umami-event-where="index-hero">{aiRoleLabel(latest.data.aiRole)}</a>
           </div>
           <a href={`/blog/${latest.id}`} class="group block mt-3.5 no-underline hover:no-underline text-[var(--color-ink)]">
             <h2 class="m-0 text-[1.6875rem] font-bold leading-[1.25] tracking-[-0.015em] text-pretty group-hover:text-[var(--color-accent)] transition-colors">

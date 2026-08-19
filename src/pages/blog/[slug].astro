@@ -103,7 +103,7 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
         {tags.map((t) => (
           <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors">#{t}</a>
         ))}
-        <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline">{aiRoleLabel(aiRole)}</a>
+        <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline" data-umami-event="ai-role-chip" data-umami-event-role={aiRole} data-umami-event-where="post-header">{aiRoleLabel(aiRole)}</a>
       </div>
     </header>
 
@@ -170,4 +170,6 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
   <Comments />
 
   <ReadTracker event="post-read" key="slug" id={post.id} />
+  {/* note-read + post-outbound signals; see public/js/post-signals.js */}
+  <script is:inline defer src="/js/post-signals.js"></script>
 </Layout>

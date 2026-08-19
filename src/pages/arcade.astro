@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// PROTOTYPE, not linked from the nav yet. Tier 1 of the hosting plan: everything here is
+// embedded from the Internet Archive, so the disc images and game files stay on their
+// servers rather than mine. Tiers 2 and 3 (self-hosted js-dos for the freely
+// redistributable titles, a classic Mac OS instance for the shareware-disc games) come
+// later. See homelab-docs/projects/personal-brand/series-childhood-games/.
+
+// Games that run in the browser right now, via the Archive's em-dosbox player.
+const playable = [
+  {
+    id: 'msdos_Mystic_Towers_1994',
+    title: 'Mystic Towers',
+    year: '1994',
+    who: 'Animation FX / Apogee',
+    note: 'Baron Baldric, eight towers, and a hunger meter that punished you for exploring slowly.',
+  },
+  {
+    id: 'msdos_Hocus_Pocus_1994',
+    title: 'Hocus Pocus',
+    year: '1994',
+    who: 'Moonlite Software / Apogee',
+    note: 'The shareware episode that shipped on every school computer in the country.',
+  },
+];
+
+// On the shareware disc, identified by reading HFS catalogs off archive.org disc images.
+// Not embeddable yet: these need a classic Mac OS instance, which is tier 3.
+const theDisc = [
+  { title: 'Chrysanthemum 1.01', year: '1993', who: 'Ryan Koopmans',
+    note: 'Flower arranging as an action puzzle. A browser remake exists.',
+    href: 'https://treehann.itch.io/chry-web', hrefLabel: 'play the remake' },
+  { title: 'Swoop 1.0.0', year: '1995', who: 'David and Sheryn Wareing / Ambrosia',
+    note: 'Galaga, except the things diving at you are insects.',
+    href: 'https://macintoshgarden.org/games/swoop', hrefLabel: 'archived' },
+  { title: 'TaskMaker 2.0', year: '1989 / 1993', who: 'XOR / Storm Impact',
+    note: 'The world ticks once per step. There is a shovel. The sand is worth digging.',
+    href: 'https://classicreload.com/mac-taskmaker.html', hrefLabel: 'runs in a browser' },
+  { title: 'Armor 1.1', year: '1991', who: 'Brad Sanders',
+    note: 'Movement phase, fire phase, German phase. Five Shermans and two Stuarts against a bunker line. Nothing about this game exists anywhere else on the internet.',
+    href: null, hrefLabel: null },
+];
+---
+
+<Layout
+  title="The arcade · ProbablyFine"
+  description="The games I played as a kid, playable in the browser where the licensing allows it, and traced back to the shareware discs they came from."
+>
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[var(--color-accent)] m-0">$ ls /1994</p>
+    <h1 class="text-[2.125rem] font-bold mt-3.5 mb-0 tracking-[-0.015em]">The arcade</h1>
+    <p class="text-[var(--color-ink-dim)] mt-4 mb-0 leading-[1.65] text-pretty max-w-[62ch]">
+      These are the games I actually played, on my dad's Macintosh and my grandfather's
+      Hewlett-Packard, between roughly 1993 and the end of the decade. Where a game is freely
+      redistributable it runs here in the browser. Where it is still sold, there's a link to
+      the people still selling it, because they should get the money.
+    </p>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-12">
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-5">playable</h2>
+    <div class="grid gap-10">
+      {playable.map((g) => (
+        <figure class="m-0">
+          <div class="border border-[var(--color-line)] rounded-md overflow-hidden bg-black">
+            <iframe
+              src={`https://archive.org/embed/${g.id}`}
+              title={`${g.title} (${g.year}), playable in the browser`}
+              loading="lazy"
+              allowfullscreen
+              class="block w-full aspect-[4/3] border-0"
+            ></iframe>
+          </div>
+          <figcaption class="mt-2.5 font-mono text-[11px] text-[var(--color-ink-dim)] leading-[1.6]">
+            <span class="text-[var(--color-accent)]">{g.title}</span> · {g.year} · {g.who}<br />
+            {g.note} Emulated by the Internet Archive.
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-20">
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-2">the disc</h2>
+    <p class="text-[var(--color-ink-dim)] m-0 mb-6 leading-[1.65] text-pretty max-w-[62ch]">
+      Four games I remembered without remembering where they came from. They came from a
+      shareware pack, and I found it by searching 222 CD-ROM images without downloading any
+      of them.
+    </p>
+    <ul class="list-none p-0 m-0 grid gap-5">
+      {theDisc.map((g) => (
+        <li class="border-t border-[var(--color-line)] pt-4">
+          <p class="m-0 font-mono text-sm">
+            <span class="text-[var(--color-ink)]">{g.title}</span>
+            <span class="text-[var(--color-ink-dim)]"> · {g.year} · {g.who}</span>
+          </p>
+          <p class="text-[var(--color-ink-dim)] m-0 mt-1.5 leading-[1.65] text-pretty max-w-[62ch]">
+            {g.note}
+            {g.href && (
+              <> <a href={g.href} rel="noopener">{g.hrefLabel}</a>.</>
+            )}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
