@@ -1,14 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-// PROTOTYPE, not linked from the nav yet. Tier 1 of the hosting plan: everything here is
-// embedded from the Internet Archive, so the disc images and game files stay on their
-// servers rather than mine. Tiers 2 and 3 (self-hosted js-dos for the freely
-// redistributable titles, a classic Mac OS instance for the shareware-disc games) come
-// later. See homelab-docs/projects/personal-brand/series-childhood-games/.
+// PROTOTYPE. Not linked from the nav, and it ships with the post about it, not before.
+// See homelab-docs/projects/personal-brand/series-childhood-games/.
+//
+// Performance rule for this page: nothing emulates until you ask it to, and only one
+// emulator runs at a time. Every player below is a button until it is clicked, and
+// starting one tears the previous one down — otherwise four DOSBox instances fight over
+// the CPU and, worse, all play their music at once.
 
-// Games that run in the browser right now, via the Archive's em-dosbox player.
-const playable = [
+// Tier 1: emulated by the Internet Archive. The files never touch my server.
+const dosGames = [
   {
     id: 'msdos_Mystic_Towers_1994',
     title: 'Mystic Towers',
@@ -21,88 +23,240 @@ const playable = [
     title: 'Hocus Pocus',
     year: '1994',
     who: 'Moonlite Software / Apogee',
-    note: 'The shareware episode that shipped on every school computer in the country.',
+    note: 'The shareware episode that turned up on every school computer in the country.',
+  },
+  {
+    id: 'msdos_Richard_Scarrys_How_Things_Work_in_Busytown_1994',
+    title: "Richard Scarry's How Things Work in Busytown",
+    year: '1994',
+    who: 'Novotrade / Simon & Schuster',
+    note: 'Played at my grandfather’s house, on a Hewlett-Packard, long before I knew what a computer was for.',
+  },
+  {
+    id: 'grand-theft-auto-1997-dma-design',
+    title: 'Grand Theft Auto',
+    year: '1997',
+    who: 'DMA Design',
+    note: 'The one I actually played all night was GTA2, which is a Windows game and will not run in a browser. This is its top-down predecessor, which will.',
   },
 ];
 
-// On the shareware disc, identified by reading HFS catalogs off archive.org disc images.
-// Not embeddable yet: these need a classic Mac OS instance, which is tier 3.
-const theDisc = [
+// Tier 3: the real shareware discs, booted in a classic Mac OS emulator with the CD-ROM
+// mounted straight from the Internet Archive. Infinite Mac allow-lists archive.org as a
+// CD-ROM source, so this needs no copy of my own. auto_pause stops it burning CPU when
+// the page is not in front of you.
+const macDisc = (iso: string) =>
+  'https://infinitemac.org/embed?disk=System%207.5&auto_pause=true&cdrom_url=' +
+  encodeURIComponent(`https://archive.org/download/${iso}`);
+
+const discs = [
+  {
+    title: 'MacCube Volume 1: Arcade Games',
+    year: 'Aztech New Media, 1995',
+    src: macDisc('mac-cube-volume-1-arcade-games/MacCube%20Volume%201%3A%20Arcade%20Games.iso'),
+    holds: 'Chrysanthemum, Swoop, Armor, Maelstrom, Arashi, Solarian II, Glypha III, 20 more',
+    note: 'Boots System 7.5 with the disc mounted. Open Games_Arcade and it is all there, exactly as it was.',
+  },
+  {
+    title: 'MacCube Volume 2: Adventure, Card, Casino & Puzzle',
+    year: 'Aztech New Media, 1995',
+    src: macDisc('mac-cube-volume-2-adventure-card-casino-puzzle-games/MacCube%20Volume%202%3A%20Adventure%2C%20Card%2C%20Casino%20%26%20Puzzle%20Games.iso'),
+    holds: 'TaskMaker, U Mac Rogue, Realmz, Exile, Shadow Keep',
+    note: 'The RPG half of the same box. TaskMaker is under Adventure.',
+  },
+];
+
+// The four I remembered without knowing where they came from.
+const remembered = [
   { title: 'Chrysanthemum 1.01', year: '1993', who: 'Ryan Koopmans',
-    note: 'Flower arranging as an action puzzle. A browser remake exists.',
+    note: 'Flower arranging as an action puzzle. Someone remade it in 2025.',
     href: 'https://treehann.itch.io/chry-web', hrefLabel: 'play the remake' },
-  { title: 'Swoop 1.0.0', year: '1995', who: 'David and Sheryn Wareing / Ambrosia',
+  { title: 'Swoop 1.0.0', year: '1995', who: 'David and Sheryn Wareing, Ambrosia Software',
     note: 'Galaga, except the things diving at you are insects.',
-    href: 'https://macintoshgarden.org/games/swoop', hrefLabel: 'archived' },
-  { title: 'TaskMaker 2.0', year: '1989 / 1993', who: 'XOR / Storm Impact',
-    note: 'The world ticks once per step. There is a shovel. The sand is worth digging.',
-    href: 'https://classicreload.com/mac-taskmaker.html', hrefLabel: 'runs in a browser' },
+    href: 'https://macintoshgarden.org/games/swoop', hrefLabel: 'archived here' },
+  { title: 'TaskMaker 2.0', year: '1989, colour 1993', who: 'XOR Corporation / Storm Impact',
+    note: 'The world ticks once per step. There is a shovel, and the sand is worth digging.',
+    href: 'https://classicreload.com/mac-taskmaker.html', hrefLabel: 'also runs here' },
   { title: 'Armor 1.1', year: '1991', who: 'Brad Sanders',
-    note: 'Movement phase, fire phase, German phase. Five Shermans and two Stuarts against a bunker line. Nothing about this game exists anywhere else on the internet.',
+    note: 'Movement phase, fire phase, German phase. Five Shermans and two Stuarts against a bunker line, on a 15 by 9 grid, and sand costs a movement point. There is no page about this game anywhere on the internet. I had to read it out of the application itself.',
     href: null, hrefLabel: null },
+];
+
+// Still sold, or not emulated. Linked, never hosted.
+const elsewhere = [
+  { title: 'The Legend of Kyrandia', note: 'Still sold, and the people selling it should get the money.', href: 'https://www.gog.com/en/game/the_legend_of_kyrandia_book_one' },
+  { title: 'Grand Theft Auto 2', note: 'Released as official freeware by Rockstar. A Windows game, so it downloads rather than plays.', href: 'https://archive.org/details/gta2_rockstar-classics' },
+  { title: 'Tonka Construction · Tonka Search & Rescue', note: 'Windows, 1997. Archived, not emulated.', href: 'https://archive.org/details/tonka-search-and-rescue' },
+  { title: 'RollerCoaster Tycoon · The Sims · Flight Simulator', note: 'All still on sale. The flight stick and the graphics card my grandfather bought for these are the reason this page exists.', href: null },
 ];
 ---
 
 <Layout
   title="The arcade · ProbablyFine"
-  description="The games I played as a kid, playable in the browser where the licensing allows it, and traced back to the shareware discs they came from."
+  description="The games I played as a kid, running in the browser where the licensing allows it, traced back to the shareware discs they came from."
 >
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
     <p class="font-mono text-sm text-[var(--color-accent)] m-0">$ ls /1994</p>
     <h1 class="text-[2.125rem] font-bold mt-3.5 mb-0 tracking-[-0.015em]">The arcade</h1>
     <p class="text-[var(--color-ink-dim)] mt-4 mb-0 leading-[1.65] text-pretty max-w-[62ch]">
       These are the games I actually played, on my dad's Macintosh and my grandfather's
-      Hewlett-Packard, between roughly 1993 and the end of the decade. Where a game is freely
-      redistributable it runs here in the browser. Where it is still sold, there's a link to
-      the people still selling it, because they should get the money.
+      Hewlett-Packard, between about 1993 and the end of the decade. Where a game is freely
+      redistributable it runs here. Where it is still sold, there's a link to the people
+      still selling it.
+    </p>
+    <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4 mb-0">
+      nothing loads until you press play · one game runs at a time
     </p>
   </section>
 
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-12">
-    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-5">playable</h2>
-    <div class="grid gap-10">
-      {playable.map((g) => (
-        <figure class="m-0">
-          <div class="border border-[var(--color-line)] rounded-md overflow-hidden bg-black">
-            <iframe
-              src={`https://archive.org/embed/${g.id}`}
-              title={`${g.title} (${g.year}), playable in the browser`}
-              loading="lazy"
-              allowfullscreen
-              class="block w-full aspect-[4/3] border-0"
-            ></iframe>
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-14">
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-5">dos, emulated by the internet archive</h2>
+    <div class="grid gap-8 md:grid-cols-2">
+      {dosGames.map((g) => (
+        <article class="m-0" data-player>
+          <div
+            class="relative border border-[var(--color-line)] rounded-md overflow-hidden bg-black aspect-[4/3] grid place-items-center"
+            data-slot
+          >
+            <button
+              type="button"
+              class="font-mono text-sm text-[var(--color-accent)] bg-transparent border border-[var(--color-line)] rounded px-4 py-2 cursor-pointer hover:text-[var(--color-ink)]"
+              data-launch={`https://archive.org/embed/${g.id}`}
+              data-label={g.title}
+            >
+              ▶ play {g.title}
+            </button>
           </div>
-          <figcaption class="mt-2.5 font-mono text-[11px] text-[var(--color-ink-dim)] leading-[1.6]">
-            <span class="text-[var(--color-accent)]">{g.title}</span> · {g.year} · {g.who}<br />
-            {g.note} Emulated by the Internet Archive.
-          </figcaption>
-        </figure>
+          <p class="mt-2.5 mb-0 font-mono text-[11px] text-[var(--color-ink-dim)] leading-[1.6]">
+            <span class="text-[var(--color-accent)]">{g.title}</span> · {g.year} · {g.who}
+          </p>
+          <p class="mt-1 mb-0 text-[var(--color-ink-dim)] text-sm leading-[1.6] text-pretty">{g.note}</p>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-20">
-    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-2">the disc</h2>
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-14">
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-2">the actual discs</h2>
     <p class="text-[var(--color-ink-dim)] m-0 mb-6 leading-[1.65] text-pretty max-w-[62ch]">
-      Four games I remembered without remembering where they came from. They came from a
-      shareware pack, and I found it by searching 222 CD-ROM images without downloading any
-      of them.
+      Not the games pulled out one by one — the shareware discs themselves, booting System
+      7.5 with the CD mounted, the way they arrived in the house. The disc images stream
+      from the Internet Archive.
+    </p>
+    <div class="grid gap-8">
+      {discs.map((d) => (
+        <article class="m-0" data-player>
+          <div
+            class="relative border border-[var(--color-line)] rounded-md overflow-hidden bg-black aspect-[4/3] md:aspect-[16/10] grid place-items-center"
+            data-slot
+          >
+            <button
+              type="button"
+              class="font-mono text-sm text-[var(--color-accent)] bg-transparent border border-[var(--color-line)] rounded px-4 py-2 cursor-pointer hover:text-[var(--color-ink)]"
+              data-launch={d.src}
+              data-label={d.title}
+            >
+              ▶ boot {d.title}
+            </button>
+          </div>
+          <p class="mt-2.5 mb-0 font-mono text-[11px] text-[var(--color-ink-dim)] leading-[1.6]">
+            <span class="text-[var(--color-accent)]">{d.title}</span> · {d.year}
+          </p>
+          <p class="mt-1 mb-0 text-[var(--color-ink-dim)] text-sm leading-[1.6] text-pretty">
+            {d.note} Holds {d.holds}.
+          </p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-14">
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-2">the four I remembered</h2>
+    <p class="text-[var(--color-ink-dim)] m-0 mb-6 leading-[1.65] text-pretty max-w-[62ch]">
+      I could describe these thirty years later but had no idea what disc they came from.
+      Finding it meant searching 222 CD-ROM images without downloading any of them.
     </p>
     <ul class="list-none p-0 m-0 grid gap-5">
-      {theDisc.map((g) => (
+      {remembered.map((g) => (
         <li class="border-t border-[var(--color-line)] pt-4">
           <p class="m-0 font-mono text-sm">
             <span class="text-[var(--color-ink)]">{g.title}</span>
             <span class="text-[var(--color-ink-dim)]"> · {g.year} · {g.who}</span>
           </p>
           <p class="text-[var(--color-ink-dim)] m-0 mt-1.5 leading-[1.65] text-pretty max-w-[62ch]">
-            {g.note}
-            {g.href && (
-              <> <a href={g.href} rel="noopener">{g.hrefLabel}</a>.</>
-            )}
+            {g.note}{g.href && (<> <a href={g.href} rel="noopener">{g.hrefLabel}</a>.</>)}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-20">
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-5">elsewhere</h2>
+    <ul class="list-none p-0 m-0 grid gap-4">
+      {elsewhere.map((g) => (
+        <li class="border-t border-[var(--color-line)] pt-4">
+          <p class="m-0 font-mono text-sm text-[var(--color-ink)]">{g.title}</p>
+          <p class="text-[var(--color-ink-dim)] m-0 mt-1.5 leading-[1.65] text-pretty max-w-[62ch]">
+            {g.note}{g.href && (<> <a href={g.href} rel="noopener">archived</a>.</>)}
           </p>
         </li>
       ))}
     </ul>
   </section>
 </Layout>
+
+<script>
+  // One emulator at a time. Starting a game removes whichever one was already running,
+  // which keeps the CPU sane and stops two soundtracks playing over each other.
+  function setup() {
+    let running: HTMLElement | null = null;
+
+    const stop = () => {
+      if (!running) return;
+      const slot = running.querySelector('[data-slot]');
+      const button = running.querySelector<HTMLButtonElement>('button[data-launch]');
+      slot?.querySelector('iframe')?.remove();
+      if (button) {
+        button.hidden = false;
+        button.textContent = button.dataset.original ?? button.textContent;
+      }
+      running.querySelector('[data-stop]')?.remove();
+      running = null;
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('button[data-launch]').forEach((button) => {
+      if (button.dataset.bound) return;
+      button.dataset.bound = '1';
+      button.dataset.original ??= button.textContent ?? '';
+      button.addEventListener('click', () => {
+        const card = button.closest('[data-player]') as HTMLElement | null;
+        const slot = card?.querySelector('[data-slot]');
+        if (!card || !slot) return;
+        stop();
+
+        const frame = document.createElement('iframe');
+        frame.src = button.dataset.launch!;
+        frame.title = `${button.dataset.label ?? 'Game'}, running in an emulator`;
+        frame.className = 'absolute inset-0 w-full h-full border-0';
+        frame.allow = 'fullscreen; autoplay; gamepad';
+        slot.appendChild(frame);
+        button.hidden = true;
+
+        const halt = document.createElement('button');
+        halt.type = 'button';
+        halt.dataset.stop = '';
+        halt.textContent = '■ stop';
+        halt.className =
+          'mt-2 font-mono text-xs text-[var(--color-ink-dim)] bg-transparent border border-[var(--color-line)] rounded px-2.5 py-1 cursor-pointer hover:text-[var(--color-ink)]';
+        halt.addEventListener('click', stop);
+        card.insertBefore(halt, slot.nextSibling);
+
+        running = card;
+      });
+    });
+  }
+
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>
