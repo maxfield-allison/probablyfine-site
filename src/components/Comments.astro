@@ -1,31 +1,21 @@
 ---
-// Blog comments via giscus (GitHub Discussions). Renders nothing until the
-// repo/category IDs are configured in src/giscus.config.ts, so it is safe to
-// ship before setup. Lazy-loaded; respects the site's dark theme.
-import { giscus, giscusEnabled } from '../giscus.config';
+// Blog comments via Comentario, self-hosted at comments.probablyfine.dev.
+// Renders nothing until `host` is set in src/comments.config.ts, so it is safe
+// to ship before the backend is up.
+//
+// Unlike giscus, which sandboxed the whole thread inside an iframe, Comentario
+// is a web component that executes in this page's own origin. That is a real
+// trust change, and it is only acceptable because the server is ours. Do not
+// reuse this pattern for a third-party comment host.
+import { comments, commentsEnabled } from '../comments.config';
 ---
 
 {
-  giscusEnabled && (
+  commentsEnabled && (
     <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-16" aria-label="Comments">
       <h2 class="font-mono text-sm text-[var(--color-ink-dim)] mb-4">comments</h2>
-      <script
-        src="https://giscus.app/client.js"
-        data-repo={giscus.repo}
-        data-repo-id={giscus.repoId}
-        data-category={giscus.category}
-        data-category-id={giscus.categoryId}
-        data-mapping={giscus.mapping}
-        data-strict="0"
-        data-reactions-enabled={giscus.reactionsEnabled}
-        data-emit-metadata="0"
-        data-input-position={giscus.inputPosition}
-        data-theme={giscus.theme}
-        data-lang="en"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async
-      />
+      <script defer is:inline src={`${comments.host}/comentario.js`} />
+      <comentario-comments />
     </section>
   )
 }

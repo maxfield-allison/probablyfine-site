@@ -7,6 +7,9 @@
 #
 # Keep in step with nginx.conf. The two are separate files by necessity, so a
 # change to the policy has to be made in both places.
+#
+# `pnpm check:headers` compares them and the build runs it, so drift fails
+# before it ships rather than on the day of a failover.
 
 /*
   X-Content-Type-Options: nosniff
@@ -14,7 +17,7 @@
   X-Frame-Options: SAMEORIGIN
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://giscus.app; style-src 'self' 'unsafe-inline' https://giscus.app; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src https://giscus.app; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://comments.probablyfine.dev; style-src 'self' 'unsafe-inline' https://comments.probablyfine.dev; img-src 'self' data: https://comments.probablyfine.dev; font-src 'self'; connect-src 'self' https://comments.probablyfine.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
 
 # The ZERO/DAY playtest build is a single self-contained file with its own
 # inline script, so it gets a scoped policy rather than loosening the site.

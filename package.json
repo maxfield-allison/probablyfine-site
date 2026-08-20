@@ -9,7 +9,7 @@
   "scripts": {
     "predev": "node scripts/copy-fonts.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs",
+    "prebuild": "node scripts/check-headers.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -20,7 +20,8 @@
     "photo:albums": "node scripts/photo-from-immich.mjs --albums",
     "photo:album": "node scripts/photo-from-immich.mjs --album",
     "photo:find": "node scripts/photo-from-immich.mjs --find",
-    "check": "astro check"
+    "check": "astro check",
+    "check:headers": "node scripts/check-headers.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
