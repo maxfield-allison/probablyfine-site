@@ -49,4 +49,4 @@ addresses, faces of people who did not agree to appear on a public site. Check t
 yourself before committing.
 
 See `scripts/photo-from-immich.mjs`, and
-`homelab-docs/projects/photo-library/` for how the library is put together.
+`repos/brain/projects/photo-library/` for how the library is put together.

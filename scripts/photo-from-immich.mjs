@@ -8,7 +8,7 @@
 //
 // Images are committed to the repo rather than hotlinked from Immich, so the
 // published site never depends on the homelab being up and no share URL leaks
-// infrastructure. See homelab-docs/projects/photo-library/README.md (D5).
+// infrastructure. See repos/brain/projects/photo-library/README.md (D5).
 //
 // Every file written here has ALL metadata stripped — that includes the GPS
 // coordinates Google Photos and phone cameras attach to nearly everything. What
