@@ -1,0 +1,163 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// The privacy page. Required by ADR-028: opening comments past GitHub means the
+// site started holding things it did not before (commenter emails, IPs at the
+// comment backend, OAuth identities once those land).
+//
+// EVERY FACTUAL CLAIM BELOW WAS CHECKED AGAINST THE LIVE SYSTEMS ON 2026-08-21,
+// not against documentation and not against the old draft:
+//   - umami: the `session` table has country/region/city columns and NO ip
+//     column, so "we don't store your IP" is literally true, and "country" was
+//     an understatement (it derives region and city too).
+//   - comentario: author_ip + author_country on cm_comments, signup_ip on
+//     cm_users, ip on cm_user_sessions, and ip on cm_domain_page_views.
+//   - the event list is the actual set of data-umami-event attributes in src/
+//     plus the two umami.track() calls in public/js/, not a summary of them.
+//
+// If you change what is collected, change this page in the same commit, and add
+// a log entry at the bottom. The old entries stay.
+const version = 'v1.0';
+const updated = '2026-08-21';
+
+const log = [
+  {
+    version: 'v1.0',
+    date: '2026-08-21',
+    body: 'First version, written when comments moved off GitHub to a self-hosted Comentario instance. Before this the site collected analytics only and had no page saying so.',
+  },
+];
+---
+
+<Layout title="Privacy · ProbablyFine" description="What this site collects, where it goes, how long it's kept, and how to get it deleted. Checked against the running systems, not assumed.">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ cat ./privacy</p>
+    <h1 class="text-3xl font-bold mt-3">Privacy</h1>
+    <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+      This site runs on hardware in my basement. There's no ad network, no third-party tracker,
+      and nothing here gets sold or handed to anyone. That's the short version. The rest of this
+      page is the specific version, because "we respect your privacy" is what everyone says right
+      before the fine print.
+    </p>
+    <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4">{version} · updated {updated}</p>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-8">
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># what this covers</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        probablyfine.dev, including the comments. It doesn't cover sites I link to, which have
+        their own terms and none of my influence.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># analytics</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        I use Umami, self-hosted on my own cluster. It's served from this domain at
+        <span class="font-mono text-sm">/pf-insights/</span>, not from someone else's analytics
+        domain. It sets no cookies and builds no profile that follows you anywhere else.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        For each page view it records the URL, the referrer that sent you, your browser, OS and
+        device type, your screen size, your language, and an approximate location worked out from
+        your IP address. That location goes down to city level. The IP address itself is never
+        written to the database, and there's no column in it that could hold one.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        It also records page timing numbers, the kind that tell me whether the site is slow: how
+        long the largest thing on screen took to paint, how quickly it responded to your first tap,
+        how much the layout jumped around. Those are measurements of my site, not of you.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        A handful of named events fire on top of plain page views. On a blog post: one when you
+        reach the end, one when the "how this one was made" note scrolls into view, and one when
+        you click a source link inside the article. Elsewhere: clicks on the outbound links in the
+        nav and footer, the RSS link, and the email link. All of them are counters. They're
+        attached to the page, not to you.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        If you block any of it, nothing breaks. The site doesn't check and doesn't care.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># comments</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Comments run on Comentario, self-hosted here alongside everything else. It used to be
+        Giscus, which stored threads as GitHub Discussions and meant you needed a GitHub account
+        to leave a sentence. That ruled out most people who read this.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        You can comment anonymously, or make an account with an email address and a password.
+        Signing in with GitHub or Google is planned and isn't live yet. When it is, this page
+        changes first.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Here's what the comment server keeps. Against a comment: the text, the name you typed, and
+        your IP address with a country. Against an account: your email address, your display name,
+        and the IP you signed up from. Against a login session: your IP again. It also keeps its
+        own count of views on pages that have comments, with an IP, for 30 days.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        The IP logging is for spam and abuse, and that's all I use it for. I don't cross-reference
+        it against the analytics, which couldn't be done anyway, because the analytics never stored
+        an IP to match it to.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Comments are moderated. Anonymous ones wait for me to approve them, and so do the first few
+        from a new account. That reproduces what requiring a GitHub account was doing by accident,
+        without charging everyone a GitHub account to get in. It also means your comment might sit
+        in a queue for a while. I'm one person.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># cloudflare</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        DNS and TLS for this domain go through Cloudflare, and there's a standby copy of the site
+        on Cloudflare Pages that serves you if my cluster is down. So Cloudflare sees requests to
+        this domain the way it does for any site behind it. That layer runs under their privacy
+        terms, not mine, and I don't control what they log.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># fonts and assets</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Everything the page loads comes from this domain. No Google Fonts, no CDN, no third-party
+        scripts. The fonts are copied into the build.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># getting it deleted</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Email me at{' '}
+        <a href="mailto:hello@maxfieldallison.com" class="hover:text-[var(--color-ink)]">hello@maxfieldallison.com</a>
+        {' '}and I'll delete it. A comment, your account, everything attached to it, your choice.
+        You don't have to give a reason and I won't ask for one. If you have an account you can
+        also delete it yourself from the comment widget.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Same address if you think something on this page is wrong, or if you want to know what's
+        stored against you before deciding.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># log</h2>
+      {
+        log.map((e) => (
+          <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+            <span class="font-mono text-sm text-[var(--color-ink)]">{e.version} · {e.date}</span> · {e.body}
+          </p>
+        ))
+      }
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        If what's collected changes, this page changes with it and the old entry stays visible.
+        It's in git, so you can check whether I've kept that.
+      </p>
+    </div>
+  </section>
+</Layout>

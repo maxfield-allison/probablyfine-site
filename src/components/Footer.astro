@@ -44,5 +44,13 @@ const year = new Date().getFullYear();
       <span class="text-[var(--color-accent)]">probablyfine.dev</span>
       <span class="text-[var(--color-ink-dim)]/80">. Two sites, one person.</span>
     </p>
+    {/* Privacy has to be reachable from every page, not just linked from the
+        comment widget's footer. A commenter should be able to read what gets
+        stored before they decide to type anything. */}
+    <p class="font-mono text-[11px] text-[var(--color-ink-dim)]/80">
+      <a href="/ai" class="hover:text-[var(--color-ink)]">AI policy</a>
+      <span class="text-[var(--color-ink-dim)]/80"> · </span>
+      <a href="/privacy" class="hover:text-[var(--color-ink)]">Privacy</a>
+    </p>
   </div>
 </footer>
