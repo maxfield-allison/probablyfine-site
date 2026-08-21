@@ -22,7 +22,7 @@
 export const comments = {
   // Origin of the Comentario instance, no trailing slash. Empty disables the
   // whole feature.
-  host: '' as string,
+  host: 'https://comments.probablyfine.dev' as string,
 
   // Comentario keys threads by page path by default, which is what we want:
   // /blog/<slug> is stable and already the canonical URL.
