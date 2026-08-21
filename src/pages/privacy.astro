@@ -105,6 +105,13 @@ const log = [
         an IP to match it to.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Avatars come from Gravatar. If you make an account, my server sends a hashed copy of your
+        email address to Gravatar once, and whatever picture you've got there becomes your avatar.
+        The image is then stored here and served from this domain, so your browser never talks to
+        them. That hash is the one piece of anything that leaves my hardware, and if you've never
+        set up a Gravatar there's nothing on the other end to find.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         Comments are moderated. Anonymous ones wait for me to approve them, and so do the first few
         from a new account. That reproduces what requiring a GitHub account was doing by accident,
         without charging everyone a GitHub account to get in. It also means your comment might sit
@@ -126,7 +133,8 @@ const log = [
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># fonts and assets</h2>
       <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
         Everything the page loads comes from this domain. No Google Fonts, no CDN, no third-party
-        scripts. The fonts are copied into the build.
+        scripts. The fonts are copied into the build. The one exception is described under
+        comments, and it happens on my server rather than in your browser.
       </p>
     </div>
 
