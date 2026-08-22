@@ -48,7 +48,7 @@
   /* Session-block syntax palette. Deliberately narrow: a real terminal is not
      a rainbow, and the point is to separate what was typed from what came
      back, not to reimplement an editor theme. */
-  --color-code-comment: #6e7a87;
+  --color-code-comment: #7e8996;
   --color-code-arg: #e3b341; /* flags and arguments */
   --color-code-string: #7ee787; /* quoted strings */
 

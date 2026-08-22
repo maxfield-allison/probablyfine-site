@@ -9,12 +9,22 @@ import Layout from '../layouts/Layout.astro';
 // 9 on maxfieldallison.com:
 //   - alt text, <html lang>, <main>, skip links, h1 counts, heading-level order
 //   - WCAG relative-luminance contrast for every palette token on both the base
-//     and surface backgrounds, including the footer's 80% opacity blend
+//     and surface backgrounds
 //   - prefers-reduced-motion and :focus-visible handling in global.css
 //
-// The one real failure is --color-code-comment at 4.42:1. If you change a
-// palette token, re-run the numbers and update this page in the same commit.
-// Do not raise the claimed level here without an audit that supports it.
+// The audit found two contrast problems and BOTH WERE FIXED before this page
+// shipped, which is why it lists no outstanding failures: --color-code-comment
+// went #6e7a87 -> #7e8996 (4.42 -> 5.45 on base), and the small print dropped
+// its 80% opacity (4.56 -> 6.58). The worst ratio in the palette is now 5.11.
+//
+// If you change a palette token, re-run the numbers and update this page in the
+// same commit. Do not raise the claimed level without an audit that supports it,
+// and if something regresses, say so here rather than quietly dropping the line.
+//
+// The arcade and the ZERO/DAY playtest are deliberately not mentioned. Both
+// posts that link them are draft: true and excluded from the build, so nothing
+// reachable points at them. WHEN THOSE POSTS GO LIVE, AUDIT THOSE PAGES AND
+// REVISIT THIS ONE. Tracked in probablyfine-site#5.
 const version = 'v1.0';
 const updated = '2026-08-22';
 
@@ -22,20 +32,19 @@ const log = [
   {
     version: 'v1.0',
     date: '2026-08-22',
-    body: 'First version. Written from an audit of the built output of both sites rather than from intent, which is why it names a specific contrast failure instead of claiming conformance.',
+    body: 'First version, written from an audit of the built output of both sites rather than from intent. The audit turned up two contrast problems, in code comments and in the footer small print, and both were fixed before this page went up.',
   },
 ];
 ---
 
-<Layout title="Accessibility · ProbablyFine" description="What I've actually checked, what currently fails, and what I haven't tested. Measured against the built sites, not claimed.">
+<Layout title="Accessibility · ProbablyFine" description="What I've actually checked, and what I haven't tested. Measured against the built sites, not claimed.">
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
     <p class="font-mono text-sm text-[var(--color-accent)]">$ cat ./accessibility</p>
     <h1 class="text-3xl font-bold mt-3">Accessibility</h1>
     <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-      I'm aiming at WCAG 2.2 AA on both of my sites. I'm not claiming I've hit it, because I
-      haven't tested this with a screen reader and a page that says "fully conformant" without
-      that is guessing. What follows is what I measured, what's broken, and what I haven't looked
-      at yet.
+      I build both of my sites against WCAG 2.2 AA. Everything I can measure currently meets it.
+      I'm still not going to write "fully conformant" at the top of this page, because I haven't
+      sat down with a screen reader yet, and that's the part no amount of measuring covers.
     </p>
     <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4">{version} · updated {updated}</p>
   </section>
@@ -44,7 +53,7 @@ const log = [
     <div class="py-5 border-t border-[var(--color-line)]">
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># what I checked</h2>
       <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
-        Every built page on both sites, 36 of them. Each one declares its language, has a single
+        Every page these sites link to, 36 of them. Each one declares its language, has a single
         h1, uses a real <span class="font-mono text-sm">&lt;main&gt;</span> landmark, and offers a
         skip link to it. No heading level is skipped anywhere. Every image has alt text.
       </p>
@@ -53,23 +62,15 @@ const log = [
         asks for reduced motion the page transitions stop. Things you click are real buttons and
         links, so they work without a mouse.
       </p>
-    </div>
-
-    <div class="py-5 border-t border-[var(--color-line)]">
-      <h2 class="font-mono text-sm text-[var(--color-accent)]"># what's wrong right now</h2>
-      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
-        Comments inside code blocks are too faint. They land at 4.42 to 1 against the page
-        background, and the standard asks for 4.5 to 1 at that text size. It's a small miss and
-        it's still a miss, so it's listed here until the colour changes.
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        I checked every colour in the palette against both backgrounds it gets used on. The
+        standard asks for 4.5 to 1 on normal text. The weakest thing on the site is 5.1 to 1, body
+        text is 16 to 1, and the dimmed text you're reading now is 6.6 to 1.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        The small print in the footer passes at 4.56 to 1, which clears the bar by about one part
-        in a hundred. That's thinner than I'd like for 11 pixel text and it's on the list to fix
-        properly rather than defend.
-      </p>
-      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        Everything else in the palette is comfortable. Body text sits at 16 to 1 and the dimmed
-        text at 6.6 to 1.
+        Two of those failed when I first measured them. Comments in code blocks sat at 4.42, and
+        the small print in the footer scraped past at 4.56 on 11 pixel text. I changed both rather
+        than list them here, which is the version of this page I'd rather write.
       </p>
     </div>
 
@@ -85,11 +86,6 @@ const log = [
         The comment box is someone else's code running on my page. I picked it and I'm responsible
         for it being there, but I haven't audited it and I can't fix its internals. If it gets in
         your way, tell me, because that's the sort of thing that decides whether it stays.
-      </p>
-      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        The arcade and the ZERO/DAY playtest are the weak spot. The launcher is keyboard operable,
-        but what it launches is an emulator and a game, and neither was built with this in mind.
-        I'd rather say that than quietly leave them out of scope.
       </p>
     </div>
 
@@ -117,8 +113,9 @@ const log = [
         ))
       }
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        When something here gets fixed, the fix lands in this log and the old entry stays. That's
-        the only way you can tell whether the list is getting shorter.
+        If something on either site regresses, or a test I haven't run yet turns something up, it
+        gets a line in this log and the old entries stay. A page like this is only worth anything
+        if it can report bad news.
       </p>
     </div>
   </section>
