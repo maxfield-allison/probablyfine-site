@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// The accessibility page. Same shape as /ai and /privacy: versioned, dated, and
+// honest about its own limits rather than claiming a conformance level.
+//
+// EVERYTHING STATED HERE WAS MEASURED ON 2026-08-22 against the built output of
+// both sites, not asserted. The audit covered 27 pages on probablyfine.dev and
+// 9 on maxfieldallison.com:
+//   - alt text, <html lang>, <main>, skip links, h1 counts, heading-level order
+//   - WCAG relative-luminance contrast for every palette token on both the base
+//     and surface backgrounds, including the footer's 80% opacity blend
+//   - prefers-reduced-motion and :focus-visible handling in global.css
+//
+// The one real failure is --color-code-comment at 4.42:1. If you change a
+// palette token, re-run the numbers and update this page in the same commit.
+// Do not raise the claimed level here without an audit that supports it.
+const version = 'v1.0';
+const updated = '2026-08-22';
+
+const log = [
+  {
+    version: 'v1.0',
+    date: '2026-08-22',
+    body: 'First version. Written from an audit of the built output of both sites rather than from intent, which is why it names a specific contrast failure instead of claiming conformance.',
+  },
+];
+---
+
+<Layout title="Accessibility · ProbablyFine" description="What I've actually checked, what currently fails, and what I haven't tested. Measured against the built sites, not claimed.">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ cat ./accessibility</p>
+    <h1 class="text-3xl font-bold mt-3">Accessibility</h1>
+    <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+      I'm aiming at WCAG 2.2 AA on both of my sites. I'm not claiming I've hit it, because I
+      haven't tested this with a screen reader and a page that says "fully conformant" without
+      that is guessing. What follows is what I measured, what's broken, and what I haven't looked
+      at yet.
+    </p>
+    <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4">{version} · updated {updated}</p>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-8">
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># what I checked</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Every built page on both sites, 36 of them. Each one declares its language, has a single
+        h1, uses a real <span class="font-mono text-sm">&lt;main&gt;</span> landmark, and offers a
+        skip link to it. No heading level is skipped anywhere. Every image has alt text.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Keyboard focus is visible on purpose rather than by browser default, and if your system
+        asks for reduced motion the page transitions stop. Things you click are real buttons and
+        links, so they work without a mouse.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># what's wrong right now</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Comments inside code blocks are too faint. They land at 4.42 to 1 against the page
+        background, and the standard asks for 4.5 to 1 at that text size. It's a small miss and
+        it's still a miss, so it's listed here until the colour changes.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        The small print in the footer passes at 4.56 to 1, which clears the bar by about one part
+        in a hundred. That's thinner than I'd like for 11 pixel text and it's on the list to fix
+        properly rather than defend.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Everything else in the palette is comfortable. Body text sits at 16 to 1 and the dimmed
+        text at 6.6 to 1.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># what I haven't checked</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        A real screen reader. Everything above comes from measuring the markup and the colours,
+        which catches the mechanical problems and tells you nothing about whether the thing is
+        pleasant to listen to. Until I've done that, treat the AA target as a direction rather
+        than a result.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        The comment box is someone else's code running on my page. I picked it and I'm responsible
+        for it being there, but I haven't audited it and I can't fix its internals. If it gets in
+        your way, tell me, because that's the sort of thing that decides whether it stays.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        The arcade and the ZERO/DAY playtest are the weak spot. The launcher is keyboard operable,
+        but what it launches is an emulator and a game, and neither was built with this in mind.
+        I'd rather say that than quietly leave them out of scope.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># if something blocks you</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        Email me at{' '}
+        <a href="mailto:hello@maxfieldallison.com" class="hover:text-[var(--color-ink)]">hello@maxfieldallison.com</a>
+        {' '}and tell me what you were trying to do. You don't need to know the terminology or
+        which rule it breaks. "I couldn't get to the thing" is a complete bug report.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        This is a personal site, so it's me reading that mail and me fixing it. No ticket number,
+        but also nobody to route around.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># log</h2>
+      {
+        log.map((e) => (
+          <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+            <span class="font-mono text-sm text-[var(--color-ink)]">{e.version} · {e.date}</span> · {e.body}
+          </p>
+        ))
+      }
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        When something here gets fixed, the fix lands in this log and the old entry stays. That's
+        the only way you can tell whether the list is getting shorter.
+      </p>
+    </div>
+  </section>
+</Layout>
