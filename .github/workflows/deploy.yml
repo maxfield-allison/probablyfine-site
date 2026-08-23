@@ -46,7 +46,13 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # Stamps the footer so a visitor can tell the mirror is answering. Only
+      # this job sets it; the container build below gets the default and says
+      # the cluster is serving.
       - run: pnpm build
+        env:
+          PUBLIC_ORIGIN: pages
 
       - name: Publish to Cloudflare Pages
         env:

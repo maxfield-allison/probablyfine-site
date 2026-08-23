@@ -6,6 +6,14 @@
 // Edit both together.
 import Icon from './Icon.astro';
 const year = new Date().getFullYear();
+
+// Set to "pages" by the Cloudflare Pages job in .github/workflows/deploy.yml.
+// The container build leaves it unset and gets the default, so the two
+// artifacts are distinguishable without either one having to detect anything
+// at runtime. Any unexpected value is treated as the normal case rather than
+// the alarming one: a typo in a workflow should not put a degraded banner on
+// every page.
+const isFailover = import.meta.env.PUBLIC_ORIGIN === 'pages';
 ---
 
 <footer class="border-t border-[var(--color-line)] mt-24">
@@ -44,6 +52,38 @@ const year = new Date().getFullYear();
       <span class="text-[var(--color-accent)]">probablyfine.dev</span>
       <span class="text-[var(--color-ink-dim)]">. Two sites, one person.</span>
     </p>
+    {/* Which build produced this page.
+
+        The container image and the Cloudflare Pages mirror are built by two
+        separate jobs, so the Pages job can stamp PUBLIC_ORIGIN=pages and the
+        container build gets the default. That makes this the rare status
+        indicator that is true by construction rather than asserted: no fetch,
+        no client JS, just a string decided at build time.
+
+        Read it precisely. It reports which build is answering, not the health
+        of the cluster — Cloudflare can still serve cached HTML from the k8s
+        origin while k8s is down, and that page would say k8s. The label says
+        "serving" rather than "up" for exactly that reason.
+
+        Amber, not red: the mirror answering is degraded, not broken, and the
+        reader is looking at a working page. It pulses only in that state, so
+        motion here always means something is actually different right now. */}
+    <p class="font-mono text-[11px] text-[var(--color-ink-dim)]">
+      {
+        isFailover ? (
+          <>
+            <span class="origin-dot origin-dot--warn" aria-hidden="true" />
+            <span class="text-[var(--color-warn)]">serving from the Cloudflare Pages mirror</span>
+            <span> · the cluster is not answering</span>
+          </>
+        ) : (
+          <>
+            <span class="origin-dot" aria-hidden="true" />
+            <span>serving from the Kubernetes cluster</span>
+          </>
+        )
+      }
+    </p>
     {/* Privacy has to be reachable from every page, not just linked from the
         comment widget's footer. A commenter should be able to read what gets
         stored before they decide to type anything. */}
@@ -56,3 +96,34 @@ const year = new Date().getFullYear();
     </p>
   </div>
 </footer>
+
+<style>
+  /* The dot is punctuation for the line beside it, so it is aria-hidden and
+     the sentence carries the meaning on its own. */
+  .origin-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 0.5em;
+    border-radius: 50%;
+    vertical-align: baseline;
+    background-color: color-mix(in srgb, var(--color-accent) 70%, transparent);
+  }
+
+  /* Only the degraded state moves. This is a time-based animation rather than
+     a scroll-driven one, so the global reduced-motion block does stop it. */
+  .origin-dot--warn {
+    background-color: var(--color-warn);
+    animation: origin-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes origin-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+</style>
