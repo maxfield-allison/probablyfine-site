@@ -1,14 +1,36 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// The one place on the site that gets a CRT.
+//
+// Scan lines were considered for terminal blocks across the site and rejected:
+// they read as retrocomputing nostalgia rather than as someone who works in a
+// terminal now, and they tax exactly the pixels a reader has to parse. Here
+// none of that applies. The texture sits on a dead screen that carries no
+// information, the joke lands because it appears nowhere else, and the parts a
+// lost visitor actually needs — the explanation and the way home — sit outside
+// the effect at full contrast.
+//
+// The styles are scoped to this file on purpose. Putting them in global.css
+// would make the exception available everywhere, which is how an exception
+// stops being one.
 ---
 
 <Layout title="404 · ProbablyFine" description="Page not found.">
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-24 pb-24 text-center">
     <p class="font-mono text-sm text-[var(--color-accent)]">$ curl -s /$(pwd)</p>
-    <h1 class="text-5xl font-bold mt-4">404</h1>
-    <p class="text-[var(--color-ink-dim)] mt-4 font-mono text-sm">
+
+    <div class="crt mt-6 mx-auto max-w-md rounded border border-[var(--color-line)] bg-[var(--color-surface)] px-6 py-10">
+      <div class="crt-screen">
+        <p class="font-mono text-xs tracking-[0.35em] uppercase">no signal</p>
+        <p class="mt-3 text-5xl font-bold">404</p>
+      </div>
+    </div>
+
+    <p class="text-[var(--color-ink-dim)] mt-6 font-mono text-sm">
       This page is not fine. It's missing.
     </p>
+
     <a
       href="/"
       class="inline-block mt-8 font-mono text-sm no-underline hover:no-underline px-4 py-2 rounded border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-[var(--color-base)] transition-colors"
@@ -16,3 +38,34 @@ import Layout from '../layouts/Layout.astro';
     >
   </section>
 </Layout>
+
+<style>
+  .crt {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Scan lines and the corner falloff of a tube. Both are decoration over a
+     dead screen, so they are hidden from assistive tech and never sit over
+     anything a reader needs. */
+  .crt::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgb(0 0 0 / 0.28) 0px,
+        rgb(0 0 0 / 0.28) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.25) 100%);
+  }
+
+  .crt-screen {
+    color: var(--color-accent);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+</style>
