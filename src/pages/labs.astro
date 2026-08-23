@@ -118,7 +118,7 @@ const services = [
       cell carries a left rule; the first in each row drops it, and rows after
       the first gain a top rule. */}
   <section class="max-w-[var(--container-shell)] mx-auto px-6 mt-4">
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-t border-b border-[var(--color-line)]">
+    <div class="reveal grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-t border-b border-[var(--color-line)]">
       {
         stats.map((s, i) => (
           <div
@@ -136,7 +136,7 @@ const services = [
   </section>
 
   <!-- Topology -->
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
+  <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># how it fits together</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       One diagram for the whole shape of it. Traffic comes in from the top, through the edge
@@ -148,7 +148,7 @@ const services = [
   </section>
 
   <!-- Cluster -->
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
+  <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the cluster</h2>
     <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
       <table class="w-full text-sm">
@@ -194,7 +194,7 @@ const services = [
   </section>
 
   <!-- GPUs -->
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
+  <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># three GPU generations</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       Three NVIDIA architectures, each passed straight through to a Talos Kubernetes worker.
@@ -229,7 +229,7 @@ const services = [
   </section>
 
   <!-- Storage -->
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
+  <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># storage</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       Everything sits on Ceph, on the order of 230 TiB raw spread across every node. Spinning
@@ -243,7 +243,7 @@ const services = [
   </section>
 
   <!-- Network -->
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
+  <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the fabric</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       A Brocade ICX6610 sits at the core, with 10GbE SFP+ uplinks to every node and jumbo
@@ -262,7 +262,7 @@ const services = [
   </section>
 
   <!-- Pi fleet -->
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
+  <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the pi fleet</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       A handful of Raspberry Pis run the things that should keep working even when the cluster
@@ -301,7 +301,7 @@ const services = [
   </section>
 
   <!-- What it runs -->
-  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8">
+  <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># what it runs</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       The hardware is only half the story. Here's what runs on it, grouped and

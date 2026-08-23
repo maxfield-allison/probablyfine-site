@@ -158,6 +158,67 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Motion: liveness, not decoration
+
+   This site's claim is that the lab is running right now, so motion reports
+   rather than performs. maxfieldallison.com is the document half of the pair
+   and gets a single settling motion instead; the two are deliberately
+   different verbs, which is where some of the texture budget between the
+   siblings is spent.
+
+   Budget, and it is the whole budget: nothing moves more than 12px, nothing
+   moves twice, no parallax, no scale, no blur.
+
+   Everything here is CSS scroll-driven, so there is no JS and no observer. A
+   browser without view() timelines renders the finished state — which is also
+   the reduced-motion state, so there is exactly one fallback path to reason
+   about rather than two.
+
+   The reduced-motion guard has to be explicit. The global block above switches
+   animations off by forcing `animation-duration: 0.01ms`, and that does
+   nothing to a scroll-driven animation, because the scroll range IS the
+   duration. The same trap applies on the sibling site.
+   --------------------------------------------------------------------------- */
+
+/* M1 — sections, figures and tables settle as they enter. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+
+    /* M4 — the topology wakes top to bottom, one layer at a time, so the
+       diagram reads as a path being traced rather than a picture appearing.
+       Each layer carries its own --i, which offsets its range. */
+    .topo-layer {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i) * 4%) entry calc(40% + var(--i) * 4%);
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* M3, the status-dot pulse, is deliberately not here yet. A dot that breathes
+   is making a claim in the present tense — this is up, now — and the only
+   status values on the page are hardcoded strings in labs.astro that no build
+   step checks. Animating those would make a static assertion look live, which
+   is the one thing this site cannot afford to fake. It lands when the status
+   data does, from Gatus. */
+
 /* Prose defaults for rendered Markdown posts.
 
    The post body is the one surface on this site that gets air rather than
