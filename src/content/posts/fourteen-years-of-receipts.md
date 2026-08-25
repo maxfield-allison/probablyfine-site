@@ -19,7 +19,7 @@ Somewhere in the middle of it I realized I had fourteen years of Amazon order hi
 
 Which is, and I want to be precise about this, a lot of fucking money.
 
-About $2,767 a year. I posted about it on Facebook a couple weeks ago and my wife chimed in, "Only $2300 a year lol." Then, a minute later, "Still cheaper than the 'zoo'." We have a lot of animals. Dividing by fourteen does help make a five-figure number feel a little more tolerable.
+About $2,767 a year. I posted about it on Facebook a couple weeks ago and my wife chimed in, "Only $2300 a year lol." Then, a minute later, "Still cheaper than the 'zoo'." [We have a lot of animals.](/pets) Dividing by fourteen does help make a five-figure number feel a little more tolerable.
 
 Her number and mine are different because mine depends on what you're willing to call a homelab. Cables, adapters, monitors and KVMs in, and it's $38,743. Out, and it's $30,971. Drop the cameras and smart plugs too and you're at $27,500. I'm sticking with the big one, because I bought all of it for the same reason and I'm not going to route around the fact that it was all in service of one thing in my mind.
 
