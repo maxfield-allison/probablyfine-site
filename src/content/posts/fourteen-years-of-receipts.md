@@ -13,7 +13,7 @@ That started as a different project. Every service I've touched since about 2011
 
 But somewhere in the middle of it I had fourteen years of Amazon order history sitting in a CSV, and on a whim, since I had the data anyway, I went looking for the total.
 
-1,860 orders since 2012. 456 of them are computers.
+1,860 orders since 2012. 456 of them are computer related.
 
 **$38,743.69.**
 
@@ -33,7 +33,7 @@ $13,072 since 2014, across 439 purchases. Roughly a thousand a year, about a thi
 
 Then the number I wasn't looking for. Across 288 games with playtime recorded: **15,399 hours.**
 
-A year and nine months. Continuous. And that's only Steam, so it knows nothing about the console years or anything else that never ran through it. Floor again.
+A year and nine months. Continuous. And that's only Steam, which didn't exist for most of the time I've been doing this. It has no idea about RuneScape in middle school, or the Halo co-op on the neighbor's Xbox. It definitely doesn't know about the stretch where I'd sneak downstairs at night to play Unreal Tournament on my dad's Mac until four in the morning, then sleep through first and second period. Floor again.
 
 So I can tell you how long I have spent playing video games to one decimal place. Steam wrote it down for twelve years without being asked and will render it on a page sorted by hours descending, in case I ever want to feel something about it.
 
