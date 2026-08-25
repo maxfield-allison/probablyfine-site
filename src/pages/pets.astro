@@ -1,0 +1,474 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+
+// The companion page to fourteen-years-of-receipts, which quotes my wife's verdict
+// on the homelab spend — "still cheaper than the 'zoo'" — and then says "we have a
+// lot of animals" without proving it. This is the proof.
+//
+// Structurally this is /labs pointed at livestock: same prompt line, same stat
+// strip, same grouped inventory. That is the joke, and it only works if the format
+// is played straight.
+//
+// Unlike /labs, this page uses astro:image rather than a bare <img>. Sixty-odd
+// photographs is where build-time resizing stops being optional; every photo in
+// src/assets/pets is a 1200px source that Astro cuts down to the size the grid
+// actually paints.
+//
+// Every file in src/assets/pets came through scripts/photo-import.mjs, which strips
+// all metadata. 62 of the 64 originals carried GPS coordinates. Do not hand-copy a
+// photo into this directory.
+const images = import.meta.glob<{ default: ImageMetadata }>('../assets/pets/*.jpg', {
+  eager: true,
+});
+const photo = (name: string) => {
+  const found = images[`../assets/pets/${name}.jpg`];
+  if (!found) throw new Error(`No photo src/assets/pets/${name}.jpg — check the name.`);
+  return found.default;
+};
+
+interface Shot {
+  file: string;
+  alt: string;
+}
+interface Animal {
+  name: string;
+  aka?: string;
+  kind: string;
+  since?: string;
+  note?: string;
+  shots: Shot[];
+}
+interface Group {
+  slug: string;
+  heading: string;
+  blurb?: string;
+  animals: Animal[];
+}
+
+const groups: Group[] = [
+  {
+    slug: 'cats',
+    heading: 'cats',
+    animals: [
+      {
+        name: 'Roland Schitt',
+        aka: 'Roli',
+        kind: 'grey tabby',
+        since: '2021',
+        note: "The one you've already met. He's the cat asleep on the tower PC at the end of the rack tour, and he picked that spot himself.",
+        shots: [
+          { file: '2021-roli-kitten', alt: 'A small grey tabby kitten curled up asleep' },
+          { file: '2026-roli-monitor', alt: 'A grey and white tabby cat draped over the top of a tower PC with its side panel lit, front paws hanging over the edge' },
+          { file: '2026-roli-rug', alt: 'A grey tabby cat stretched out on a patterned rug, looking up at the camera' },
+        ],
+      },
+      {
+        name: 'Tamale',
+        aka: 'Wumpus',
+        kind: 'brown tabby and white',
+        since: '2022',
+        shots: [
+          { file: '2025-tamale-sill', alt: 'A brown tabby and white cat sitting upright in front of a pale wall' },
+          { file: '2025-tamale-blep', alt: 'Close-up of a brown tabby and white cat with the tip of its tongue sticking out' },
+          { file: '2026-tamale-monitor', alt: 'A brown tabby and white cat asleep on top of a monitor above a lit desktop' },
+        ],
+      },
+      {
+        name: 'Stoli',
+        kind: 'brown tabby and white',
+        since: '2021',
+        shots: [
+          { file: '2023-stoli-rug', alt: 'A brown tabby and white cat lying face-down on a patterned rug next to a second cat' },
+          { file: '2025-stoli-asleep', alt: 'A brown tabby and white cat asleep on a patterned blanket with its paws tucked in' },
+        ],
+      },
+      {
+        name: 'Madeline',
+        aka: 'Mad',
+        kind: 'dark brown tabby',
+        since: '2022',
+        shots: [
+          { file: '2022-madeline-letterboard', alt: 'A dark tabby kitten sitting on a table beside a felt letterboard' },
+          { file: '2025-madeline-wall', alt: 'A dark tabby cat standing on its hind legs with front paws against a chair' },
+          { file: '2026-madeline-cat-tree', alt: 'A dark tabby cat asleep on a blanket on top of a cat tree in a doorway' },
+        ],
+      },
+      {
+        name: 'Calcifer',
+        kind: 'cream, flame point',
+        since: '2025',
+        shots: [
+          { file: '2025-calcifer-records', alt: 'A cream-coloured cat asleep on a turntable on a shelf beneath rows of books' },
+          { file: '2026-calcifer-asleep', alt: 'A cream-coloured cat asleep on its side on a dark blanket, lit blue and purple' },
+        ],
+      },
+      {
+        name: 'Pixel',
+        kind: 'dark tortoiseshell',
+        since: '2019',
+        shots: [
+          { file: '2019-pixel-belly', alt: 'A spotted tortoiseshell cat lying on its back on a leather couch having its stomach rubbed' },
+          { file: '2020-pixel-desk', alt: 'A dark tortoiseshell cat sitting on top of a desktop computer in front of a monitor' },
+        ],
+      },
+      {
+        name: 'Lucy',
+        kind: 'grey and white tabby',
+        since: '2017',
+        shots: [
+          { file: '2017-lucy-lap', alt: 'A grey and white tabby cat lying on a grey blanket' },
+          { file: '2019-lucy-tag', alt: 'A grey and white tabby cat sitting on a chair wearing a collar with a round green tag' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'dogs',
+    heading: 'dogs',
+    animals: [
+      {
+        name: 'Roux',
+        kind: 'tan retriever mix',
+        since: '2018',
+        note: 'The first animal in any of these photos. He predates most of the hardware.',
+        shots: [
+          { file: '2018-roux', alt: 'A tan retriever mix lying on a dark blanket' },
+          { file: '2023-roux-flowers', alt: 'A tan retriever mix sitting on pine straw in front of a bush covered in blue-purple flowers' },
+          { file: '2025-roux-pen', alt: 'An older tan dog curled up in a round bed inside a wire pen by a window' },
+        ],
+      },
+      {
+        name: 'Louise',
+        kind: 'small tan and white',
+        since: '2020',
+        note: 'Arrived as a puppy small enough to sleep on Roux.',
+        shots: [
+          { file: '2022-louise-bed', alt: 'A tan and white dog lying on a grey quilted bedspread' },
+          { file: '2026-louise-couch', alt: 'A small tan and white dog curled up on a cushion on a grey couch' },
+        ],
+      },
+      {
+        name: 'Juniper',
+        aka: 'Juni',
+        kind: 'black and white',
+        since: '2021',
+        shots: [
+          { file: '2021-juniper-portrait', alt: 'Black and white photo of a black-and-white dog standing on a wooden deck looking up' },
+        ],
+      },
+      {
+        name: 'Krombopulus Michael',
+        kind: 'tan and white',
+        since: '2022',
+        shots: [
+          { file: '2022-krombopulus-michael-harness', alt: 'A tan and white dog in a yellow harness looking up at the camera on a dark floor' },
+          { file: '2024-krombopulus-michael-crate', alt: 'A tan and white dog lying on a patterned bed inside an open wire crate' },
+        ],
+      },
+      {
+        name: 'Finn',
+        kind: 'brown and tan, collie-ish',
+        since: '2022',
+        shots: [
+          { file: '2022-finn', alt: 'A fluffy brown and tan dog standing outdoors on a deck with its mouth open' },
+          { file: '2023-finn-blanket', alt: 'A brown and tan dog resting its head on a cream blanket, looking at the camera' },
+        ],
+      },
+      {
+        name: 'Buttons',
+        kind: 'Great Pyrenees',
+        since: '2023',
+        shots: [
+          { file: '2023-buttons', alt: 'A white Great Pyrenees looking up at the camera from close range' },
+        ],
+      },
+      {
+        name: 'Andy Gator',
+        aka: 'Gator',
+        kind: 'golden mix',
+        since: '2026',
+        shots: [
+          { file: '2026-andy-gator', alt: 'A golden dog wearing a yellow bandana sitting on wet pavement' },
+        ],
+      },
+      {
+        name: 'Cole',
+        kind: 'brindle',
+        since: '2020',
+        shots: [
+          { file: '2020-cole-couch', alt: 'A dark brindle dog sitting upright on a couch in front of a window' },
+          { file: '2021-cole-portrait', alt: 'Black and white close-up portrait of a brindle dog on a deck' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'horses',
+    heading: 'horses',
+    blurb: 'Three of them, and none of them fit in the basement.',
+    animals: [
+      {
+        name: 'Tigger',
+        kind: 'buckskin',
+        since: '2019',
+        shots: [
+          { file: '2019-tigger', alt: 'A buckskin horse grazing in a grass paddock with horse trailers parked behind it' },
+        ],
+      },
+      {
+        name: 'Washoe',
+        aka: 'Washy',
+        kind: 'dark bay',
+        since: '2021',
+        shots: [
+          { file: '2021-washoe', alt: 'A dark bay horse standing in a field, head turned toward the camera' },
+          { file: '2022-washoe-portrait', alt: 'Head-on portrait of a dark bay horse with a thick forelock, ears forward' },
+        ],
+      },
+      {
+        name: 'Edgar Allan Pretty Pony',
+        kind: 'pinto pony',
+        since: '2023',
+        shots: [
+          { file: '2023-edgar-flower-crown', alt: 'A brown and white pinto pony in a green halter wearing a crown of daisies' },
+          { file: '2023-edgar-portrait', alt: 'Black and white photo of a pinto pony standing in a field facing the camera' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'rabbits',
+    heading: 'rabbits',
+    animals: [
+      {
+        name: 'Alice',
+        kind: 'broken-pattern rabbit',
+        since: '2020',
+        shots: [
+          { file: '2020-alice', alt: 'A brown and white rabbit standing on a hardwood floor in front of a patterned tapestry' },
+          { file: '2020-alice-floor', alt: 'A grey and white rabbit sitting on a hardwood floor beside a window' },
+        ],
+      },
+      {
+        name: 'Claude',
+        kind: 'rabbit',
+        since: '2020',
+        note: 'Named years before the /ai page existed, and I am not renaming him now.',
+        shots: [
+          { file: '2020-claude-and-alice', alt: 'Two rabbits lying stretched out beside a blue fabric play tunnel inside a wire pen' },
+          { file: '2021-alice-and-claude', alt: 'Two rabbits sitting side by side in front of a mirror' },
+        ],
+      },
+      {
+        name: 'Clementine',
+        kind: 'rabbit',
+        since: '2024',
+        shots: [
+          { file: '2024-alice-clementine-claude', alt: 'Three rabbits, one white, one brown and white, one tan, side by side on wood shavings' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'birds',
+    heading: 'birds',
+    animals: [
+      {
+        name: 'Temaki',
+        kind: 'green-cheek conure',
+        since: '2022',
+        shots: [
+          { file: '2022-temaki-hand', alt: 'A green-cheek conure perched on a hand outdoors' },
+          { file: '2022-temaki-perch', alt: 'A green-cheek conure hanging from a colourful shredded-paper toy' },
+        ],
+      },
+      {
+        name: 'Mai Tai',
+        kind: 'sun conure',
+        since: '2025',
+        shots: [
+          { file: '2025-mai-tai-perch', alt: 'A sun conure with orange and yellow plumage perched on the top of an open cage' },
+          { file: '2025-mai-tai-cage', alt: 'A sun conure climbing the bars of a cage beside a green toy' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'snake',
+    heading: 'the snake',
+    animals: [
+      {
+        name: 'Iris',
+        kind: 'ball python',
+        since: '2017',
+        note: 'The 2017 photo is the whole snake. The 2025 one is her head.',
+        shots: [
+          { file: '2017-iris-baby', alt: 'A small ball python coiled around a hand, patterned brown and black' },
+          { file: '2025-iris', alt: 'Close-up of a ball python raising its head above a branch' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'tank',
+    heading: 'the tank',
+    blurb: 'The cheapest animals in the house, and the only ones that stay where they are put.',
+    animals: [
+      {
+        name: 'Snail',
+        kind: 'mystery snail',
+        since: '2022',
+        shots: [
+          { file: '2022-snail', alt: 'An orange-shelled mystery snail on aquarium gravel beneath green plants' },
+          { file: '2022-snail-plants', alt: 'A mystery snail climbing a piece of aquarium rock among plants' },
+        ],
+      },
+      {
+        name: 'Guppy',
+        kind: 'guppy',
+        since: '2022',
+        shots: [
+          { file: '2022-guppy', alt: 'An orange guppy swimming in a planted aquarium' },
+        ],
+      },
+      {
+        name: 'Shrimp',
+        kind: 'cherry shrimp',
+        since: '2022',
+        shots: [
+          { file: '2022-shrimp', alt: 'A cherry shrimp on green aquarium moss' },
+          { file: '2023-shrimp', alt: 'A red cherry shrimp perched on a plant leaf in an aquarium' },
+        ],
+      },
+    ],
+  },
+];
+
+// The photos that are about more than one animal, which is most of what living here
+// actually looks like.
+const together: Shot[] = [
+  { file: '2020-roux-and-baby-louise', alt: 'A tan retriever mix lying in a sunlit window with a puppy asleep against its back' },
+  { file: '2019-roux-bandaged', alt: 'A tan dog asleep on carpet with a bandage wrapped around one front leg' },
+  { file: '2021-pixel-juni-louise-cole', alt: 'Two cats sitting on a desk in front of a bright window above a lit desktop computer' },
+  { file: '2021-louise-and-stoli', alt: 'A small dog and a tabby cat curled up together on a couch cushion' },
+  { file: '2022-roli-stoli-madeline', alt: 'Three tabby cats lying in a row along the back of a couch' },
+  { file: '2025-cat-tree', alt: 'A tall carpeted cat tree in a living room with cats on two of its platforms' },
+  { file: '2025-stoli-and-louise', alt: 'A tabby cat and a tan and white dog asleep together against a cushion' },
+  { file: '2025-all-the-dogs', alt: 'Six dogs of different sizes pressed against a wire deck gate, all looking at the camera' },
+  { file: '2026-tamale-and-roli', alt: 'Two tabby cats lying end to end on top of a monitor' },
+  { file: '2026-louise-and-juniper', alt: 'Two small dogs sitting together on a black wicker bench' },
+  { file: '2026-stoli-louise-roli', alt: 'Two cats and a dog asleep in a heap on a fleece blanket' },
+  { file: '2026-three-horses', alt: 'Three horses grazing in a green pasture at dusk with pine trees behind them' },
+];
+
+const counts = groups.map((g) => ({ label: g.heading, value: String(g.animals.length) }));
+const total = groups.reduce((n, g) => n + g.animals.length, 0);
+---
+
+<Layout
+  title="The zoo · ProbablyFine"
+  description="Every animal that lives here, or has. Cats, dogs, horses, rabbits, birds, a ball python and a fish tank — the other thing the money goes to."
+>
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[var(--color-accent)] m-0">$ ls /pets</p>
+    <h1 class="text-[2.125rem] font-bold mt-3.5 mb-0 tracking-[-0.015em]">The zoo</h1>
+    <p class="text-[var(--color-ink-dim)] mt-4 mb-0 leading-[1.65] text-pretty max-w-[62ch]">
+      When I added up <a href="/blog/fourteen-years-of-receipts">fourteen years of homelab
+      receipts</a>, my wife read the total and said it was still cheaper than the zoo. She
+      wasn't being cruel. She was being accurate, and I had no argument ready, because the
+      zoo is real and it lives here.
+    </p>
+    <p class="text-[var(--color-ink-dim)] mt-4 mb-0 leading-[1.65] text-pretty max-w-[62ch]">
+      So here's the inventory, in the same format as <a href="/labs">the hardware</a>. It
+      felt only fair.
+    </p>
+    <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4 mb-0">
+      {total} animals · dates are the earliest photo I have, not the day they arrived
+    </p>
+  </section>
+
+  {/* Stat strip, same construction as /labs: hairlines between cells, rules top and
+      bottom. Dividers come off nth-child rather than the loop index because which
+      cell starts a row changes with the column count at each breakpoint. */}
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 mt-4">
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 border-t border-b border-[var(--color-line)]">
+      {
+        counts.map((c) => (
+          <div class="py-5 px-4 border-[var(--color-line)] border-l [&:nth-child(2n+1)]:border-l-0 [&:nth-child(n+3)]:border-t sm:[&:nth-child(2n+1)]:border-l sm:[&:nth-child(4n+1)]:border-l-0 sm:[&:nth-child(n+3)]:border-t-0 sm:[&:nth-child(n+5)]:border-t lg:[&:nth-child(4n+1)]:border-l lg:[&:nth-child(7n+1)]:border-l-0 lg:[&:nth-child(n+5)]:border-t-0">
+            <div class="font-mono text-2xl text-[var(--color-accent)] leading-none">{c.value}</div>
+            <div class="font-mono text-[11px] text-[var(--color-ink-dim)] mt-1.5 leading-snug">{c.label}</div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    groups.map((g) => (
+      <section id={g.slug} class="max-w-[var(--container-shell)] mx-auto px-6 pt-12 pb-2">
+        <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-2"># {g.heading}</h2>
+        {g.blurb && (
+          <p class="text-[var(--color-ink-dim)] m-0 mb-6 leading-[1.65] text-pretty max-w-[62ch]">
+            {g.blurb}
+          </p>
+        )}
+        <div class="grid gap-10 md:grid-cols-2">
+          {g.animals.map((a) => (
+            <article class="m-0 border-t border-[var(--color-line)] pt-5">
+              <div
+                class="grid gap-2"
+                style={`grid-template-columns: repeat(${Math.min(a.shots.length, 3)}, minmax(0, 1fr))`}
+              >
+                {a.shots.map((s) => (
+                  <Image
+                    src={photo(s.file)}
+                    alt={s.alt}
+                    widths={[280, 560]}
+                    sizes="(min-width: 768px) 200px, 33vw"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-full object-cover aspect-square border border-[var(--color-line)] rounded-md block"
+                  />
+                ))}
+              </div>
+              <p class="mt-3 mb-0 font-mono text-sm">
+                <span class="text-[var(--color-ink)]">{a.name}</span>
+                {a.aka && <span class="text-[var(--color-ink-dim)]"> "{a.aka}"</span>}
+                <span class="text-[var(--color-ink-dim)]"> · {a.kind}</span>
+                {a.since && <span class="text-[var(--color-ink-dim)]"> · {a.since}</span>}
+              </p>
+              {a.note && (
+                <p class="text-[var(--color-ink-dim)] m-0 mt-1.5 leading-[1.65] text-pretty">
+                  {a.note}
+                </p>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-12 pb-20">
+    <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-2"># everyone at once</h2>
+    <p class="text-[var(--color-ink-dim)] m-0 mb-6 leading-[1.65] text-pretty max-w-[62ch]">
+      Listing them one at a time is the tidy version. This is what it's actually like.
+    </p>
+    <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+      {
+        together.map((s) => (
+          <Image
+            src={photo(s.file)}
+            alt={s.alt}
+            widths={[320, 640]}
+            sizes="(min-width: 1024px) 260px, (min-width: 640px) 33vw, 50vw"
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full object-cover aspect-square border border-[var(--color-line)] rounded-md block"
+          />
+        ))
+      }
+    </div>
+  </section>
+</Layout>

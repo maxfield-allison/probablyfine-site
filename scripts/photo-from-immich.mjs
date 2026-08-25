@@ -11,14 +11,16 @@
 // infrastructure. See repos/brain/projects/photo-library/README.md (D5).
 //
 // Every file written here has ALL metadata stripped — that includes the GPS
-// coordinates Google Photos and phone cameras attach to nearly everything. What
-// the script cannot check is what is visible *in* the frame: house numbers,
+// coordinates Google Photos and phone cameras attach to nearly everything. The
+// pipeline itself lives in scripts/lib/photo.mjs and is shared with
+// scripts/photo-import.mjs, which does the same job for photos that arrive as
+// files. What neither can check is what is visible *in* the frame: house numbers,
 // plates, screens showing internal IPs, faces of people who did not agree to be
 // on a public site. That review is still yours.
-import sharp from 'sharp';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
+import { processPhoto, MAX_EDGE, JPEG_QUALITY } from './lib/photo.mjs';
 
 const IMG_DIR = 'src/content/posts/img';
 
@@ -29,12 +31,6 @@ const IMG_DIR = 'src/content/posts/img';
 // served by the internal PKI, which Node does not trust without NODE_EXTRA_CA_CERTS.
 // Run this from outside the network and Authentik will intercept, as intended.
 const DEFAULT_URL = 'https://photos.probablyfine.dev';
-
-// Long edge, matching what is already in src/content/posts/img (all 1600px).
-// Astro resizes again at build time; this just keeps multi-megabyte originals
-// out of git history.
-const MAX_EDGE = 1600;
-const JPEG_QUALITY = 82;
 
 // Both Immich keys live in one file in the homelab secrets directory, which is
 // never committed: keys.blog is the read-only one this script uses, keys.import
@@ -143,15 +139,7 @@ async function fetchPhoto(id, name) {
   await mkdir(IMG_DIR, { recursive: true });
   const out = join(IMG_DIR, `${name}.jpg`);
 
-  // .rotate() with no argument applies the EXIF orientation tag before the
-  // metadata is discarded — without it, portrait phone shots come out sideways.
-  // sharp drops all metadata unless withMetadata() is called, which is exactly
-  // what we want here.
-  const info = await sharp(original)
-    .rotate()
-    .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true })
-    .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
-    .toBuffer({ resolveWithObject: true });
+  const info = await processPhoto(original, { maxEdge: MAX_EDGE, quality: JPEG_QUALITY });
 
   await writeFile(out, info.data);
 
