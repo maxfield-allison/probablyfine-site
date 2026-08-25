@@ -23,7 +23,7 @@ Her number and mine are different because mine depends on what you're willing to
 
 All three are floors regardless. The export only knows about Amazon. Nothing from eBay, which is where most of the used enterprise gear came from. Nothing from drives bought in a store. Nothing gifted. The switch the entire network runs on was about $150 on eBay and does not appear in that file anywhere.
 
-Biggest year was 2022 at $10,719. That was the rack.
+Biggest year was 2022 at $10,719. That was [the rack](/blog/a-tour-of-the-rack).
 
 ## So I kept digging
 
@@ -33,7 +33,7 @@ $13,072 since 2014, across 439 purchases. Roughly a thousand a year, about a thi
 
 Then the number I wasn't looking for. Across 288 games with playtime recorded: **15,399 hours.**
 
-A year and nine months. Continuous. And that's only Steam, which didn't exist for most of the time I've been doing this. It has no idea about RuneScape in middle school, or the Halo co-op on the neighbor's Xbox. It definitely doesn't know about the stretch where I'd sneak downstairs at night to play Unreal Tournament on my dad's Mac until four in the morning, then sleep through first and second period. Floor again.
+A year and nine months. Continuous. And that's only Steam, which didn't exist for most of the time I've been doing this. It has no idea about RuneScape in middle school, or the Halo co-op on Russ's Xbox next door. It definitely doesn't know about the stretch where I'd sneak downstairs at night to play Unreal Tournament on my dad's Mac until four in the morning, then sleep through first and second period. Floor again.
 
 So I can tell you how long I have spent playing video games to one decimal place. Steam wrote it down for twelve years without being asked and will render it on a page sorted by hours descending, in case I ever want to feel something about it.
 
@@ -47,7 +47,7 @@ My mom asked, in the same thread, whether any of it earned me anything. Whether 
 
 It did, and it's not close.
 
-I flashed a consumer router with Tomato because I wanted a couple of SSIDs, and it made me learn VLANs and subnets and addressing to get there. I ran Plex for my friends and picked up Linux properly holding it together. I got to Ceph the long way, after ZFS and Gluster spent a couple of years teaching me why I didn't want ZFS and Gluster. Kubernetes went up on nine nodes in my basement well before anybody was going to ask me about it professionally.
+I flashed a consumer router with Tomato because I wanted a couple of SSIDs, and it made me learn VLANs and subnets and addressing to get there. I ran Plex for my friends and picked up Linux properly holding it together. I got to Ceph the long way, after ZFS and Gluster spent a couple of years teaching me why I didn't want ZFS and Gluster. Kubernetes went up on nine nodes in my basement well before anybody was going to ask me about it professionally. [The whole arc is its own post](/blog/how-the-lab-got-here).
 
 Every one of those was a thing I wanted at home first and a thing I got paid for second, in that order, no exceptions.
 
