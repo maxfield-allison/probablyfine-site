@@ -29,13 +29,18 @@ const photo = (name: string) => {
 
 interface Shot {
   file: string;
+  /** Read aloud by screen readers. Describes the frame. */
   alt: string;
+  /** Shown under the photo in the overlay. Falls back to the animal and the year. */
+  caption?: string;
 }
 interface Animal {
   name: string;
   aka?: string;
   kind: string;
   since?: string;
+  /** A closing year is how this page says an animal has died. Nothing else marks it. */
+  until?: string;
   note?: string;
   shots: Shot[];
 }
@@ -65,11 +70,10 @@ const groups: Group[] = [
       },
       {
         name: 'Tamale',
-        aka: 'Wumpus',
         kind: 'brown tabby and white',
         since: '2022',
         shots: [
-          { file: '2025-tamale-sill', alt: 'A brown tabby and white cat sitting upright in front of a pale wall' },
+          { file: '2024-tamale-wumpus', alt: 'A brown tabby and white cat sitting on a rug in an odd hunched stance, front legs splayed' , caption: 'Wumpus. She only gets called that when she sits like this.' },
           { file: '2025-tamale-blep', alt: 'Close-up of a brown tabby and white cat with the tip of its tongue sticking out' },
           { file: '2026-tamale-monitor', alt: 'A brown tabby and white cat asleep on top of a monitor above a lit desktop' },
         ],
@@ -107,7 +111,7 @@ const groups: Group[] = [
         name: 'Pixel',
         kind: 'dark tortoiseshell',
         since: '2019',
-        note: "Roux killed her too, after she got out while the dogs were in the yard. That was the end of everyone living together \u2014 the dogs have the sunroom now, the cats have the house.",
+        until: '2021',
         shots: [
           { file: '2019-pixel-belly', alt: 'A spotted tortoiseshell cat lying on its back on a leather couch having its stomach rubbed' },
           { file: '2020-pixel-desk', alt: 'A dark tortoiseshell cat sitting on top of a desktop computer in front of a monitor' },
@@ -117,7 +121,7 @@ const groups: Group[] = [
         name: 'Magnolia',
         kind: 'brown tabby',
         since: '2016',
-        note: 'Roux killed her. He had never shown the slightest interest in a cat until he did.',
+        until: '2018',
         shots: [
           { file: '2016-magnolia-sun', alt: 'A brown tabby cat asleep on a white armchair in a bar of afternoon sun' },
           { file: '2016-magnolia-chair', alt: 'A brown tabby cat lying on its back along the seat of a dark chair, paws in the air' },
@@ -145,7 +149,7 @@ const groups: Group[] = [
         since: '2018',
         note: "My wife found him in the Tuskegee forest outside Auburn, while she was out riding Tigger. He still had bird shot in his backside, probably from chasing somebody's chickens. He was a junkyard ass dog and she brought him home anyway.",
         shots: [
-          { file: '2018-roux', alt: 'A tan retriever mix lying on a dark blanket' },
+          { file: '2018-roux-auburn', alt: 'A young fawn dog in a red collar lying on a floral bed in a patch of sunlight' },
           { file: '2023-roux-flowers', alt: 'A tan retriever mix sitting on pine straw in front of a bush covered in blue-purple flowers' },
           { file: '2025-roux-pen', alt: 'An older tan dog curled up in a round bed inside a wire pen by a window' },
         ],
@@ -219,7 +223,7 @@ const groups: Group[] = [
         name: 'Cole',
         kind: 'brindle',
         since: '2020',
-        note: 'Kidney failure at two, maybe three. We never worked out what happened. Two weeks hospitalised at home bought about six more months. He died too young and it still hurts.',
+        until: '2021',
         shots: [
           { file: '2020-cole-couch', alt: 'A dark brindle dog sitting upright on a couch in front of a window' },
           { file: '2021-cole-portrait', alt: 'Black and white close-up portrait of a brindle dog on a deck' },
@@ -230,7 +234,7 @@ const groups: Group[] = [
   {
     slug: 'horses',
     heading: 'horses',
-    blurb: 'Three of them, and none of them fit in the basement.',
+    blurb: "Three of them, and none of them fit in the basement. They're boarded, for now.",
     animals: [
       {
         name: 'Tigger',
@@ -269,6 +273,7 @@ const groups: Group[] = [
         name: 'Alice',
         kind: 'broken-pattern rabbit',
         since: '2020',
+        until: '2024',
         shots: [
           { file: '2020-alice', alt: 'A brown and white rabbit standing on a hardwood floor in front of a patterned tapestry' },
           { file: '2020-alice-floor', alt: 'A grey and white rabbit sitting on a hardwood floor beside a window' },
@@ -372,20 +377,29 @@ const groups: Group[] = [
 // The photos that are about more than one animal, which is most of what living here
 // actually looks like.
 const together: Shot[] = [
-  { file: '2016-cats-at-the-door', alt: 'Two cats watching the yard through a sliding glass door, one on a chair and one in a hammock slung underneath it' },
-  { file: '2020-roux-and-baby-louise', alt: 'A tan retriever mix lying in a sunlit window with a puppy asleep against its back' },
-  { file: '2019-roux-bandaged', alt: 'A tan dog asleep on carpet with a bandage wrapped around one front leg' },
-  { file: '2021-pixel-juni-louise-cole', alt: 'Two cats sitting on a desk in front of a bright window above a lit desktop computer' },
-  { file: '2021-louise-and-stoli', alt: 'A small dog and a tabby cat curled up together on a couch cushion' },
-  { file: '2022-roli-stoli-madeline', alt: 'Three tabby cats lying in a row along the back of a couch' },
-  { file: '2025-cat-tree', alt: 'A tall carpeted cat tree in a living room with cats on two of its platforms' },
-  { file: '2025-stoli-and-louise', alt: 'A tabby cat and a tan and white dog asleep together against a cushion' },
-  { file: '2025-all-the-dogs', alt: 'Six dogs of different sizes pressed against a wire deck gate, all looking at the camera' },
-  { file: '2026-tamale-and-roli', alt: 'Two tabby cats lying end to end on top of a monitor' },
-  { file: '2026-louise-and-juniper', alt: 'Two small dogs sitting together on a black wicker bench' },
-  { file: '2026-stoli-louise-roli', alt: 'Two cats and a dog asleep in a heap on a fleece blanket' },
-  { file: '2026-three-horses', alt: 'Three horses grazing in a green pasture at dusk with pine trees behind them' },
+  { file: '2016-cats-at-the-door', alt: 'Two cats watching the yard through a sliding glass door, one on a chair and one in a hammock slung underneath it', caption: 'Lucy on the chair, Magnolia in the hammock underneath it.' },
+  { file: '2020-roux-and-baby-louise', alt: 'A tan retriever mix lying in a sunlit window with a puppy asleep against its back', caption: 'Louise asleep against Roux, not long after she turned up.' },
+  { file: '2019-roux-bandaged', alt: 'A tan dog asleep on carpet with a bandage wrapped around one front leg', caption: 'Roux, patched up.' },
+  { file: '2021-pixel-juni-louise-cole', alt: 'Four animals asleep along one couch: a tabby cat, a small tan and white dog, a large white and tan dog, and a brindle dog at the back', caption: 'Pixel, Louise, Juni and Cole, on one couch.' },
+  { file: '2021-louise-and-stoli', alt: 'A small dog and a tabby cat curled up together on a couch cushion', caption: 'Louise and Stoli.' },
+  { file: '2022-roli-stoli-madeline', alt: 'Three tabby cats lying in a row along the back of a couch', caption: 'Roli, Stoli and Madeline.' },
+  { file: '2025-cat-tree', alt: 'A tall carpeted cat tree in a living room with cats on two of its platforms', caption: 'The cat tree, fully occupied.' },
+  { file: '2025-stoli-and-louise', alt: 'A tabby cat and a tan and white dog asleep together against a cushion', caption: 'Stoli and Louise.' },
+  { file: '2025-all-the-dogs', alt: 'Six dogs of different sizes pressed against a wire deck gate, all looking at the camera', caption: 'Left to right, bottom to top: Buttons, Juni, Louise, Krombopulus Michael, Finn, Roux.' },
+  { file: '2026-tamale-and-roli', alt: 'Two tabby cats lying end to end on top of a monitor', caption: 'Tamale and Roli.' },
+  { file: '2026-louise-and-juniper', alt: 'Two small dogs sitting together on a black wicker bench', caption: 'Louise and Juniper.' },
+  { file: '2026-stoli-louise-roli', alt: 'Two cats and a dog asleep in a heap on a fleece blanket', caption: 'Stoli, Louise and Roli.' },
+  { file: '2026-three-horses', alt: 'Three horses grazing in a green pasture at dusk with pine trees behind them', caption: 'Tigger, Edgar and Washoe.' },
 ];
+
+// The overlay caption. An animal's own photos fall back to its name and the year the
+// photo was taken, which is in the filename; the group shots carry written captions.
+const captionFor = (a: Animal, s: Shot) =>
+  s.caption ?? `${a.name}, ${s.file.slice(0, 4)}`;
+
+// A closed range is the only thing on this page that says an animal has died. No badge,
+// no symbol, no separate section.
+const lifespan = (a: Animal) => (a.until ? `${a.since}\u2013${a.until}` : a.since);
 
 const counts = groups.map((g) => ({ label: g.heading, value: String(g.animals.length) }));
 const total = groups.reduce((n, g) => n + g.animals.length, 0);
@@ -409,7 +423,8 @@ const total = groups.reduce((n, g) => n + g.animals.length, 0);
       felt only fair.
     </p>
     <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4 mb-0">
-      {total} animals · dates are the earliest photo I have, not the day they arrived
+      {total} animals · dates are the first and last photo I have, not the day they
+      arrived · a closed range means they're no longer with us · click any photo
     </p>
   </section>
 
@@ -446,22 +461,31 @@ const total = groups.reduce((n, g) => n + g.animals.length, 0);
                 style={`grid-template-columns: repeat(${Math.min(a.shots.length, 3)}, minmax(0, 1fr))`}
               >
                 {a.shots.map((s) => (
-                  <Image
-                    src={photo(s.file)}
-                    alt={s.alt}
-                    widths={[280, 560]}
-                    sizes="(min-width: 768px) 200px, 33vw"
-                    loading="lazy"
-                    decoding="async"
-                    class="w-full h-full object-cover aspect-square border border-[var(--color-line)] rounded-md block"
-                  />
+                  <button
+                    type="button"
+                    data-shot
+                    data-full={photo(s.file).src}
+                    data-alt={s.alt}
+                    data-caption={captionFor(a, s)}
+                    class="p-0 border-0 bg-transparent cursor-zoom-in block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
+                  >
+                    <Image
+                      src={photo(s.file)}
+                      alt={s.alt}
+                      widths={[280, 560]}
+                      sizes="(min-width: 768px) 200px, 33vw"
+                      loading="lazy"
+                      decoding="async"
+                      class="w-full h-full object-cover aspect-square border border-[var(--color-line)] rounded-md block"
+                    />
+                  </button>
                 ))}
               </div>
               <p class="mt-3 mb-0 font-mono text-sm">
                 <span class="text-[var(--color-ink)]">{a.name}</span>
                 {a.aka && <span class="text-[var(--color-ink-dim)]"> "{a.aka}"</span>}
                 <span class="text-[var(--color-ink-dim)]"> · {a.kind}</span>
-                {a.since && <span class="text-[var(--color-ink-dim)]"> · {a.since}</span>}
+                {a.since && <span class="text-[var(--color-ink-dim)]"> · {lifespan(a)}</span>}
               </p>
               {a.note && (
                 <p class="text-[var(--color-ink-dim)] m-0 mt-1.5 leading-[1.65] text-pretty">
@@ -483,17 +507,136 @@ const total = groups.reduce((n, g) => n + g.animals.length, 0);
     <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
       {
         together.map((s) => (
-          <Image
-            src={photo(s.file)}
-            alt={s.alt}
-            widths={[320, 640]}
-            sizes="(min-width: 1024px) 260px, (min-width: 640px) 33vw, 50vw"
-            loading="lazy"
-            decoding="async"
-            class="w-full h-full object-cover aspect-square border border-[var(--color-line)] rounded-md block"
-          />
+          <button
+            type="button"
+            data-shot
+            data-full={photo(s.file).src}
+            data-alt={s.alt}
+            data-caption={s.caption}
+            class="p-0 border-0 bg-transparent cursor-zoom-in block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
+          >
+            <Image
+              src={photo(s.file)}
+              alt={s.alt}
+              widths={[320, 640]}
+              sizes="(min-width: 1024px) 260px, (min-width: 640px) 33vw, 50vw"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover aspect-square border border-[var(--color-line)] rounded-md block"
+            />
+          </button>
         ))
       }
     </div>
   </section>
+  {/* One overlay for the whole page. Every photo above is a button that opens it at its
+      own index, and the arrows walk the page in the order it reads: cats, then dogs,
+      then the rest, then the group shots. <dialog> is doing the real work here — it
+      handles the top layer, the focus trap and the Escape key without any of it being
+      reimplemented in JavaScript. */}
+  <dialog
+    id="lightbox"
+    aria-label="Photos"
+    class="p-0 m-0 w-full h-full max-w-full max-h-full bg-transparent text-[var(--color-ink)] backdrop:bg-black/85"
+  >
+    <div data-lb="close" class="relative w-full h-full flex items-center justify-center px-4 py-6">
+      <button
+        type="button"
+        data-lb="close"
+        aria-label="Close"
+        class="absolute top-3 right-4 z-10 font-mono text-xs text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] bg-transparent border border-[var(--color-line)] rounded px-2.5 py-1 cursor-pointer"
+      >esc</button>
+      <button
+        type="button"
+        data-lb="prev"
+        aria-label="Previous photo"
+        class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 font-mono text-lg text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] bg-[var(--color-base)]/70 border border-[var(--color-line)] rounded px-3 py-2 cursor-pointer"
+      >&#8592;</button>
+      <button
+        type="button"
+        data-lb="next"
+        aria-label="Next photo"
+        class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 font-mono text-lg text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] bg-[var(--color-base)]/70 border border-[var(--color-line)] rounded px-3 py-2 cursor-pointer"
+      >&#8594;</button>
+
+      <figure data-lb="stay" class="m-0 flex flex-col items-center gap-3 max-w-[min(94vw,1100px)]">
+        <img
+          id="lightbox-img"
+          src=""
+          alt=""
+          class="max-w-full max-h-[74vh] w-auto h-auto object-contain rounded-md border border-[var(--color-line)]"
+        />
+        <figcaption class="font-mono text-xs text-[var(--color-ink-dim)] text-center leading-[1.6] text-pretty">
+          <span id="lightbox-caption"></span>
+          <span id="lightbox-count" class="text-[var(--color-accent)] ml-2"></span>
+        </figcaption>
+      </figure>
+    </div>
+  </dialog>
 </Layout>
+
+<script>
+  // The overlay walks every photo on the page in DOM order, so left and right move from
+  // one animal to the next rather than stopping at the end of a card.
+  function setupLightbox() {
+    const dialog = document.getElementById('lightbox') as HTMLDialogElement | null;
+    const img = document.getElementById('lightbox-img') as HTMLImageElement | null;
+    const caption = document.getElementById('lightbox-caption');
+    const count = document.getElementById('lightbox-count');
+    if (!dialog || !img || !caption || !count) return;
+
+    const shots = Array.from(document.querySelectorAll<HTMLButtonElement>('button[data-shot]'));
+    if (!shots.length) return;
+    let index = 0;
+
+    const show = (i: number) => {
+      index = (i + shots.length) % shots.length;
+      const shot = shots[index];
+      img.src = shot.dataset.full ?? '';
+      img.alt = shot.dataset.alt ?? '';
+      caption.textContent = shot.dataset.caption ?? '';
+      count.textContent = `${index + 1}/${shots.length}`;
+    };
+
+    shots.forEach((shot, i) => {
+      if (shot.dataset.bound) return;
+      shot.dataset.bound = '1';
+      shot.addEventListener('click', () => {
+        show(i);
+        if (!dialog.open) dialog.showModal();
+      });
+    });
+
+    if (dialog.dataset.bound) return;
+    dialog.dataset.bound = '1';
+
+    // One delegated handler. closest() finds the nearest element carrying an action, so
+    // the arrows win over the backdrop they sit on, and the figure absorbs clicks on the
+    // photo itself rather than letting them fall through and close the overlay.
+    dialog.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      const action = target.closest<HTMLElement>('[data-lb]')?.dataset.lb;
+      if (action === 'prev') show(index - 1);
+      else if (action === 'next') show(index + 1);
+      else if (action === 'close') dialog.close();
+    });
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        show(index - 1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(index + 1);
+      }
+    });
+
+    // Drop the source on close so a reopened overlay never flashes the previous photo.
+    dialog.addEventListener('close', () => {
+      img.removeAttribute('src');
+    });
+  }
+
+  setupLightbox();
+  document.addEventListener('astro:page-load', setupLightbox);
+</script>
