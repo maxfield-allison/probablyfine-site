@@ -4,7 +4,7 @@ description: "I pulled my data out of every service I've used since 2011 for a d
 date: 2026-08-25
 tags: ["homelab", "hardware", "retrospective"]
 aiRole: drafted
-draft: true
+draft: false
 ---
 
 I've been pulling my data out of everything.
