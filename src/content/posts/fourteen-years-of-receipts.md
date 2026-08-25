@@ -1,7 +1,7 @@
 ---
 title: "Fourteen years of receipts"
 description: "I added up what the homelab cost because I needed dates for something else. The total was easy to argue about, which is most of what's wrong with it. The cost that mattered has no receipt anywhere."
-date: 2026-08-18
+date: 2026-08-25
 tags: ["homelab", "hardware", "retrospective"]
 aiRole: drafted
 draft: true
