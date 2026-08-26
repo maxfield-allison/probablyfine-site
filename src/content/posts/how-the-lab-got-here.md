@@ -173,3 +173,9 @@ node and a list of ideas.
 For now, that is the arc. A $75 firewall to a Kubernetes cluster, one evolution at a time.
 
 It's probably fine.
+
+---
+
+**How this one was made.** The arc is mine and I have been telling pieces of it for years. What I couldn't do from memory was date it, so the timeline was reconciled against photo-dated artifacts instead: build photos, file timestamps, hardware that pins itself to a year. Where a memory and a file disagreed, the file won.
+
+The first version of this read like a machine wrote it, list-shaped and full of em dashes, and it was rewritten before it went up. What came after that was factual correction rather than voice, and they were the same corrections the [rack tour](/blog/a-tour-of-the-rack) needed, because the two were drafted together off the same pile of photos.

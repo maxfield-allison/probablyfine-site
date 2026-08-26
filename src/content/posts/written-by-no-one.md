@@ -130,3 +130,9 @@ the cadence and templating of the generated stuff, and called it an inflection p
 us arriving there separately doesn't prove it, but it's not nothing.
 
 I didn't pay him to prove the thesis in the comments. I couldn't have paid for better.
+
+---
+
+**How this one was made.** The post argues about its own construction up above, so this is the part that section leaves out, which is the count. Eight rounds of edits against my own rulebook before it went up, on an essay about the difference between that and a skim.
+
+The opinion came first and in public, three weeks earlier and under my name, and that's the reason the piece works at all. The comment I am quoting is real and was left publicly under the commenter's own name. I haven't named him. The update at the bottom went up the same day, because he read the essay and answered the question it was built around.

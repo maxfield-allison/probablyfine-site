@@ -193,3 +193,13 @@ Probably fine.
 ---
 
 *Related: the [dnsweaver case study](https://maxfieldallison.com/projects/dnsweaver) on the how and why of the build.*
+
+---
+
+**How this one was made.** I wrote the tool. The post came a few days of drafting later and got checked line by line against the repo it describes, which caught a provider list that had grown since the draft and a couple of claims I couldn't have defended.
+
+The one worth naming is the ExternalDNS comparison. The draft said ExternalDNS structurally cannot do split-horizon. That's not true, and it's exactly the kind of overstatement that gets you correctly taken apart by somebody who knows the project. The honest version is the one in the post: it's Kubernetes-shaped, its center of gravity is public DNS, and getting what I wanted out of it takes two instances and two annotation sets where dnsweaver takes one label.
+
+Everything about other people got verified before it shipped. The two write-ups are named because I read them. René Jochum's contributions are described from the actual issues and pull requests, including which parts were his and which were mine, because getting somebody else's credit wrong in public is worse than leaving it out.
+
+A third write-up of dnsweaver exists and is not cited here. It's machine-generated and wrong about the tool, down to a configuration label that has never existed. Citing it would have put invented facts about my own project into my own post. [I had more to say about that a week later.](/blog/written-by-no-one)

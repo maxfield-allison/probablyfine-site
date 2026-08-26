@@ -36,3 +36,9 @@ own the debugging judgment; the agent helps me implement faster than I could by 
 written that way are tagged `ai-assisted`. Owning that openly is the point.
 
 It's probably fine. Let's find out.
+
+---
+
+**How this one was made.** This was the first post and it went up the same day as the site, in the same commit as the scaffolding that renders it. The draft was written from a description of what I wanted the blog to be, and I edited it.
+
+It's also the post that's aged worst. It shipped with em dashes and a tidy bolded-list construction that I now treat as machine tells, and both got swept out eleven days later. The rulebook I check drafts against didn't exist when this went up, and part of the reason it exists is what this one read like.

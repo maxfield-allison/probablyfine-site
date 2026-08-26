@@ -153,3 +153,11 @@ It's probably fine.
 ---
 
 *Related: the [Kubernetes homelab case study](https://maxfieldallison.com/projects/homelab) on how the whole thing runs.*
+
+---
+
+**How this one was made.** The rack is mine and the specs came off the machines. The draft was written to a hardware inventory and a set of photos, which is where it went wrong, because a model can't look at a picture of my basement and know what it's looking at.
+
+So most of the editing here was correction, not voice. The 2017 photo was captioned as the lab's first whitebox and is actually my personal PC with a box fan pointed at an overheating GPU. The drive cages belong to the Threadripper server, not the machine the draft attached them to. The rack caption had the machines in the wrong places until I put them back. The case-swap story ran backwards: the Threadripper started in the 4U chassis and moved into the old gaming tower when the EPYC took the rack space, and the draft had it the other way around.
+
+And there aren't any heated floors in this house. The rack exhausts into the gap under the main floor of a split-level, which you feel on the stairs. The heated floors were a joke I made, and the draft believed me.
