@@ -76,3 +76,15 @@ Capitalism demands value and infinite growth. Pricing the hours assumes I spent 
 Steam counted 15,399 hours of the hobby I would give up first.
 
 It's probably fine.
+
+---
+
+**How this one was made.** The numbers are out of my own exports. The Amazon figure came from the order history file, 1,860 rows sorted by a rule I could state and check rather than by memory, which is why it disagrees with the $33,708 I posted on Facebook two weeks before this.
+
+Steam's figures are Steam's. The draft was written to that material and to a frame I set first, and then I went through it line by line.
+
+The first finished version got thrown out. It passed every check I run, the voice linter included, and it still read like a machine wrote it. The tell was the shape rather than the sentences: six sections of roughly equal length, every header the same kind of phrase, every one of them landing on a tidy closing line. The opening is my rewrite, and so is the frame the post runs on now, which is that I was pulling exports for a different project and went after the total on a whim.
+
+Four more rounds after that, and the biggest was not a line edit. The draft argued that the hours can't be priced. My note said you can totally price your hours, so the post prices them, gets to $375,000, and then throws the question out for a better reason than not being able to answer it. That ending is the reason the post exists and it wasn't in the draft.
+
+The tells from the version I rejected went into my voice rulebook the same day. [Why any of this gets disclosed at all](/blog/how-i-use-ai), and the rules as they stand now at [/ai](/ai).
