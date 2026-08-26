@@ -6,8 +6,8 @@ import Layout from '../layouts/Layout.astro';
 // true. Rule changes land in the log at the bottom and old entries stay.
 // The aiRole chip on every post links here, so this page is the answer to
 // "according to what standard?" at the moment a reader asks it.
-const version = 'v1.0';
-const updated = '2026-08-18';
+const version = 'v1.1';
+const updated = '2026-08-26';
 
 const tags = [
   {
@@ -26,9 +26,15 @@ const tags = [
 
 const log = [
   {
+    version: 'v1.1',
+    date: '2026-08-26',
+    body: 'The per-post notes promised in v1.0 actually landed. Every published post now carries one. The entry below said this was already done and was wrong for eight days: the backfill set the tag on all nine posts and wrote exactly one note, so six of the seven live posts carried nothing but a label that says the same thing on every post. That is the failure this log exists to make visible, and it is on the half of the policy I called the real disclosure. Also corrected two posts that still told readers about the ai-assisted tag v1.0 replaced, and made it a build failure to publish a post without a note, because remembering did not work.',
+  },
+  {
     version: 'v1.0',
     date: '2026-08-18',
     body: 'First version. Replaced the aiAssisted boolean, which was true on all nine published posts and therefore said nothing, with the three-level tag. Backfilled every published post to "ai-drafted, edited by me" and added the per-post process notes.',
+    correction: 'Corrected 2026-08-26: the last sentence was false when it was written. One note was added, not nine. See v1.1.',
   },
 ];
 ---
@@ -119,9 +125,16 @@ const log = [
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># log</h2>
       {
         log.map((e) => (
-          <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
-            <span class="font-mono text-sm text-[var(--color-ink)]">{e.version} · {e.date}</span> · {e.body}
-          </p>
+          <div class="mt-4">
+            <p class="text-[var(--color-ink-dim)] leading-relaxed">
+              <span class="font-mono text-sm text-[var(--color-ink)]">{e.version} · {e.date}</span> · {e.body}
+            </p>
+            {e.correction && (
+              <p class="text-[var(--color-ink-dim)] mt-2 pl-4 border-l-2 border-[var(--color-accent)] leading-relaxed">
+                {e.correction}
+              </p>
+            )}
+          </div>
         ))
       }
     </div>
