@@ -33,7 +33,8 @@ This blog is where the interesting parts get written down.
 Some of these posts, including this one, are written with an AI agent in the loop. That's
 not vibe coding. I design the systems, make the technology calls, review the output, and
 own the debugging judgment; the agent helps me implement faster than I could by hand. Posts
-written that way are tagged `ai-assisted`. Owning that openly is the point.
+written that way carry a tag saying so, and a note at the bottom saying what the machine
+actually did. Owning that openly is the point.
 
 It's probably fine. Let's find out.
 

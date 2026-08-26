@@ -154,7 +154,7 @@ This is also the first evolution I did with an AI agent in the loop, and that is
 footnote. Having an AI pair in the editor let me move through the migration service by service
 in a fraction of the evenings it would have taken by hand, while raising the bar on the design
 instead of just lifting and shifting the old one. I make the calls and own the debugging
-judgment. The agent helps me implement faster. Posts I write that way get tagged ai-assisted,
+judgment. The agent helps me implement faster. Posts I write that way carry a tag saying so,
 and I am not going to be cagey about it.
 
 ## What it was always for
