@@ -48,7 +48,8 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
           <a
             href={l.href}
             rel={relFor(l)}
-            data-umami-event={l.umami}
+            data-umami-event={l.external ? l.umami : undefined}
+            data-track={l.external ? undefined : l.umami}
             aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
             class:list={linkClass(l)}
           >
@@ -62,6 +63,7 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
         navigation, so the menu resets to closed after each click. */}
     <details class="sm:hidden relative open:[&_.chev]:rotate-180">
       <summary
+        data-umami-event="nav-menu"
         class="list-none [&::-webkit-details-marker]:hidden cursor-pointer text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] flex items-center gap-1.5"
         aria-label="Menu"
       >
@@ -76,7 +78,8 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
             <a
               href={l.href}
               rel={relFor(l)}
-              data-umami-event={l.umami}
+              data-umami-event={l.external ? l.umami : undefined}
+            data-track={l.external ? undefined : l.umami}
               aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
               class:list={['px-2 py-1.5 rounded hover:bg-[var(--color-base)]', ...linkClass(l)]}
             >

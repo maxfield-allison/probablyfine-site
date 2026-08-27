@@ -9,7 +9,7 @@
   "scripts": {
     "predev": "node scripts/copy-fonts.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/check-headers.mjs && node scripts/check-ai-notes.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs",
+    "prebuild": "node scripts/check-headers.mjs && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -24,7 +24,8 @@
     "photo:import": "node scripts/photo-import.mjs",
     "check": "astro check",
     "check:headers": "node scripts/check-headers.mjs",
-    "check:ai-notes": "node scripts/check-ai-notes.mjs"
+    "check:ai-notes": "node scripts/check-ai-notes.mjs",
+    "check:tracking": "node scripts/check-tracking.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

@@ -123,6 +123,9 @@ const elsewhere = [
               class="font-mono text-sm text-[var(--color-accent)] bg-transparent border border-[var(--color-line)] rounded px-4 py-2 cursor-pointer hover:text-[var(--color-ink)]"
               data-launch={`https://archive.org/embed/${g.id}`}
               data-label={g.title}
+              data-umami-event="arcade-play"
+              data-umami-event-title={g.title}
+              data-umami-event-kind="game"
             >
               ▶ play {g.title}
             </button>
@@ -155,6 +158,9 @@ const elsewhere = [
               class="font-mono text-sm text-[var(--color-accent)] bg-transparent border border-[var(--color-line)] rounded px-4 py-2 cursor-pointer hover:text-[var(--color-ink)]"
               data-launch={d.src}
               data-label={d.title}
+              data-umami-event="arcade-play"
+              data-umami-event-title={d.title}
+              data-umami-event-kind="disc"
             >
               ▶ boot {d.title}
             </button>
@@ -184,7 +190,7 @@ const elsewhere = [
             <span class="text-[var(--color-ink-dim)]"> · {g.year} · {g.who}</span>
           </p>
           <p class="text-[var(--color-ink-dim)] m-0 mt-1.5 leading-[1.65] text-pretty max-w-[62ch]">
-            {g.note}{g.href && (<> <a href={g.href} rel="noopener">{g.hrefLabel}</a>.</>)}
+            {g.note}{g.href && (<> <a href={g.href} rel="noopener" data-umami-event="outbound-arcade" data-umami-event-title={g.title}>{g.hrefLabel}</a>.</>)}
           </p>
         </li>
       ))}
@@ -198,7 +204,7 @@ const elsewhere = [
         <li class="border-t border-[var(--color-line)] pt-4">
           <p class="m-0 font-mono text-sm text-[var(--color-ink)]">{g.title}</p>
           <p class="text-[var(--color-ink-dim)] m-0 mt-1.5 leading-[1.65] text-pretty max-w-[62ch]">
-            {g.note}{g.href && (<> <a href={g.href} rel="noopener">archived</a>.</>)}
+            {g.note}{g.href && (<> <a href={g.href} rel="noopener" data-umami-event="outbound-arcade" data-umami-event-title={g.title}>archived</a>.</>)}
           </p>
         </li>
       ))}
@@ -247,6 +253,11 @@ const elsewhere = [
         halt.type = 'button';
         halt.dataset.stop = '';
         halt.textContent = '■ stop';
+        // Umami's listener is delegated and reads attributes at click time, so a
+        // button built here is tracked exactly like a static one. Pairing stop
+        // with play is what separates "looked at it" from "actually played".
+        halt.dataset.umamiEvent = 'arcade-stop';
+        halt.dataset.umamiEventTitle = button.dataset.label ?? '';
         halt.className =
           'mt-2 font-mono text-xs text-[var(--color-ink-dim)] bg-transparent border border-[var(--color-line)] rounded px-2.5 py-1 cursor-pointer hover:text-[var(--color-ink)]';
         halt.addEventListener('click', stop);

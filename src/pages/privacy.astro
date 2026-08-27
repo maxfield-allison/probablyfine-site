@@ -13,14 +13,27 @@ import Layout from '../layouts/Layout.astro';
 //   - comentario: author_ip + author_country on cm_comments, signup_ip on
 //     cm_users, ip on cm_user_sessions, and ip on cm_domain_page_views.
 //   - the event list is the actual set of data-umami-event attributes in src/
-//     plus the two umami.track() calls in public/js/, not a summary of them.
+//     plus the umami.track() calls in public/js/, not a summary of them. Since
+//     v1.1 that includes the data-track attributes read by
+//     public/js/interactions.js, which is a second mechanism for the same thing:
+//     internal links use it so that tracking a click does not cancel the view
+//     transition (see that file's header).
+//   - "session replay is off" was read from the Umami API, not assumed:
+//     recorderEnabled=false and replayConfig=null on all three websites, and the
+//     script served at /pf-insights/script.js is the base tracker with no
+//     replay, heatmap or mousemove code in it.
 //
 // If you change what is collected, change this page in the same commit, and add
 // a log entry at the bottom. The old entries stay.
-const version = 'v1.0';
-const updated = '2026-08-21';
+const version = 'v1.1';
+const updated = '2026-08-27';
 
 const log = [
+  {
+    version: 'v1.1',
+    date: '2026-08-27',
+    body: 'Added interaction events. The sites counted page views and a handful of link clicks; they now also count which listing you came into a post from, the tag, related and older/newer links, and the buttons that do something without loading a new page: the arcade emulators, the photo viewer, the resume print button, the mobile menu, the skip link. All of them counters. Session replay and heatmaps stay off.',
+  },
   {
     version: 'v1.0',
     date: '2026-08-21',
@@ -47,7 +60,7 @@ const log = [
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># what this covers</h2>
       <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
         Both of my sites: probablyfine.dev and{' '}
-        <a href="https://maxfieldallison.com" rel="noopener" class="hover:text-[var(--color-ink)]">maxfieldallison.com</a>.
+        <a href="https://maxfieldallison.com" rel="noopener" data-umami-event="outbound-maxfieldallison" class="hover:text-[var(--color-ink)]">maxfieldallison.com</a>.
         Two sites, one person, one set of hardware, so one policy rather than two that drift apart.
         Where they differ, it says so below.
       </p>
@@ -77,13 +90,28 @@ const log = [
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         A handful of named events fire on top of plain page views. On a blog post: one when you
         reach the end, one when the "how this one was made" note scrolls into view, and one when
-        you click a source link inside the article. Elsewhere: clicks on the outbound links in the
-        nav and footer, the RSS link, and the email link. All of them are counters. They're
-        attached to the page, not to you.
+        you click a source link inside the article.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        Both sites run this the same way, as separate collections that aren't joined up. The blog
-        post events are the one difference, because maxfieldallison.com has no blog.
+        Elsewhere it counts the things you click that a page view would otherwise miss. The
+        outbound links in the nav and footer, the RSS link, the email link. Which listing you came
+        into a post from, and whether you left it by a tag, by the older and newer arrows, or by
+        the related list. The buttons that do something without loading a new page: starting and
+        stopping a game on the arcade page, opening a photo on the pets page and moving through
+        them, the print and download buttons on the resume, the mobile menu, the skip-to-content
+        link. Each one is a number that goes up by one. Nothing records where on the page you
+        clicked.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        There is no session recording, no heatmap, no mouse or scroll tracking, and nothing
+        watching what you type. Umami can do session replay. It is switched off, and the script
+        this site serves is the plain tracker with none of that code in it. What I get is a count
+        of how many people did a thing, never a picture of one person doing it.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Both sites run this the same way, as separate collections that aren't joined up. The events
+        differ where the sites do: the blog, photo and arcade ones exist only on probablyfine.dev,
+        and the resume ones only on maxfieldallison.com.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         If you block any of it, nothing breaks. The site doesn't check and doesn't care.
@@ -155,7 +183,7 @@ const log = [
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># getting it deleted</h2>
       <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
         Email me at{' '}
-        <a href="mailto:hello@maxfieldallison.com" class="hover:text-[var(--color-ink)]">hello@maxfieldallison.com</a>
+        <a href="mailto:hello@maxfieldallison.com" data-umami-event="email-click" class="hover:text-[var(--color-ink)]">hello@maxfieldallison.com</a>
         {' '}and I'll delete it. A comment, your account, everything attached to it, your choice.
         You don't have to give a reason and I won't ask for one.
       </p>

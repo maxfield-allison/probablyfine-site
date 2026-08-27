@@ -483,6 +483,8 @@ const total = groups.reduce((n, g) => n + g.animals.length, 0);
                     data-full={photo(s.file).src}
                     data-alt={s.alt}
                     data-caption={captionFor(a, s)}
+                    data-umami-event="photo-open"
+                    data-umami-event-where="animal"
                     class="p-0 border-0 bg-transparent cursor-zoom-in block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
                   >
                     <Image
@@ -529,6 +531,8 @@ const total = groups.reduce((n, g) => n + g.animals.length, 0);
             data-full={photo(s.file).src}
             data-alt={s.alt}
             data-caption={s.caption}
+            data-umami-event="photo-open"
+            data-umami-event-where="together"
             class="p-0 border-0 bg-transparent cursor-zoom-in block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
           >
             <Image
@@ -566,12 +570,14 @@ const total = groups.reduce((n, g) => n + g.animals.length, 0);
         type="button"
         data-lb="prev"
         aria-label="Previous photo"
+        data-umami-event="photo-browse"
         class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 font-mono text-lg text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] bg-[var(--color-base)]/70 border border-[var(--color-line)] rounded px-3 py-2 cursor-pointer"
       >&#8592;</button>
       <button
         type="button"
         data-lb="next"
         aria-label="Next photo"
+        data-umami-event="photo-browse"
         class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 font-mono text-lg text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] bg-[var(--color-base)]/70 border border-[var(--color-line)] rounded px-3 py-2 cursor-pointer"
       >&#8594;</button>
 

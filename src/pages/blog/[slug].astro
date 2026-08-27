@@ -101,9 +101,9 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
         <time datetime={dateStr}>{dateStr}</time>
         <span>{mins} min read</span>
         {tags.map((t) => (
-          <a href={`/blog/tags/${tagSlug(t)}`} class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors">#{t}</a>
+          <a href={`/blog/tags/${tagSlug(t)}`} data-track="post-tag" data-track-tag={t} data-track-where="post" class="no-underline hover:no-underline hover:text-[var(--color-accent)] transition-colors">#{t}</a>
         ))}
-        <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline" data-umami-event="ai-role-chip" data-umami-event-role={aiRole} data-umami-event-where="post-header">{aiRoleLabel(aiRole)}</a>
+        <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline" data-track="ai-role-chip" data-track-role={aiRole} data-track-where="post-header">{aiRoleLabel(aiRole)}</a>
       </div>
     </header>
 
@@ -118,7 +118,7 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
           class="mt-16 pt-8 border-t border-[var(--color-line)] grid gap-4 sm:grid-cols-2 font-mono text-sm"
         >
           {older ? (
-            <a href={`/blog/${older.id}`} class="group block no-underline hover:no-underline">
+            <a href={`/blog/${older.id}`} data-track="post-nav" data-track-dir="older" class="group block no-underline hover:no-underline">
               <div class="text-xs text-[var(--color-ink-dim)]">&larr; older</div>
               <div class="text-[var(--color-ink-dim)] group-hover:text-[var(--color-accent)] transition-colors mt-1">
                 {older.data.title}
@@ -128,7 +128,7 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
             <span />
           )}
           {newer && (
-            <a href={`/blog/${newer.id}`} class="group block no-underline hover:no-underline sm:text-right">
+            <a href={`/blog/${newer.id}`} data-track="post-nav" data-track-dir="newer" class="group block no-underline hover:no-underline sm:text-right">
               <div class="text-xs text-[var(--color-ink-dim)]">newer &rarr;</div>
               <div class="text-[var(--color-ink-dim)] group-hover:text-[var(--color-accent)] transition-colors mt-1">
                 {newer.data.title}
@@ -148,6 +148,8 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
               <li>
                 <a
                   href={`/blog/${r.id}`}
+                  data-track="post-open"
+                  data-track-where="related"
                   class="group flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 no-underline hover:no-underline"
                 >
                   <span class="text-[var(--color-ink)] group-hover:text-[var(--color-accent)] transition-colors">

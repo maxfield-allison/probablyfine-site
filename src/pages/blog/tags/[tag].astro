@@ -37,6 +37,6 @@ const { tag, posts } = Astro.props;
   </section>
 
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-16">
-    {posts.map((post) => <PostCard post={post} />)}
+    {posts.map((post) => <PostCard post={post} where="tag-page" />)}
   </section>
 </Layout>

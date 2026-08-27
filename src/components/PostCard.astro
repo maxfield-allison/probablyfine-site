@@ -11,9 +11,12 @@ interface Props {
   /** Show the full date rather than month-day. Month-grouped lists supply the
       year in their group header, so they pass false. */
   fullDate?: boolean;
+  /** Which listing this card is rendered in, reported with `post-open` so the
+      analytics can tell the home list from the blog index from a tag page. */
+  where?: string;
 }
 
-const { post, fullDate = true } = Astro.props;
+const { post, fullDate = true, where = 'list' } = Astro.props;
 const { title, tags, date, aiRole } = post.data;
 const iso = date.toISOString().slice(0, 10);
 const mins = readingTime(post.body);
@@ -25,7 +28,7 @@ import { aiRoleLabel, aiRoleColor } from '../lib/aiRole';
     {fullDate ? iso : iso.slice(5)}
   </time>
   <div class="min-w-0">
-    <a href={`/blog/${post.id}`} class="no-underline hover:no-underline text-[var(--color-ink)]">
+    <a href={`/blog/${post.id}`} data-track="post-open" data-track-where={where} class="no-underline hover:no-underline text-[var(--color-ink)]">
       <span class="text-[1.0625rem] font-semibold leading-snug hover:text-[var(--color-accent)] transition-colors">
         {title}
       </span>
@@ -34,12 +37,15 @@ import { aiRoleLabel, aiRoleColor } from '../lib/aiRole';
       {tags.map((t) => (
         <a
           href={`/blog/tags/${tagSlug(t)}`}
+          data-track="post-tag"
+          data-track-tag={t}
+          data-track-where={where}
           class="no-underline hover:no-underline text-[var(--color-ink-dim)] hover:text-[var(--color-accent)] transition-colors"
         >
           #{t}
         </a>
       ))}
-      <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline" data-umami-event="ai-role-chip" data-umami-event-role={aiRole} data-umami-event-where="card">{aiRoleLabel(aiRole)}</a>
+      <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline" data-track="ai-role-chip" data-track-role={aiRole} data-track-where="card">{aiRoleLabel(aiRole)}</a>
     </div>
   </div>
   <div class="hidden sm:block font-mono text-[11px] text-[var(--color-ink-dim)] whitespace-nowrap">
