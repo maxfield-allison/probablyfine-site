@@ -16,9 +16,9 @@ const nodes = [
 ];
 
 const gpus = [
-  { card: 'RTX 4070 Ti', arch: 'Ada Lovelace', host: 'pve-00', target: 'K8s GPU worker (MPS shared)' },
-  { card: 'GTX 1660', arch: 'Turing', host: 'pve-00', target: 'K8s GPU worker (MPS shared)' },
-  { card: 'GTX 1080 Ti', arch: 'Pascal', host: 'pve-01', target: 'K8s GPU worker (dedicated)' },
+  { card: 'RTX 4070 Ti', arch: 'Ada Lovelace', host: 'pve-00', target: 'K8s GPU worker (time-sliced, 2 slots)' },
+  { card: 'GTX 1660', arch: 'Turing', host: 'pve-00', target: 'K8s GPU worker (time-sliced, 2 slots)' },
+  { card: 'GTX 1080 Ti', arch: 'Pascal', host: 'pve-01', target: 'K8s GPU worker (time-sliced, 3 slots)' },
 ];
 
 const pis = [
@@ -36,7 +36,7 @@ const power = [
 // Aggregate scale, the numbers that make the point without a spec dump.
 const stats: { value: string; unit?: string; label: string }[] = [
   { value: '9', label: 'Talos K8s nodes' },
-  { value: '~38', label: 'services, GitOps' },
+  { value: '51', label: 'applications, GitOps' },
   { value: '~230', unit: 'TiB', label: 'Ceph raw' },
   { value: '3', label: 'GPU generations' },
   { value: '40C/80T', label: 'cluster CPU' },
@@ -198,9 +198,10 @@ const services = [
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># three GPU generations</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
       Three NVIDIA architectures, each passed straight through to a Talos Kubernetes worker.
-      The newer cards get sliced up with MPS so several workloads can share them; the 1080 Ti
-      stays dedicated. Transcode, local inference, and the occasional experiment all land
-      here.
+      All three are time-sliced, so several workloads share a card instead of one pinning it.
+      I looked at NVIDIA's MPS first and turned it down: it sets exclusive compute mode, which
+      blocks the NVENC and NVDEC engines the transcoding and camera detection depend on.
+      Transcode, local inference, and the occasional experiment all land here.
     </p>
     <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
       <table class="w-full text-sm">
