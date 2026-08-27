@@ -33,7 +33,9 @@ const linkClass = (l: NavLink) => [
 const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
 ---
 
-<header class="border-b border-[var(--color-line)]">
+<header
+  class="sticky top-0 z-40 bg-[var(--color-base)] border-b border-[var(--color-line)] print:static"
+>
   <nav aria-label="Primary" class="max-w-[var(--container-shell)] mx-auto px-6 h-16 flex items-center justify-between">
     <a href="/" class="font-mono text-sm text-[var(--color-ink)] no-underline hover:no-underline">
       probably<span class="text-[var(--color-accent)]">fine</span>

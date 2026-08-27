@@ -71,6 +71,10 @@
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
+    /* The header is sticky, so an anchor jump would otherwise land its target
+       underneath it. 4rem is the header's own height (h-16) - keep the two in
+       step if that changes. Covers the skip link and every in-page anchor. */
+    scroll-padding-top: 4rem;
   }
 
   body {
