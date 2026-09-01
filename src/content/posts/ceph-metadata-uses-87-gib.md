@@ -1,6 +1,6 @@
 ---
 title: "I reserved 2,887 GiB for metadata. Ceph uses 87."
-description: "I moved BlueStore metadata for nineteen spinning-disk OSDs onto NVMe, then measured what the cluster was actually using. The sizing rule had me reserving thirty-three times that much, and the benchmark I was about to publish turned out to be a benchmark of my own VM."
+description: "I sized BlueStore metadata for nineteen spinning-disk OSDs at 4% and reserved 2,887 GiB. They use 87.2 GiB, and the benchmark I was about to publish turned out to be a benchmark of my own VM."
 date: 2026-09-01
 tags: ["ceph", "storage", "homelab", "measurement"]
 aiRole: drafted
@@ -9,15 +9,17 @@ draft: false
 
 Every spinning disk in my Ceph cluster has a little database living alongside its data. RocksDB holds the object metadata, checksums, and write-ahead log. When that database lives on the spinning disk too, every write is competing with itself, then compaction comes along later and asks for random I/O all over again.
 
-So I moved it to NVMe. That part worked. The warnings cleared, slow ops went away, and the cluster stopped having a bunch of work queued behind deep scrubs. That's all good.
+So I moved it to NVMe. That part worked. The warnings cleared, slow ops went away, and the cluster stopped having a bunch of work queued behind deep scrubs.
 
 Then I counted the space.
 
-Ceph's sizing guidance had me reserve 2,887 GiB of enterprise NVMe across two nodes for the database devices. Nineteen OSDs are using 87.2 GiB of it.
+I sized each database partition at 4% of its hard drive, the conservative end of the Reef-era guidance I was working from. Across two nodes, those partitions total 2,887 GiB of enterprise NVMe. Nineteen OSDs are using 87.2 GiB of it.
 
 That is three percent.
 
-The usual advice is to reserve about 4% of every data drive for metadata and not put more than ten spinning disks behind one NVMe device. Both rules are sensible defaults. They're also clearly not measurements of what this cluster needs.
+[Ceph's current sizing notes](https://docs.ceph.com/en/latest/rados/configuration/bluestore-config-ref/#sizing) put `block.db` at a 2.5% floor in general, then explain why the workload and release matter. On releases before Squid, 4% was recommended for RGW while RBD usually needed 1% to 2%. This cluster is on Reef. I used 4% for every disk anyway.
+
+The docs weren't wrong. I'd taken the conservative number for one workload and treated it like a measurement of mine.
 
 | | disks | reserved | actually used | spilled back to HDD |
 |---|---:|---:|---:|---:|
@@ -25,13 +27,13 @@ The usual advice is to reserve about 4% of every data drive for metadata and not
 | second node | 7 | 1,517 GiB | 40.4 GiB | 0 |
 | total | 19 | 2,887 GiB | 87.2 GiB | 0 |
 
-The OSDs sit between 2.3% and 4.4% of their own reserved space. Nothing's spilling back onto a hard disk. The twelve-disk node is technically over the ten-disk guideline, but its database is using 47 GiB. One enterprise NVMe isn't having a hard time with that.
+The OSDs sit between 2.3% and 4.4% of their own reserved space. Nothing's spilling back onto a hard disk. The plan also capped one NVMe at ten HDD OSDs. [Ceph's current hardware guide](https://docs.ceph.com/en/latest/start/hardware-recommendations/#storage-drives) allows up to fifteen; ten was our blast-radius choice, not a product limit. The twelve-disk node's database is using 47 GiB. One enterprise NVMe isn't having a hard time with that.
 
 There's a real downside. Losing that NVMe now loses twelve OSDs rather than ten. It isn't data loss, because the pool has three replicas and host-level failure domains, but rebuilding twelve OSDs means moving roughly 23 TiB around spinning disks while the cluster is degraded. I took that trade because leaving two disks out on a rule the measurements didn't support was worse.
 
 I also checked the part that can make a present-tense number lie. Metadata grows with object count. At 85% full, the two nodes project to about 134 GiB and 98 GiB in use. They still fit easily, and there's another 368 GiB and 221 GiB unallocated in the volume groups. This is why I'm not replacing the drives with smaller, faster Optanes just because 87 GiB looks funny today. It has to fit when the cluster is full, not just while I'm writing the post about it.
 
-There are two commands involved in moving a BlueStore database. First you attach the new device. Then you run `bluefs-bdev-migrate` to move the existing BlueFS data onto it. That's the bit that matters.
+There are two commands involved in moving a BlueStore database. First you attach the new device. Then you run `bluefs-bdev-migrate` to move the existing BlueFS data onto it.
 
 I went looking for a shortcut after the first command left seven `BLUEFS_SPILLOVER` warnings behind. The common answer is `ceph tell osd.N compact`. It did move almost everything, then stopped with somewhere between 128 and 256 KiB still on each hard disk. That's enough for Ceph to keep the warning up, even though the new database devices were nearly empty.
 

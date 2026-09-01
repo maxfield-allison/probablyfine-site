@@ -367,6 +367,40 @@
   margin-bottom: 1.25rem;
 }
 
+/* Markdown tables need their own reading measure and real gutters. Without
+   cell padding, adjacent headers render as one run of text; on phones the
+   table keeps its columns and scrolls instead of crushing them together. */
+.prose table {
+  width: 100%;
+  max-width: var(--measure-read);
+  margin: 1.75rem auto;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.prose th,
+.prose td {
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--color-line);
+  vertical-align: top;
+}
+.prose th {
+  color: var(--color-ink-dim);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.prose tbody tr:last-child td {
+  border-bottom-color: transparent;
+}
+@media (max-width: 640px) {
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
 /* Inline post imagery. Markdown images render inside their own paragraph; the
    italic line immediately after is treated as the caption. */
 /* Photography breaks out past the reading measure like sessions do, and gets
@@ -412,4 +446,3 @@
   color: var(--color-ink-dim);
   text-align: center;
 }
-
