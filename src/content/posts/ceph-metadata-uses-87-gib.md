@@ -69,6 +69,6 @@ Three replicas with a host-level failure domain means most of those reads crosse
 
 It's probably fine.
 
-**How this one was made.** I did the physical drive work and reviewed the plan. A Claude session ran the metadata migration and most of the verification under my direction. I was watching during the failed test, which is why the VM got rebooted instead of the storage getting blamed. The later sweep of metadata use, guest activity, and the OOM record was agent-assisted too. The numbers were checked against the live cluster while this draft was written. More on why I disclose that at [how I use AI](/blog/how-i-use-ai), and the current rules at [/ai/).
+**How this one was made.** I did the physical drive work and reviewed the plan. A Claude session ran the metadata migration and most of the verification under my direction. I was watching during the failed test, which is why the VM got rebooted instead of the storage getting blamed. The later sweep of metadata use, guest activity, and the OOM record was agent-assisted too. The numbers were checked against the live cluster while this draft was written. More on why I disclose that at [how I use AI](/blog/how-i-use-ai), and the current rules at [/ai](/ai).
 
 *Related: [how installing a GPU took down my storage cluster](/blog/gpu-took-down-ceph).*
