@@ -17,6 +17,7 @@ const links: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
   { href: '/labs', label: 'Labs' },
+  { href: '/arcade', label: 'Arcade' },
   { href: '/now', label: 'Now' },
   { href: '/ai', label: 'AI' },
   { href: '/pets', label: 'Pets' },
@@ -91,3 +92,8 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
     </details>
   </nav>
 </header>
+
+<style>
+  @media (min-width: 640px) and (max-width: 899px) { nav > div { display: none; } nav > details { display: block; } }
+  @media (min-width: 900px) { nav > div { gap: 18px; font-size: 12px; } }
+</style>

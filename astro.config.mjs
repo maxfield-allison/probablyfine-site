@@ -125,5 +125,8 @@ export default defineConfig({
   trailingSlash: 'never',
   vite: {
     plugins: [tailwindcss()],
+    // Small processed scripts must remain external: the site's CSP permits
+    // same-origin scripts, and intentionally does not allow inline JavaScript.
+    build: { assetsInlineLimit: (filePath) => filePath.endsWith('.js') ? false : undefined },
   },
 });

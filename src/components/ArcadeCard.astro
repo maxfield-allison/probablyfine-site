@@ -1,0 +1,17 @@
+---
+import type { Game } from '../data/arcade';
+const { game, index = 0 } = Astro.props as { game: Game; index?: number };
+---
+<a class="arcade-card" href={`/arcade/${game.slug}`} style={`--game-color:${game.color}`}>
+  <div class="arcade-card-screen">
+    <img src={`/images/arcade/${game.slug}.webp`} alt="" width="640" height="480" loading={index < 3 ? 'eager' : 'lazy'} />
+    <span class="arcade-card-platform">{game.platform}</span>
+    <span class="arcade-card-play" aria-hidden="true">▶</span>
+  </div>
+  <div class="arcade-card-copy">
+    <p class="arcade-card-year">{game.year}</p><h3>{game.title}</h3>
+    {game.subtitle && <p class="arcade-card-subtitle">{game.subtitle}</p>}
+    <p class="arcade-card-description">{game.description}</p>
+    <span class="arcade-card-link">Open game <span aria-hidden="true">↗</span></span>
+  </div>
+</a>

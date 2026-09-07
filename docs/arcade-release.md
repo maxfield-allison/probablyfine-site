@@ -1,0 +1,134 @@
+# Arcade release and September 8 post handoff
+
+Prepared September 7, 2026. Max approved releasing the arcade today while holding
+the article and social drafts for September 8. This public source contains the
+arcade only; the approved article remains in the private editorial vault and
+the original local review worktree. Deployment results belong in the release record.
+
+## What is prepared
+
+- `/arcade` in the main navigation, twelve individual game pages, platform
+  filters, actual game screenshots, controls and explicit Play/Stop behavior.
+- Two full MacCube disc pages with local System 7.5 and local CD ranges.
+- A separate `Dockerfile.arcade` runtime served by nginx as UID 101. All
+  emulators and game/system disks are hosted by this image. The browser does
+  the emulation; the cluster serves static files with two replicas.
+- The held post, `src/content/posts/i-just-wanted-to-play-games.md`, dated
+  September 8. Its original body matches the approved editorial revision
+  exactly after removing the added links. The label is **research assist**;
+  the process note explains the human prose, research and AI editing.
+- Links to the arcade, How the lab got here, and the AI process explanation.
+  The existing related-post system also connects Fourteen years of receipts.
+  The arcade's story link appears when the post becomes published.
+- Five social drafts in the brain vault:
+  `projects/personal-brand/launches/2026-09-08-i-just-wanted-to-play-games.md`.
+  Facebook, LinkedIn, Bluesky, optional Reddit and technical-only Viva Engage.
+  Bluesky measures 280/300 graphemes including its UTM URL and line breaks.
+
+## Verification retained locally
+
+`pnpm build` passes the header-parity, process-note, tracking, Astro type and
+static-build checks. The draft build has 47 pages. A temporary release build
+with the post included has 52, including the added tag pages; the source draft
+flag was restored immediately after that private build.
+
+The Playwright regression suite passed through the actual nginx configurations:
+isolation when entering/leaving the arcade, no emulator download before Play,
+platform counts, pause/resume, fullscreen, Stop, a real DOS file write saved through the visible Save to browser button and surviving
+a new player, navigation cleanup, a failed download followed by successful retry,
+and a Mac disk failure that stays visible after the system boots.
+The Mac's manual pause is also checked across a tab switch: input leaves its
+screen unchanged until Resume is pressed. The page owns pause state for embeds.
+
+Desktop and mobile article previews verified the title, research-assist label,
+canonical URL, related links and reciprocal arcade link. The collection was
+checked at 390, 768, 1024 and 1440 pixels: no horizontal overflow, no broken game
+images, functioning filters and no runtime downloads while browsing.
+
+| Runtime | Attended check |
+| --- | --- |
+| Hocus Pocus | Level 1, movement and jump |
+| Mystic Towers | Hardware prompt, game room and movement |
+| Hand of Fate | Opening sequence, Zanthia's laboratory and interactive Options menu |
+| How Things Work in Busytown | Title and interactive world map |
+| Grand Theft Auto | City gameplay |
+| Grand Theft Auto 2 | Local Windows 95 boot, game menu and city gameplay |
+| Space Cadet | Plunger, flippers, live ball and score progression |
+| Chrysanthemum | Flower puzzle gameplay |
+| Armor | Mission map, tank selection and movement |
+| TaskMaker | Character creation, tutorial world and movement |
+| Swoop | Original shareware notice, new game, insects and firing |
+| X-Wing | Pilot registration, Pilot Proving Ground selection and the live training cockpit |
+| MacCube Volumes 1 and 2 | Local boot, complete CD mount and directory navigation |
+| Mac Saved HD | Copied the complete TaskMaker folder to Saved HD, stopped the emulator, started a new instance and reopened the retained folder |
+
+These are attended browser checks, not complete playthroughs. Desktop Chromium
+was tested. Physical joysticks, other browsers and every mobile game control
+remain unverified. GTA 2's Windows save persistence is explicitly unverified on
+its page. Tonka, The Sims and StarCraft are not advertised as playable.
+
+Local screenshots and logs are retained in `.arcade-tools/` in the site
+worktree. `final-smoke.log`, `final-layout.log`, `post-preview.log`,
+`mac-save-verified.log`, and `final-image-build.log` are the principal evidence.
+Do not delete the worktree or its ignored build cache before release review.
+
+The final local review image is
+`sha256:89b1fd7a02148589073dcd5092b88f8c8337de6dcb62896e4efada72fead8cfc`
+(652,693,772 bytes, UID 101). The browser regression suite was repeated against
+that image's packaged assets, with only a temporary loopback framing allowance.
+A later registry build can have a different image digest; verify its source tag
+and public behavior at release.
+
+The disclosure linter flags the institution name Auburn University and notes
+Ricoh. Those names came from Max's manuscript and remain in the full draft he
+explicitly approved. This is recorded as human review of a generic name rule,
+not as a clean automated lint result or permission to publish early.
+
+## Release order
+
+1. Arcade release was explicitly approved on September 7. Hold the article
+   and social drafts for September 8; they are not part of this public commit.
+2. Publish the reviewed source branch and the SHA-tagged GHCR arcade image.
+   The runtime uses `ghcr.io/maxfield-allison/probablyfine-site:arcade-<sha>`
+   in the existing public package. Its tag is separate from the main site's
+   `latest` and plain SHA tags; neither image overwrites the other.
+   The image can be built locally from that exact commit; subsequent main
+   updates use `.github/workflows/arcade-image.yml`. Hold the main UI release
+   until the runtime is active. Confirm the package is publicly
+   pullable, and that its tag names the source revision actually built. No
+   mutable `latest` tag or automatic runtime rollout is configured.
+3. In the separate GitOps release, verify `apps/arcade/deployment.yaml` pins
+   that exact available tag. The prepared worktree tag is a candidate; if the
+   published main commit differs, update it before activation. Move
+   `apps/arcade/application.yaml.disabled` to `apps/argocd-apps/arcade.yaml`
+   only when the image exists. The disabled file is deliberately not an active
+   Argo application. Land the reviewed activation through the normal GitOps flow.
+4. Verify two ready replicas, `/healthz`, DNS and TLS for
+   `arcade.probablyfine.dev`. Check the public runtime's framing, COOP/COEP and
+   noindex headers. Do not add the generic SAMEORIGIN middleware to this ingress.
+5. Release the main site UI once the runtime is reachable. Verify the public
+   `/arcade` response has COOP `same-origin` and COEP `require-corp`, while
+   `/blog` does not. Enter from the blog nav and launch DOS, Mac and Windows
+   games. Confirm the requests remain on the owned runtime origin.
+6. On September 8, set this post's `draft` to `false`, build and release the
+   approved article. Verify its clean URL, RSS and sitemap entry, OG image,
+   research-assist note, related links and the arcade's story link. Date alone
+   does not schedule publication; there is no new cron job.
+7. Use the prepared social drafts only after their targets and link previews
+   are live. Max reviews and sends the posts; none have been sent automatically.
+
+If the main site workflow deploys as soon as source is published, publish the
+runtime image from the reviewed commit first, then activate it before merging
+the UI commit to the public release branch. Keep the ordering above; do not
+expose a nav link to a runtime that has not been brought up.
+
+## Recovery
+
+If a runtime update fails, pin the preceding known-good SHA and let Argo roll it
+back. For the first release there is no previous arcade image: hold the UI/post
+release until the runtime passes its public checks. The static runtime has no
+server-side save database or PVC to migrate. Browser saves belong to the runtime
+origin; changing the hostname would strand that browser storage.
+
+Build details, source pins and operational header pitfalls are in
+[`scripts/arcade/README.md`](../scripts/arcade/README.md).

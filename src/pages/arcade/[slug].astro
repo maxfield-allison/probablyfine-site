@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ArcadePlayer from '../../components/ArcadePlayer.astro';
+import { games, playerUrl } from '../../data/arcade';
+import '../../styles/arcade.css';
+export function getStaticPaths() { return games.map(game => ({ params: { slug: game.slug }, props: { game } })); }
+const { game } = Astro.props;
+const src = playerUrl(game);
+---
+<Layout title={`${game.title} · The arcade · ProbablyFine`} description={game.description}>
+  <div class="arcade-shell arcade-game-page">
+    <a class="arcade-back" href="/arcade">← All games</a>
+    <header class="arcade-game-header">
+      <p class="arcade-eyebrow">{game.platform} / {game.year}</p><h1>{game.title}</h1>
+      {game.subtitle && <p class="arcade-game-subtitle">{game.subtitle}</p>}<p>{game.description}</p>
+    </header>
+    <ArcadePlayer title={game.title} kind={game.kind} src={src} poster={`/images/arcade/${game.slug}.webp`} size={game.size} saveEnabled={game.kind === 'dos' && game.slug !== 'grand-theft-auto-2'} />
+    <div class="arcade-game-notes">
+      <section><h2>Getting started</h2>{game.start && <p>{game.start}</p>}
+        <ul>{game.controls.map(control => <li>{control}</li>)}</ul>
+        <p>Click inside the game to give it keyboard focus. Full screen gives you more room; Escape leaves full screen.</p>
+      </section>
+      <section><h2>Before you settle in</h2>
+        <p>{game.kind === 'pinball' ? 'This browser port includes touch controls. A keyboard gives you the familiar flipper keys.' : 'These games were made for a keyboard and mouse. A laptop or desktop is the best way to play; the DOS player also has an on-screen keyboard.'}</p>
+        <p>{game.kind === 'mac' ? 'The game disk is a fresh copy each time. To keep a saved game, copy the game folder onto Saved HD first, then run that copy. Double-click the Saved HD name to open it. Browser storage can be cleared, so don’t treat it as your only copy.' : game.slug === 'grand-theft-auto-2' ? 'Treat this as a fresh Windows session. Keeping GTA 2 saves between visits has not been verified for this version.' : game.kind === 'dos' ? 'Use the game’s own Save menu where available, then the player’s Save control to keep the disk changes in this browser. Stopping closes the emulator; unsaved progress is lost.' : 'Stopping closes the table. Start again for a fresh game.'}</p>
+        <p class="arcade-credits">{game.creator}. <a href={game.source} rel="noopener" data-umami-event="outbound-arcade" data-umami-event-title={game.title}>{game.sourceLabel}</a>.</p>
+      </section>
+    </div>
+    <nav class="arcade-next-games" aria-label="Other games"><span>Try another</span>{games.filter(g => g.slug !== game.slug && g.platform === game.platform).slice(0, 3).map(g => <a href={`/arcade/${g.slug}`}>{g.title} ↗</a>)}</nav>
+  </div>
+</Layout>

@@ -1,0 +1,38 @@
+{
+  "hocus.zip": {
+    "url": "https://archive.org/download/msdos_Hocus_Pocus_1994/Hocus_Pocus_1994.zip",
+    "sha256": "c26f3597a412761297792474ac9dbdf4db70d0e059cfecee544e2de3cabbf78e"
+  },
+  "mystic-full.zip": {
+    "url": "https://archive.org/download/msdos_Mystic_Towers_1994/Mystic_Towers_1994.zip",
+    "sha256": "a1d89db9334b6af92628315d271d023d1be2c754de8bef2a3d3b6408e74db933"
+  },
+  "busytown.zip": {
+    "url": "https://archive.org/download/msdos_Richard_Scarrys_How_Things_Work_in_Busytown_1994/Richard_Scarrys_How_Things_Work_in_Busytown_1994.zip",
+    "sha256": "5ba3cbe01e5bc61bb14a34aa375f846f2fb28a839fd3abb5ef220e2c0682086e"
+  },
+  "xwing.zip": {
+    "url": "https://archive.org/download/star-wars-x-wing/StarWarsXWing.zip",
+    "sha256": "b06de1752dbdf24e792695860e2da0036f4e851eed67667d3953e31274aed49b"
+  },
+  "gta.zip": {
+    "url": "https://archive.org/download/grand-theft-auto-1997-dma-design/Grand%20Theft%20Auto%20%281997%29%28DMA%20Design%29.zip",
+    "sha256": "97e7874a1f9342d32e00c32955e33cda93220bf5b2b4a322e9334ebdefede190"
+  },
+  "kyrandia.zip": {
+    "url": "https://archive.org/download/msdos_Legend_of_Kyrandia_Book_2_-_The_Hand_of_Fate_1993/Legend_of_Kyrandia_Book_2_-_The_Hand_of_Fate_1993.zip",
+    "sha256": "49e92124665579341741d3914de206b4697cf8b63b1d8ca4064d3a759c68d903"
+  },
+  "3DPinballSpaceCadet.htm": {
+    "url": "https://raw.githubusercontent.com/lrusso/3DPinballSpaceCadet/684f0b57d0cc93d5a29329f0b59d9996c54f1553/3DPinballSpaceCadet.htm",
+    "sha256": "53f4f2931bfc08d5ba75fe07e6501b06b205f8a9e712a4ae3dc7bfd223fd33e5"
+  },
+  "3DPinballSpaceCadet.js": {
+    "url": "https://raw.githubusercontent.com/lrusso/3DPinballSpaceCadet/684f0b57d0cc93d5a29329f0b59d9996c54f1553/3DPinballSpaceCadet.js",
+    "sha256": "bd27b7999795e8638e1024785f30f37fc3d06ecd5242f2e87b1699eddf6c6feb"
+  },
+  "js-dos-8.4.1.tgz": {
+    "url": "https://registry.npmjs.org/js-dos/-/js-dos-8.4.1.tgz",
+    "sha256": "e8e45ce111c5c536105f067d983bc58a4e8f53a32db6ffadc7098ac07d936c1a"
+  }
+}

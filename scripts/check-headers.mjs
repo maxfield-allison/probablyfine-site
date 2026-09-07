@@ -38,7 +38,7 @@ const IGNORED = new Set(['cache-control', 'content-type']);
 // Scopes are derived, not listed, so this works unchanged on a site that has no
 // scoped policies at all. An nginx location `/foo/` corresponds to the
 // `/foo/*` section in _headers; the server block corresponds to `/*`.
-const toPagesPattern = (loc) => (loc === null ? '/*' : `${loc.replace(/\/$/, '')}/*`);
+const toPagesPattern = (loc) => (loc === null ? '/*' : `${loc}*`);
 
 // --- nginx.conf ------------------------------------------------------------
 //

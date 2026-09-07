@@ -1,0 +1,4 @@
+html, body, #dos { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #080c11; color: #d9e3e9; }
+#loading { position: absolute; inset: 0; display: grid; place-content: center; gap: 1rem; padding: 1rem; font: 14px system-ui, sans-serif; }
+#loading[hidden] { display: none; }
+progress { width: min(24rem, 75vw); accent-color: #4fd1c5; }

@@ -23,3 +23,11 @@ public/og/
 
 # Self-hosted webfonts copied from node_modules (build artifact)
 public/fonts/
+
+# Reproducible arcade downloads and packaged runtime assets
+.arcade-cache/
+.arcade-tools/
+.arcade-runtime/
+public/arcade/assets/
+
+__pycache__/

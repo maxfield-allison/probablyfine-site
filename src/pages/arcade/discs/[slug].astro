@@ -1,0 +1,26 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ArcadePlayer from '../../../components/ArcadePlayer.astro';
+import '../../../styles/arcade.css';
+import { runtimeOrigin } from '../../../data/arcade';
+export function getStaticPaths() {
+  return [
+    { slug: 'arcade-games', title: 'MacCube Volume 1', subtitle: 'Arcade Games', item: 'mac-cube-volume-1-arcade-games', filename: 'MacCube Volume 1: Arcade Games.iso', folder: 'Games_Arcade', games: 'Chrysanthemum, Swoop, Armor, Maelstrom, Arashi, Solarian II and more' },
+    { slug: 'adventure-games', title: 'MacCube Volume 2', subtitle: 'Adventure, Card, Casino & Puzzle', item: 'mac-cube-volume-2-adventure-card-casino-puzzle-games', filename: 'MacCube Volume 2: Adventure, Card, Casino & Puzzle Games.iso', folder: 'Games_2, then the adventure games', games: 'TaskMaker, U Mac Rogue, Realmz, Exile and Shadow Keep' },
+  ].map(disc => ({ params: { slug: disc.slug }, props: { disc } }));
+}
+const { disc } = Astro.props;
+const params = new URLSearchParams({ disk: 'System 7.5', screenSize: '640x480', auto_pause: 'false', library: 'false', saved_hd: 'true', cdrom_url: `${runtimeOrigin}/arcade/assets/${disc.item}.iso` });
+const src = `${runtimeOrigin}/embed?${params}`;
+---
+<Layout title={`${disc.title} · The arcade · ProbablyFine`} description={`Explore ${disc.subtitle} on a classic Macintosh desktop, with the original shareware disc mounted.`}>
+  <div class="arcade-shell arcade-game-page">
+    <a class="arcade-back" href="/arcade">← All games</a>
+    <header class="arcade-game-header"><p class="arcade-eyebrow">Macintosh / Aztech New Media / 1995</p><h1>{disc.title}</h1><p class="arcade-game-subtitle">{disc.subtitle}</p><p>{disc.games}.</p></header>
+    <ArcadePlayer title={disc.title} kind="mac" src={src} size="CD streams as you explore" />
+    <div class="arcade-game-notes">
+      <section><h2>Explore the disc</h2><p>Wait for the Mac desktop, then double-click the CD icon. Look for {disc.folder}. Open a game’s folder and double-click its application.</p><p>Some games need 256 colours. Use the Apple menu → Control Panels → Monitors to change the colour depth.</p></section>
+      <section><h2>The original files</h2><p>The CD is read-only. Copy a game folder to Saved HD and run that copy if it needs to write a saved game. Double-click the Saved HD name to open it. A keyboard and mouse work best.</p><p><a href={`https://archive.org/details/${disc.item}`} data-umami-event="outbound-arcade">Disc source at the Internet Archive</a>. The desktop is provided by <a href="https://infinitemac.org" data-umami-event="outbound-arcade">Infinite Mac</a>.</p></section>
+    </div>
+  </div>
+</Layout>

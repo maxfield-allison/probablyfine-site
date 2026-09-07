@@ -1,0 +1,27 @@
+---
+interface Props { title: string; src: string; kind: string; poster?: string; size?: string; saveEnabled?: boolean; }
+const { title, src, kind, poster, size, saveEnabled = false } = Astro.props;
+---
+<section class="arcade-player" data-arcade-player data-kind={kind} data-src={src} data-title={title} aria-label={`${title} player`}>
+  <div class="arcade-player-stage" data-stage>
+    <div class="arcade-player-idle" data-idle>
+      {poster && <img src={poster} alt="" width="640" height="480" />}
+      <div class="arcade-player-prompt">
+        <button type="button" class="arcade-primary-button" data-launch data-umami-event="arcade-play" data-umami-event-title={title} data-umami-event-kind={kind}>▶ Play {title}</button>
+        {size && <span>{size} · downloads after you press play</span>}
+      </div>
+    </div>
+  </div>
+  <div class="arcade-player-toolbar">
+    <p role="status" aria-live="polite" data-player-status>Ready when you are.</p>
+    <div class="arcade-player-actions">
+      {saveEnabled && <button type="button" data-save disabled>Save to browser</button>}
+      {kind !== 'pinball' && <button type="button" data-pause disabled>Pause</button>}
+      <button type="button" data-fullscreen disabled>Full screen</button>
+      <button type="button" data-stop disabled data-umami-event="arcade-stop" data-umami-event-title={title}>Stop</button>
+    </div>
+  </div>
+  <p class="arcade-player-help" data-player-help hidden>Still waiting? Large games take longer on a slow connection. You can stop and try again. <a href={src} target="_blank" rel="noopener" data-direct>Open the player in its own tab</a>.</p>
+  <noscript><p>JavaScript is needed to run the emulator. The instructions and source links below are available without it.</p></noscript>
+</section>
+<script src="../scripts/arcade-player.ts"></script>

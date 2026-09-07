@@ -25,10 +25,12 @@
     "check": "astro check",
     "check:headers": "node scripts/check-headers.mjs",
     "check:ai-notes": "node scripts/check-ai-notes.mjs",
-    "check:tracking": "node scripts/check-tracking.mjs"
+    "check:tracking": "node scripts/check-tracking.mjs",
+    "check:arcade": "node scripts/arcade/smoke.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "playwright": "1.59.1",
     "sharp": "^0.35.3",
     "shiki": "4.3.1",
     "simple-icons": "^16.28.0",
