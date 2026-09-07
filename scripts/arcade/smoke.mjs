@@ -35,6 +35,24 @@ async function launch() {
   await frame.waitForFunction(() => window.arcadeTestCi, undefined, {timeout:45000});
   return frame;
 }
+async function assertAltReachesGame(frame) {
+  assert.equal(await page.evaluate(() => document.activeElement === document.querySelector('[data-stage] iframe')), true,
+    'Continuing play from the toolbar must return keyboard focus to the game');
+  await frame.evaluate(() => {
+    window.arcadeAltEvents = [];
+    const record = event => {
+      if (event.key !== 'Alt') return;
+      window.arcadeAltEvents.push({type:event.type, prevented:event.defaultPrevented});
+      window.removeEventListener(event.type, record);
+    };
+    window.addEventListener('keydown', record);
+    window.addEventListener('keyup', record);
+  });
+  await page.keyboard.press('Alt');
+  assert.deepEqual(await frame.evaluate(() => window.arcadeAltEvents), [
+    {type:'keydown', prevented:true}, {type:'keyup', prevented:true},
+  ], 'The emulator must receive and cancel both Alt events without another canvas click');
+}
 try {
   await page.goto(base + '/blog');
   assert.equal(await page.evaluate(() => crossOriginIsolated), false);
@@ -56,14 +74,19 @@ try {
   });
   await page.locator('[data-save]').click();
   await page.waitForFunction(() => document.querySelector('[data-player-status]').textContent.includes('Disk changes saved'));
+  await assertAltReachesGame(frame);
   await page.locator('[data-pause]').click();
   assert.equal(await page.locator('[data-pause]').innerText(), 'Resume');
   await page.locator('[data-pause]').click();
   assert.equal(await page.locator('[data-pause]').innerText(), 'Pause');
+  await assertAltReachesGame(frame);
   await page.locator('[data-fullscreen]').click();
   await page.waitForFunction(() => document.fullscreenElement?.hasAttribute('data-arcade-player'));
   assert.equal(await page.evaluate(() => document.fullscreenElement?.hasAttribute('data-arcade-player')), true);
+  await assertAltReachesGame(frame);
   await page.locator('[data-fullscreen]').click();
+  await page.waitForFunction(() => !document.fullscreenElement);
+  await assertAltReachesGame(frame);
   await page.locator('[data-stop]').click();
   assert.equal(await page.locator('iframe').count(), 0);
   assert.equal(frame.isDetached(), true);
@@ -78,7 +101,7 @@ try {
   await page.waitForURL(/\/blog\/?$/);
   assert.equal(await page.evaluate(() => crossOriginIsolated), false, 'Leaving the arcade must restore the normal blog context');
   assert.deepEqual(errors, []);
-  console.log('PASS: isolation boundary, lazy loading, filters, pause, fullscreen, stop, persisted DOS disk changes and navigation cleanup');
+  console.log('PASS: isolation boundary, lazy loading, filters, pause, fullscreen, Alt input after toolbar actions, stop, persisted DOS disk changes and navigation cleanup');
 
   await context.route('**/hocus-pocus/bundle.json', route => route.fulfill({status:503,body:'Test outage'}));
   await page.goto(base + '/arcade/hocus-pocus');
@@ -94,7 +117,7 @@ try {
   await page.goto(base + '/arcade/taskmaker');
   await page.locator('[data-launch]').click();
   await page.waitForTimeout(20000);
-  const mac = page.frames().find(frame => frame !== page.mainFrame());
+  const mac = await page.locator('[data-stage] iframe').elementHandle().then(el => el.contentFrame());
   const screen = mac.locator('canvas');
   await page.locator('[data-pause]').click();
   await page.waitForTimeout(500);

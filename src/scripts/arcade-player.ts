@@ -26,6 +26,11 @@ function setupPlayer() {
   const source = new URL(player.dataset.src!, location.href);
   const origin = source.origin;
 
+  // Toolbar clicks move focus out of the iframe. Return it when play
+  // continues so keys such as Alt reach the emulator's input handler.
+  const focusGame = () => {
+    if (ready && !paused) frame?.focus({ preventScroll: true });
+  };
   const pause = (value: boolean) => {
     paused = value;
     frame?.contentWindow?.postMessage(isMac
@@ -33,6 +38,7 @@ function setupPlayer() {
       : { type: 'arcade-pause', paused: value }, origin);
     if (pauseButton) pauseButton.textContent = value ? 'Resume' : 'Pause';
     status.textContent = value ? 'Paused.' : 'Running. Click inside the game to play.';
+    focusGame();
   };
   const stop = () => {
     clearTimeout(timeout);
@@ -77,11 +83,13 @@ function setupPlayer() {
     saveButton.disabled = true;
     status.textContent = 'Saving disk changes…';
     frame?.contentWindow?.postMessage({ type: 'arcade-save' }, origin);
+    focusGame();
   }, { signal: listeners.signal });
   fullButton.addEventListener('click', async () => {
     try {
       if (document.fullscreenElement === player) await document.exitFullscreen();
       else await player.requestFullscreen();
+      focusGame();
     } catch { status.textContent = 'Full screen is unavailable in this browser. The player still works here.'; }
   }, { signal: listeners.signal });
   document.addEventListener('fullscreenchange', () => {

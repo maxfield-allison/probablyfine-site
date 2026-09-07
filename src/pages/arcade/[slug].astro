@@ -19,6 +19,7 @@ const src = playerUrl(game);
       <section><h2>Getting started</h2>{game.start && <p>{game.start}</p>}
         <ul>{game.controls.map(control => <li>{control}</li>)}</ul>
         <p>Click inside the game to give it keyboard focus. Full screen gives you more room; Escape leaves full screen.</p>
+        {game.slug === 'hocus-pocus' && <p>If Alt opens Vivaldi’s menu, turn off its Alt menu shortcut in Settings → Keyboard → Keyboard Shortcuts, or change the fire key in the game’s controls.</p>}
       </section>
       <section><h2>Before you settle in</h2>
         <p>{game.kind === 'pinball' ? 'This browser port includes touch controls. A keyboard gives you the familiar flipper keys.' : 'These games were made for a keyboard and mouse. A laptop or desktop is the best way to play; the DOS player also has an on-screen keyboard.'}</p>
