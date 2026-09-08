@@ -3,7 +3,7 @@ import Layout from './Layout.astro';
 interface Props { title: string; description: string; }
 const { title, description } = Astro.props;
 ---
-<Layout title={`${title} · ProbablyFine`} description={description}>
+<Layout title={`${title} · ProbablyFine`} description={description} noindex>
   <article class="integration-copy max-w-[var(--container-shell)] mx-auto px-6 pt-16">
     <nav aria-label="Integration pages"><a href="/integrations">Integrations</a> · <a href="/integrations/privacy">Privacy</a> · <a href="/integrations/terms">Terms</a></nav>
     <h1>{title}</h1>

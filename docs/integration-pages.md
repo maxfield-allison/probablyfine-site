@@ -1,5 +1,7 @@
 # Integration pages
 
+These pages are unlisted: no main navigation or footer links, no sitemap entries, and a `noindex` meta tag supplied by the integration layout. Crawling remains allowed so search engines can read that tag. Direct links are public; this is not access control.
+
 These static pages describe private account connections without exposing account data or requiring a login to read the policies. The application name on its homepage should match the name on the provider consent screen.
 
 ## Calendar OAuth branding URLs

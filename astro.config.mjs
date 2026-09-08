@@ -105,7 +105,12 @@ const sessionBlock = {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://probablyfine.dev',
-  integrations: [sitemap()],
+  integrations: [sitemap({
+    filter: (page) => {
+      const path = new URL(page).pathname.replace(/\.html$/, '').replace(/\/$/, '');
+      return path !== '/integrations' && !path.startsWith('/integrations/');
+    },
+  })],
   markdown: {
     shikiConfig: {
       theme: sessionTheme,
