@@ -1,0 +1,23 @@
+---
+import Layout from './Layout.astro';
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+---
+<Layout title={`${title} · ProbablyFine`} description={description}>
+  <article class="integration-copy max-w-[var(--container-shell)] mx-auto px-6 pt-16">
+    <nav aria-label="Integration pages"><a href="/integrations">Integrations</a> · <a href="/integrations/privacy">Privacy</a> · <a href="/integrations/terms">Terms</a></nav>
+    <h1>{title}</h1>
+    <slot />
+  </article>
+</Layout>
+<style>
+  .integration-copy { max-width: 52rem; color: var(--color-ink-dim); line-height: 1.75; }
+  .integration-copy :global(h1) { color: var(--color-ink); font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 700; line-height: 1.2; margin: 1.5rem 0; }
+  .integration-copy :global(h2) { color: var(--color-ink); font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .75rem; }
+  .integration-copy :global(p), .integration-copy :global(ul) { margin: 1rem 0; }
+  .integration-copy :global(ul) { padding-left: 1.5rem; list-style: disc; }
+  .integration-copy :global(li) { margin: .5rem 0; }
+  .integration-copy :global(a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: .2em; }
+  .integration-copy :global(a:hover) { color: var(--color-accent); }
+  .integration-copy :global(code) { overflow-wrap: anywhere; }
+</style>

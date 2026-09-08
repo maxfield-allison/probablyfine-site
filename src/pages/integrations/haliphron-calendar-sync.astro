@@ -1,0 +1,18 @@
+---
+import IntegrationLayout from '../../layouts/IntegrationLayout.astro';
+---
+<IntegrationLayout title="Haliphron Calendar Sync" description="A private Google Calendar and Nextcloud connection: what it accesses, how synchronization works, and how to disconnect.">
+<p>Haliphron Calendar Sync brings authorized Google calendars into a private Nextcloud account so they can be viewed together. Maxfield Allison operates the connection for personal use and invited participants.</p>
+<p>The connection is being commissioned. Initial copies and attended synchronization tests have run; scheduled two-way synchronization is not yet activated. Access is arranged directly with Maxfield.</p>
+<h2>What the connection does</h2>
+<p>It reads the calendar list and access roles on the connected Google account, then copies selected calendars into Nextcloud. Calendars you can only read in Google stay read-only. Where two-way synchronization is enabled, creating, editing, or deleting an event on either side can change the other side too.</p>
+<p>Shared and family calendars can be included when the connected account has access. Copying a shared calendar into Nextcloud creates another copy of its contents, so include it only when you have permission to do that.</p>
+<h2>Google access</h2>
+<p>The authorization asks for Google Calendar access using <code>https://www.googleapis.com/auth/calendar</code>. This is broad calendar permission: it can read and modify calendars accessible to your account, subject to Google's access controls. Selecting calendars in the sync configuration limits what the application uses; it does not narrow the Google credential itself.</p>
+<p>Calendar data can include titles, descriptions, locations, times, recurrence rules, reminders, organizer and attendee information, and links included in events. The connection does not request Gmail, Google Drive, or Contacts access. Google handles sign-in; the connection stores authorization tokens rather than your Google password.</p>
+<h2>Using the calendars</h2>
+<p>Invited users can open their calendars in <a href="https://cloud.probablyfine.dev" rel="noopener">Nextcloud</a> and compatible calendar clients. Updates depend on successful sync runs and may be delayed. Until invitation and RSVP behavior has been checked, manage meeting responses in the original calendar service. Check important appointments there if the copies disagree.</p>
+<h2>Privacy and disconnecting</h2>
+<p>The <a href="/integrations/privacy">integration privacy policy</a> explains storage, sharing, retention, and deletion. The <a href="/integrations/terms">terms of use</a> apply to this connection.</p>
+<p>You can remove the application's access from <a href="https://myaccount.google.com/connections" rel="noopener">your Google Account connections</a>. This stops future authorized access; it does not erase copies already stored in Nextcloud or on synced devices. Contact <a href="mailto:maxfield.allison@gmail.com" data-umami-event="email-click">maxfield.allison@gmail.com</a> to stop the connection or arrange deletion. Stop synchronization before deleting a mirror as cleanup, since a deletion on a writable calendar may propagate.</p>
+</IntegrationLayout>

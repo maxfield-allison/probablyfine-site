@@ -1,0 +1,20 @@
+---
+import IntegrationLayout from '../../layouts/IntegrationLayout.astro';
+---
+<IntegrationLayout title="Integration privacy" description="How the listed private integrations access, use, store and share connected-account data, and how to request deletion.">
+<p>Effective September 8, 2026. This policy covers the applications listed under <a href="/integrations">Integrations</a>, operated by Maxfield Allison. Each application's page identifies the accounts and data it uses. Visiting these public pages is covered separately by the <a href="/privacy">website privacy policy</a>.</p>
+<h2>Access and use</h2>
+<p>Connected-account data is used to provide the connection you authorize. For <a href="/integrations/haliphron-calendar-sync">Haliphron Calendar Sync</a>, that means reading calendar metadata and event contents, making selected calendars available in Nextcloud, and synchronizing changes where write access is enabled. Its application page lists the requested Google permission and the event fields involved.</p>
+<p>Authorization tokens allow the connection to continue without asking you to sign in for each run. Sync state and operational logs help identify changes and diagnose failures; they can contain calendar or event identifiers and error details.</p>
+<h2>Storage and sharing</h2>
+<p>Calendar copies, credentials, sync state, and operational records are stored on infrastructure controlled by Maxfield Allison. Credentials are kept in protected storage. Connections to Google and Nextcloud use HTTPS. Authorized administrators can access the systems; this is not end-to-end encrypted storage hidden from the operator.</p>
+<p>Data moves between the services you connect. Nextcloud shares and connected calendar clients can make copies available to their authorized users and devices. The calendar connection does not publish your events on this website. Google and any other provider you use handle data under their own policies.</p>
+<p>Connected-account data is not sold, used for advertising, or used to train general-purpose AI models. Human access is limited to your explicit permission for specific data, necessary security or abuse investigation, or legal obligations. Support requests should describe the problem without sending event contents unless they are needed and you agree to share them.</p>
+<p>Use and transfer of information received from Google APIs will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">Google API Services User Data Policy</a>, including its Limited Use requirements.</p>
+<h2>Retention and deletion</h2>
+<p>Calendar copies and the state needed to synchronize them are retained while the connection is in use. There is no automatic deletion deadline for retained copies or diagnostic records. Disconnecting an account does not delete data already copied.</p>
+<p>To request access to or deletion of stored data, email <a href="mailto:maxfield.allison@gmail.com" data-umami-event="email-click">maxfield.allison@gmail.com</a>. Identify the application and account, but do not send a password or token. The operator will confirm the request with you, stop the relevant sync, and arrange deletion of credentials, calendar copies, and associated records within the requested scope.</p>
+<p>Deletion from active storage does not guarantee immediate removal from backups or devices that already synchronized a copy. Any remaining copies and their removal limits will be explained when the request is handled. After synchronization has been stopped, deleting retained Nextcloud copies does not delete the original Google calendar data.</p>
+<h2>Changes and questions</h2>
+<p>New account access or a new use of connected data needs an updated application description and consent before it starts. This policy will be updated alongside those changes. Contact the same email address if anything here is unclear.</p>
+</IntegrationLayout>
