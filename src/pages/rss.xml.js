@@ -10,6 +10,8 @@ export async function GET(context) {
     title: 'ProbablyFine',
     description: "Homelab and SRE engineering write-ups. It's probably fine.",
     site: context.site,
+    // Match Astro's clean URLs and nginx's flat-file routes.
+    trailingSlash: false,
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
