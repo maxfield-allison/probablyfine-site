@@ -9,7 +9,7 @@
   "scripts": {
     "predev": "node scripts/copy-fonts.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/check-headers.mjs && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs",
+    "prebuild": "node scripts/check-headers.mjs && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs && node scripts/gen-arcade-og.mjs",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",

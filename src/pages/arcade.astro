@@ -6,7 +6,7 @@ import '../styles/arcade.css';
 import { getCollection } from 'astro:content';
 const storyLive = (await getCollection('posts')).some(p => p.id === 'i-just-wanted-to-play-games' && !p.data.draft);
 ---
-<Layout title="The arcade · ProbablyFine" description="The DOS and Macintosh games that got me into computers, playable in your browser. Pick a game and stay awhile.">
+<Layout title="The arcade · ProbablyFine" description="The DOS, Macintosh and Windows games that got me into computers, playable in your browser. Pick a game and stay awhile." ogImage="/og/arcade.png">
   <div class="arcade-shell">
     <section class="arcade-hero">
       <p class="arcade-eyebrow">probablyfine / a few old favourites</p>
