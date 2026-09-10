@@ -17,6 +17,29 @@ Use these only after the corresponding pages have deployed and load publicly:
 
 Publishing pages does not verify a Google application, change its OAuth permissions, or activate synchronization.
 
+## Backup OAuth branding (prepared, not yet deployed)
+
+| Field | Value |
+| --- | --- |
+| Application name | Haliphron Backups |
+| Application homepage | https://probablyfine.dev/integrations/haliphron-backups |
+| Privacy policy | https://probablyfine.dev/integrations/privacy |
+| Terms of service | https://probablyfine.dev/integrations/terms |
+| Authorized domain | probablyfine.dev |
+| Support / developer contact | maxfield.allison@gmail.com |
+| OAuth client type | Desktop app |
+| Requested data scope | https://www.googleapis.com/auth/drive.file |
+
+The existing shared policy URLs are live, but their backup disclosures in this branch are not.
+Publish and verify all four changed routes before supplying these URLs for backup branding.
+The homepage URL is disclosure, not an OAuth redirect; Desktop authorization uses a local
+loopback callback. No public callback route or web client secret belongs in these static pages.
+
+The new backup project is intentionally separate from calendar sync and agent read access.
+Keep public application names independent of client model, hostname, and pilot/production status.
+The broader access/naming proposal is recorded under brain#137; this change does not rename or
+migrate any existing Google project, OAuth client or ContextForge lane.
+
 ## Adding another integration
 
 1. Add an application page under `src/pages/integrations/` using `IntegrationLayout.astro`. Identify its operator, audience, purpose, current availability, support contact, and connected services.

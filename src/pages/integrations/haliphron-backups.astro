@@ -1,0 +1,20 @@
+---
+import IntegrationLayout from '../../layouts/IntegrationLayout.astro';
+---
+<IntegrationLayout title="Haliphron Backups" description="A private encrypted backup connection to Google Drive: permissions, storage, recovery and how to disconnect.">
+<p>Haliphron Backups stores encrypted copies of selected files and application backups in Google Drive. Maxfield Allison operates it for personal use and invited participants. Access is arranged directly; there is no public signup.</p>
+<p>The connection is being prepared for an attended pilot. It is not yet a scheduled backup service, and a complete application restore has not been qualified. Keep existing backups while the pilot is tested.</p>
+<h2>What the connection does</h2>
+<p>The backup software reads selected files on the source system, encrypts their contents and file metadata with Restic, and uploads the encrypted repository through rclone. Later backups reuse unchanged data. Restoring a backup downloads and decrypts the selected files on an authorized recovery system.</p>
+<p>Backup maintenance can remove older snapshots and encrypted repository files according to the retention settings agreed for that repository. It does not delete the original source files. A separate restore test is needed to establish whether an application can use its recovered data.</p>
+<h2>Google access</h2>
+<p>The connection requests <code>https://www.googleapis.com/auth/drive.file</code>. This permits reading, creating, changing and deleting Drive files created by, or explicitly authorized for, this application. It does not grant general access to every file in the account. The backup configuration selects its repository within that permission.</p>
+<p>Google handles sign-in. The connection stores authorization tokens rather than your Google password. It does not request Gmail, Calendar, Contacts or Google Photos access. Only include source data you own or have permission to back up.</p>
+<h2>Storage and recovery</h2>
+<p>Google Drive stores the encrypted repository and can observe its storage usage, encrypted object names, sizes and upload activity. The encryption password, authorization tokens, source files and recovery copies are handled on systems controlled by the operator. Administrators with the required credentials can recover the contents. This is not encryption that hides the backup from the operator.</p>
+<p>Backups consume the connected account's available Drive storage. Encryption does not prevent the account holder or an authorized application from deleting the repository, and it does not protect against losing the Google account or the encryption password. Keep independent recovery material and another copy of important data.</p>
+<h2>Privacy and disconnecting</h2>
+<p>The <a href="/integrations/privacy">integration privacy policy</a> explains data use, storage, retention and deletion. The <a href="/integrations/terms">terms of use</a> apply.</p>
+<p>You can remove the application's access from <a href="https://myaccount.google.com/connections" rel="noopener">your Google Account connections</a>. Revocation stops future authorized access but does not erase the encrypted repository or copies already restored elsewhere. Stop backup jobs and confirm another recoverable copy before deleting repository files.</p>
+<p>For support, access or deletion requests, contact <a href="mailto:maxfield.allison@gmail.com" data-umami-event="email-click">maxfield.allison@gmail.com</a>. Identify the application and account without sending passwords, authorization tokens or backup contents.</p>
+</IntegrationLayout>
