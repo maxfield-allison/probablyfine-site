@@ -1,0 +1,16 @@
+---
+import IntegrationLayout from '../../layouts/IntegrationLayout.astro';
+---
+<IntegrationLayout title="Haliphron Google Actions" description="Planned private Google account actions, with separate permissions for each workflow and operator approval before execution.">
+<p>Haliphron Google Actions is being prepared for private, approved changes to connected Google accounts. Maxfield Allison operates the application. No action service is available through this application yet, and this page is not an invitation to grant broad account access.</p>
+<h2>Planned workflows</h2>
+<p>The planned workflows cover organizing Gmail, preparing or sending messages, changing calendar events, working with Drive documents, and maintaining tasks or contacts. Each workflow will describe its exact permissions and data handling before it is enabled. Mail, calendar and file actions will use separate credentials and operation limits within this application.</p>
+<p>Permission names do not always match a narrow task. Gmail's draft-management permission also permits sending, and its message-organization permission permits more than moving a message. The service must enforce the approved operation and its target. A permission grant alone does not authorize every action the credential could perform.</p>
+<p>Some actions notify other people, alter shared documents, or propagate through calendar synchronization. Before execution, an enabled workflow must make the affected account, target, proposed change and relevant consequences clear. Background jobs require their own defined execution authority.</p>
+<h2>Application boundary</h2>
+<p>This application is separate from Haliphron Google Read, Haliphron Backups and the calendar synchronization service. Workflows within Google Actions share an application-level revocation boundary: removing its access from Google can stop all of that account's action workflows. It does not independently revoke only one workflow.</p>
+<p>AI-assisted actions can send the information needed for the task and its result to the AI provider selected for the session. That processing, retained conversations and deletion limits must be disclosed before the workflow is connected. No Google Cloud administrator access is part of this application.</p>
+<h2>Availability and support</h2>
+<p>Actual Google scopes and supported operations will be published here as workflows are commissioned. The <a href="/integrations/privacy">integration privacy policy</a> and <a href="/integrations/terms">terms of use</a> describe the common handling of connected data. They do not make an unimplemented workflow available.</p>
+<p>Contact <a href="mailto:maxfield.allison@gmail.com" data-umami-event="email-click">maxfield.allison@gmail.com</a> for questions. Do not send passwords or authorization tokens.</p>
+</IntegrationLayout>
