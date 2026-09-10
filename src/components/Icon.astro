@@ -5,7 +5,7 @@
 //
 // Usage: <Icon name="github" /> or <Icon name="rss" size={14} />
 // Unknown names render nothing (callers degrade to the text label).
-import { siGithub, siBluesky, siRss, siFacebook } from 'simple-icons';
+import { siGithub, siGitlab, siBluesky, siRss, siFacebook } from 'simple-icons';
 
 interface Props {
   name: string;
@@ -17,6 +17,7 @@ const { name, size = 16, class: className } = Astro.props;
 
 const filled: Record<string, string> = {
   github: siGithub.path,
+  gitlab: siGitlab.path,
   bluesky: siBluesky.path,
   rss: siRss.path,
   facebook: siFacebook.path,
