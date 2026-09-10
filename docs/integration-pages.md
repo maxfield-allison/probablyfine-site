@@ -17,6 +17,40 @@ Use these only after the corresponding pages have deployed and load publicly:
 
 Publishing pages does not verify a Google application, change its OAuth permissions, or activate synchronization.
 
+## Backup OAuth branding
+
+| Field | Value |
+| --- | --- |
+| Application name | Haliphron Backups |
+| Application homepage | https://probablyfine.dev/integrations/haliphron-backups |
+| Privacy policy | https://probablyfine.dev/integrations/privacy |
+| Terms of service | https://probablyfine.dev/integrations/terms |
+| Authorized domain | probablyfine.dev |
+| Support / developer contact | maxfield.allison@gmail.com |
+| OAuth client type | Desktop app |
+| Requested data scope | https://www.googleapis.com/auth/drive.file |
+
+Verify the deployed application and both policies before supplying these URLs for backup branding.
+The homepage URL is disclosure, not an OAuth redirect; Desktop authorization uses a local
+loopback callback. No public callback route or web client secret belongs in these static pages.
+
+The new backup project is intentionally separate from calendar sync and agent read access.
+Keep public application names independent of client model, hostname, and pilot/production status.
+The broader project and API preparation is recorded under brain#137. Publishing these pages does not rename or migrate a Google project, OAuth client or ContextForge lane.
+
+## Read and action application branding
+
+| Application | Homepage | Current purpose |
+| --- | --- | --- |
+| Haliphron Google Read | https://probablyfine.dev/integrations/haliphron-google-read | Operating private read service; migration from the calendar-named project is pending. |
+| Haliphron Google Actions | https://probablyfine.dev/integrations/haliphron-google-actions | Planned workflows only; no action service is commissioned. |
+
+Both use the shared privacy/terms URLs, authorized domain and operator contact listed above. The read page enumerates actual scopes and explains model-provider processing. The action page does not request speculative broad consent; update it with exact supported workflows and scopes before commissioning any writer. Mail, calendar and document actions can share a consent application while retaining separate clients and credentials; user revocation is shared across the project.
+
+Calendar status was checked on September 10: its systemd timer is active and its sanitized health receipt reports a successful run. The calendar page now reflects scheduled operation while retaining the invitation/RSVP qualification limit.
+
+The current Google sign-in and Home Assistant project census does not establish a new public application under these names. Add their operator pages when actual branding, audience and configured flows are confirmed, rather than describing an unused Google source as active.
+
 ## Adding another integration
 
 1. Add an application page under `src/pages/integrations/` using `IntegrationLayout.astro`. Identify its operator, audience, purpose, current availability, support contact, and connected services.
