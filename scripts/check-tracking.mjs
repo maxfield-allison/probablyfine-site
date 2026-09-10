@@ -46,6 +46,7 @@ const DECLARED = new Set([
   'outbound-bluesky',
   'outbound-facebook',
   'outbound-github',
+  'outbound-gitlab',
   'outbound-linkedin',
   'outbound-maxfieldallison',
   'outbound-nowpage',  // nownownow.com, from /now
