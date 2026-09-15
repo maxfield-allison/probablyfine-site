@@ -25,10 +25,15 @@ import Layout from '../layouts/Layout.astro';
 //
 // If you change what is collected, change this page in the same commit, and add
 // a log entry at the bottom. The old entries stay.
-const version = 'v1.3';
+const version = 'v1.4';
 const updated = '2026-09-15';
 
 const log = [
+  {
+    version: 'v1.4',
+    date: '2026-09-15',
+    body: 'Added a support page. Clicks from it to GitHub Sponsors are counted alongside the existing outbound links.',
+  },
   {
     version: 'v1.3',
     date: '2026-09-15',
@@ -104,7 +109,7 @@ const log = [
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         Elsewhere it counts the things you click that a page view would otherwise miss. The
-        outbound links in the nav and footer, the RSS link, the email link. Which listing you came
+        outbound links in the nav, footer and support page, the RSS link, the email link. Which listing you came
         into a post from, and whether you left it by a tag, by the older and newer arrows, or by
         the related list. The buttons that do something without loading a new page: starting and
         stopping a game on the arcade page, opening a photo on the pets page and moving through
