@@ -51,6 +51,7 @@ const DECLARED = new Set([
   'outbound-bluesky',
   'outbound-facebook',
   'outbound-github',
+  'outbound-github-sponsors',
   'outbound-gitlab',
   'outbound-linkedin',
   'outbound-maxfieldallison',

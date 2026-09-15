@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Support ProbablyFine"
+  description="Help cover the costs of publishing free, MIT-licensed software through ProbablyFine."
+>
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ support ./probablyfine</p>
+    <h1 class="text-3xl font-bold mt-3">Support ProbablyFine</h1>
+    <div class="max-w-[var(--measure-read)] mt-6 space-y-4 text-[var(--color-ink-dim)] leading-relaxed">
+      <p>
+        ProbablyFine is where I publish independent software like dnsweaver and whatever comes next.
+      </p>
+      <p>
+        Everything stays free and MIT-licensed. Sponsorships help cover the boring but necessary
+        costs of publishing it, starting with roughly $220 a year for Apple and Windows code
+        signing. If support grows beyond that, it may also offset AI and other development expenses.
+      </p>
+      <p>
+        Sponsoring doesn't buy priority support or roadmap influence. There are no promised
+        features. It just helps me keep publishing the work.
+      </p>
+    </div>
+    <a
+      href="https://github.com/sponsors/maxfield-allison?metadata_campaign=probablyfine-site"
+      rel="noopener"
+      data-umami-event="outbound-github-sponsors"
+      class="inline-flex mt-8 no-underline hover:no-underline px-4 py-2 rounded border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-[var(--color-base)] transition-colors font-mono text-sm"
+    >
+      Support on GitHub Sponsors
+    </a>
+  </section>
+
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-8">
+    <div class="max-w-[var(--measure-read)] py-5 border-t border-[var(--color-line)]">
+      <p class="text-[var(--color-ink-dim)] leading-relaxed">
+        ProbablyFine is Maxfield Allison's independent-software publishing name. GitHub handles
+        the sponsorship checkout and receipts.
+      </p>
+    </div>
+  </section>
+</Layout>
