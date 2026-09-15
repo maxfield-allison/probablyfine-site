@@ -33,6 +33,17 @@ document.addEventListener('astro:page-load', () => {
     io.observe(lead.closest('p'));
   }
 
+  // Internal prose and linked figures use the non-blocking site listener.
+  article.querySelectorAll('.prose a[href^="/"], .prose a[href^="#"]').forEach((a) => {
+    if (a.hasAttribute('data-track')) return;
+    const destination = new URL(a.href);
+    if (destination.origin !== location.origin) return;
+    a.setAttribute('data-track', 'post-internal');
+    a.setAttribute('data-track-slug', slug);
+    a.setAttribute('data-track-destination', destination.pathname + destination.hash);
+    a.setAttribute('data-track-where', a.querySelector('img') ? 'figure' : 'prose');
+  });
+
   // --- post-outbound: tag external links in the body; Umami's delegated
   // click handler does the rest via the data attributes.
   article.querySelectorAll('a[href^="http"]').forEach((a) => {
@@ -46,5 +57,6 @@ document.addEventListener('astro:page-load', () => {
     a.setAttribute('data-umami-event', 'post-outbound');
     a.setAttribute('data-umami-event-href', host + new URL(a.href).pathname);
     a.setAttribute('data-umami-event-slug', slug);
+    a.setAttribute('data-umami-event-where', a.querySelector('img') ? 'figure' : 'prose');
   });
 });

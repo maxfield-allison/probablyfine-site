@@ -39,6 +39,11 @@ const DECLARED = new Set([
   'ai-role-chip',      // the AI-role label on a post, opening /ai
   'arcade-play',       // an emulator was started (props: title, kind)
   'arcade-stop',       // the emulator was stopped again (props: title)
+  'chronochasm-control',  // deliberate timeline, filter, gap and display actions
+  'chronochasm-link',     // reader or header links
+  'chronochasm-moment',   // opened a public moment
+  'chronochasm-navigation', // previous, next or related passage
+  'chronochasm-source',   // opened a selected public source
   'email-click',       // a mailto link
   'nav-menu',          // the mobile disclosure menu was opened
   'note-read',         // the process note scrolled into view (post-signals.js)
@@ -53,6 +58,7 @@ const DECLARED = new Set([
   'outbound-status',   // the status page link on the home page
   'photo-browse',      // moved between photos inside the lightbox
   'photo-open',        // a photo was opened (props: where)
+  'post-internal',     // article/figure link to another site page
   'post-nav',          // older / newer at the foot of a post (props: dir)
   'post-open',         // entered a post from a listing (props: where)
   'post-outbound',     // a source link inside an article (post-signals.js)
@@ -69,7 +75,7 @@ const DECLARED = new Set([
 const DECLARED_PREFIXES = [];
 
 const files = [];
-for (const dir of ['src', 'public/js']) {
+for (const dir of ['src', 'public/js', 'public/chronochasm']) {
   const walk = (d) => {
     for (const name of readdirSync(d).sort()) {
       const full = join(d, name);
@@ -99,13 +105,15 @@ for (const file of files) {
   for (const m of text.matchAll(/\bdata-track=["']([a-z0-9-]+)["']/g)) seen.add(m[1]);
   // umami.track('name', …) in the static scripts.
   for (const m of text.matchAll(/umami\.track\(\s*["'`]([a-z0-9-]+)["'`]/g)) seen.add(m[1]);
+  // Chronochasm's failure-isolated wrapper uses literal, declared event names.
+  for (const m of text.matchAll(/trackChronochasm\(\s*["'`]([a-z0-9-]+)["'`]/g)) seen.add(m[1]);
   // The arcade stop button is built in script, so its name is set via dataset.
-  for (const m of text.matchAll(/dataset\.umamiEvent\s*=\s*["'`]([a-z0-9-]+)["'`]/g)) {
+  for (const m of text.matchAll(/dataset\.(?:umamiEvent|track)\s*=\s*["'`]([a-z0-9-]+)["'`]/g)) {
     seen.add(m[1]);
   }
   // post-signals.js tags body links by setting the attribute directly.
   for (const m of text.matchAll(
-    /setAttribute\(\s*["'`]data-umami-event["'`]\s*,\s*["'`]([a-z0-9-]+)["'`]/g)) {
+    /setAttribute\(\s*["'`](?:data-umami-event|data-track)["'`]\s*,\s*["'`]([a-z0-9-]+)["'`]/g)) {
     seen.add(m[1]);
   }
   // Names built from a content id: `case-study-${project.id}`. The scanner cannot

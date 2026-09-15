@@ -25,10 +25,15 @@ import Layout from '../layouts/Layout.astro';
 //
 // If you change what is collected, change this page in the same commit, and add
 // a log entry at the bottom. The old entries stay.
-const version = 'v1.2';
-const updated = '2026-09-10';
+const version = 'v1.3';
+const updated = '2026-09-15';
 
 const log = [
+  {
+    version: 'v1.3',
+    date: '2026-09-15',
+    body: 'Added counters for links within blog prose and linked images, and for opening Chronochasm passages and sources, following reading paths, and using timeline controls. The events carry public identifiers and control settings, not the text of passages or anything typed into a form.',
+  },
   {
     version: 'v1.2',
     date: '2026-09-10',
@@ -106,6 +111,15 @@ const log = [
         them, the print and download buttons on the resume, the mobile menu, the skip-to-content
         link. Each one is a number that goes up by one. Nothing records where on the page you
         clicked.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Links within blog prose are counted too, including which links are images. On
+        Chronochasm, I count opened moments and selected sources, previous and next passage
+        navigation, related threads, and links out of the reader. I also count use of the
+        thread filter, zoom, gap controls, moment list and motion setting. Those events carry
+        the public moment, thread or source identifier and the control setting. They don't
+        include the passage text, private editorial notes, or anything you type. Moving the
+        pointer over the timeline and scrolling through it don't send events.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         There is no session recording, no heatmap, no mouse or scroll tracking, and nothing

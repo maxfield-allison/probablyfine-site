@@ -1,0 +1,2565 @@
+{
+  "edition": "2026-09-15",
+  "title": "A few weeks in the lab",
+  "lanes": [
+    {
+      "id": "memory",
+      "name": "Remembering",
+      "description": "The games, the clues, and what Max recognized.",
+      "color": "#99BAA2"
+    },
+    {
+      "id": "recovery",
+      "name": "Recovering",
+      "description": "Looking inside the discs and making the software work.",
+      "color": "#3FB950"
+    },
+    {
+      "id": "sharing",
+      "name": "Sharing",
+      "description": "The arcade, the writing, and the idea of keeping this history.",
+      "color": "#76AABF"
+    },
+    {
+      "id": "infrastructure",
+      "name": "Infrastructure",
+      "description": "Keeping the homelab working.",
+      "color": "#C9A96E"
+    },
+    {
+      "id": "everyday",
+      "name": "Everyday tools",
+      "description": "Making the daily tools fit the way Max works.",
+      "color": "#AF98CE"
+    }
+  ],
+  "threads": [
+    {
+      "id": "disc-hunt",
+      "name": "The disc hunt"
+    },
+    {
+      "id": "catalogs",
+      "name": "Reading the discs"
+    },
+    {
+      "id": "armor",
+      "name": "Finding Armor"
+    },
+    {
+      "id": "arcade",
+      "name": "A playable arcade"
+    },
+    {
+      "id": "memoir",
+      "name": "Writing the memories"
+    },
+    {
+      "id": "chronochasm",
+      "name": "Saving the story"
+    },
+    {
+      "id": "dnsweaver",
+      "name": "A quieter DNS service"
+    },
+    {
+      "id": "bookmarks",
+      "name": "Fewer tabs, a better starting point"
+    },
+    {
+      "id": "keeping-watch",
+      "name": "Keeping an eye on the lab"
+    },
+    {
+      "id": "household",
+      "name": "The ordinary household stuff"
+    },
+    {
+      "id": "local-models",
+      "name": "Making the local tools work"
+    },
+    {
+      "id": "unreleased-tool",
+      "name": "An unreleased project"
+    },
+    {
+      "id": "site-care",
+      "name": "Checking on the site"
+    }
+  ],
+  "sources": {
+    "first-clues": {
+      "kind": "Max · conversation",
+      "date": "2026-08-18T21:46:20Z",
+      "reference": "Disc-search conversation · opening request",
+      "excerpt": "there was a tank battle thing, maybe turn based. there was also another one that was like rogue pixel dungeon but super old school. and there was a sort of galaga clone with insects.",
+      "context": "Selected consecutive sentences from Max's opening message. He had already named Chrysanthemum elsewhere in that message. This excerpt records the clues, not a settled identification.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. These were early candidates, before the later identifications.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-08-18T21:46:20.266Z",
+            "text": "Would be a fun piece to write and cool to link to some of the games or even host them since some of them run in browser like the old mac and dos games. I also remember my dad getting a macintosh magazine with games on a disc, i think the one pack we got that i played a ton of had a game called chrysanthemum and there was a tank battle thing, maybe turn based. there was also another one that was like rogue pixel dungeon but super old school. and there was a sort of galaga clone with insects."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T21:49:59.771Z",
+            "text": "**The turn-based tank battle** — unresolved. The iconic Mac tank game is **Bolo**, but it's real-time networked multiplayer, not turn-based. Either the memory has drifted or it's something smaller off the same disc. Look at a couple of screenshots and tell me.\n\n[…]\n\nChrysanthemum plus Swoop on one disc points at a mid-90s Mac shareware compilation rather than a magazine's own disc, so the disc itself is probably findable too."
+          }
+        ]
+      }
+    },
+    "catalog-proposal": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-18T22:32:10Z",
+      "reference": "Disc-search conversation · change of method",
+      "excerpt": "I can read the partition map and catalog extents over HTTP range requests",
+      "context": "Selected clause from Claude's proposal. The retained tool outputs subsequently show catalog names and complete paths. This quotation is not a measured claim about total search coverage.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. The proposed search method was followed by questions about the memory itself.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T22:32:10.274Z",
+            "text": "The MacAddict discs are raw HFS images, but the HFS catalog stores filenames in plaintext — so I can read the partition map and catalog extents over HTTP range requests and search a 650 MB disc by pulling about a megabyte of it. Building that."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T22:40:46.235Z",
+            "text": "Two things that would narrow this a lot faster than brute force:\n\n[…]\n\n**Was the Mac color or black-and-white?** Chrysanthemum ran on System 7.0 through 7.6, and TaskMaker had a B&W 1989 release and a color 1993 one. Which version you remember dates the disc.\n\n[…]\n\n**Do you remember the magazine at all** — MacAddict, Macworld, MacUser, Mac Home Journal? MacAddict didn't start until September 1996, so if the disc came home in 1994 it was one of the others and I should re-point the sweep."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-18T23:32:22.977Z",
+            "text": "I remember black and white. some color apps. i might be conflating since i was like 3-7. that goes for the magazines too."
+          }
+        ]
+      }
+    },
+    "flowers-claim": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-18T23:33:05Z",
+      "reference": "Disc-search conversation · initial candidate",
+      "excerpt": "Hit. **MacAddict issue #3, November 1996** carries Chrysanthemum. Let me pull that disc's whole file tree.",
+      "context": "The original Markdown is preserved. This was an incorrect claim made during the search; the next source shows why it was rejected.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. This selection preserves the mistaken claim together with its correction.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:33:05.877Z",
+            "text": "Hit. **MacAddict issue #3, November 1996** carries Chrysanthemum. Let me pull that disc's whole file tree."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:33:53.685Z",
+            "text": "Those numbered \"Chrysanthemums\" entries smell like clip-art, not the game. Time to parse the catalog B-tree properly and get real paths."
+          },
+          {
+            "speaker": "Tool output",
+            "date": "2026-08-18T23:34:31.891Z",
+            "text": "MacAddict/This Issue/Reviews/Chromatica™/1000 Chromatica Palettes/Artists/Renoir/Chrysanthemums 13839"
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:34:45.421Z",
+            "text": "That killed the lead — those \"Chrysanthemums\" are Renoir color palettes in a Chromatica review folder, not the game. But the sweep only actually read about half the discs, so I can't call MacAddict out yet."
+          }
+        ]
+      }
+    },
+    "flowers-path": {
+      "kind": "Tool output · catalog path",
+      "date": "2026-08-18T23:34:31Z",
+      "reference": "Disc-search conversation · expanded file paths",
+      "excerpt": "MacAddict/This Issue/Reviews/Chromatica™/1000 Chromatica Palettes/Artists/Renoir/Chrysanthemums 13839",
+      "context": "One selected result. This is a path inside the archived disc, not a path on Max's machines. It places the hit among color palettes.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. This selection preserves the mistaken claim together with its correction.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:33:05.877Z",
+            "text": "Hit. **MacAddict issue #3, November 1996** carries Chrysanthemum. Let me pull that disc's whole file tree."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:33:53.685Z",
+            "text": "Those numbered \"Chrysanthemums\" entries smell like clip-art, not the game. Time to parse the catalog B-tree properly and get real paths."
+          },
+          {
+            "speaker": "Tool output",
+            "date": "2026-08-18T23:34:31.891Z",
+            "text": "MacAddict/This Issue/Reviews/Chromatica™/1000 Chromatica Palettes/Artists/Renoir/Chrysanthemums 13839"
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:34:45.421Z",
+            "text": "That killed the lead — those \"Chrysanthemums\" are Renoir color palettes in a Chromatica review folder, not the game. But the sweep only actually read about half the discs, so I can't call MacAddict out yet."
+          }
+        ]
+      }
+    },
+    "flowers-correction": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-18T23:34:45Z",
+      "reference": "Disc-search conversation · rejected lead",
+      "excerpt": "That killed the lead — those \"Chrysanthemums\" are Renoir color palettes in a Chromatica review folder, not the game.",
+      "context": "The correction follows the full-path output. The surrounding sweep and its coverage are not included in this excerpt.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. This selection preserves the mistaken claim together with its correction.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:33:05.877Z",
+            "text": "Hit. **MacAddict issue #3, November 1996** carries Chrysanthemum. Let me pull that disc's whole file tree."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:33:53.685Z",
+            "text": "Those numbered \"Chrysanthemums\" entries smell like clip-art, not the game. Time to parse the catalog B-tree properly and get real paths."
+          },
+          {
+            "speaker": "Tool output",
+            "date": "2026-08-18T23:34:31.891Z",
+            "text": "MacAddict/This Issue/Reviews/Chromatica™/1000 Chromatica Palettes/Artists/Renoir/Chrysanthemums 13839"
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T23:34:45.421Z",
+            "text": "That killed the lead — those \"Chrysanthemums\" are Renoir color palettes in a Chromatica review folder, not the game. But the sweep only actually read about half the discs, so I can't call MacAddict out yet."
+          }
+        ]
+      }
+    },
+    "maccube-list": {
+      "kind": "Retained artifact · disc catalog",
+      "date": "2026-08-19",
+      "reference": "MacCube Volume 1 · selected catalog entries",
+      "excerpt": "Armor 1.1\nChrysanthemum 1.01\nSwoop 1.0.0 ƒ",
+      "context": "Three selected entry names, assembled from the retained listing; these are not consecutive lines. Their presence establishes a candidate collection, not which physical discs Max owned."
+    },
+    "recognizing-collection": {
+      "kind": "Max · conversation",
+      "date": "2026-08-19T12:21:20Z",
+      "reference": "Disc-search conversation · returning to the results",
+      "excerpt": "omg I remember these. Thats incredible.",
+      "context": "Max's immediate reaction to the returned game candidates. The same message goes on to propose saving the search for future posts.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. Claude initially treated the collection as settled. The selection includes the subsequent return to checking rival discs. Claims about finding no information online describe the search at the time, not proof that no other record exists.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T02:48:15.946Z",
+            "text": "**Found it. _The MacCube_ — Aztech New Media, 1995.** A seven-volume boxed shareware set. \"The one pack we got\" was literally a pack.\n\n[…]\n\n**The tank is the one loose end.** `Armor 1.1` is right there on Volume 1 next to Chrysanthemum, and there is nothing about it anywhere online — no Macintosh Garden entry, no Repository page, nothing. It's a folder with an application and an icon."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T12:21:20.918Z",
+            "text": "omg I remember these. Thats incredible. how's the last sweep done? and what can we do next? I think this search is a fantastic small post opportunity. on top of the post about the games and then hosting them to play in a browser. This is an entire thread of posts we should make sure to store all of the detail to pull from later."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:21:59.287Z",
+            "text": "Sweep's at 47 of 76 and it just turned up rivals — three more discs carry Chrysanthemum. Checking them before I let the MacCube conclusion stand."
+          }
+        ]
+      }
+    },
+    "save-the-detail": {
+      "kind": "Max · conversation",
+      "date": "2026-08-19T12:21:20Z",
+      "reference": "Disc-search conversation · a new writing thread",
+      "excerpt": "I think this search is a fantastic small post opportunity. on top of the post about the games and then hosting them to play in a browser. This is an entire thread of posts we should make sure to store all of the detail to pull from later.",
+      "context": "Consecutive sentences, preserved as written. This is direct evidence that the idea of saving the research for writing emerged while the search was ongoing.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. Selected discussion of preserving the research and planning the writing; the storage paths and unrelated sweep summary are omitted. The proposed publishing tags are part of that early plan, not the final memoir disclosure.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T12:21:20.918Z",
+            "text": "omg I remember these. Thats incredible. how's the last sweep done? and what can we do next? I think this search is a fantastic small post opportunity. on top of the post about the games and then hosting them to play in a browser. This is an entire thread of posts we should make sure to store all of the detail to pull from later."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:21:59.287Z",
+            "text": "Sweep's at 47 of 76 and it just turned up rivals — three more discs carry Chrysanthemum. Checking them before I let the MacCube conclusion stand."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:28:33.120Z",
+            "text": "**Everything is stored.**\n\n[…]\n\nthe raw sweep results plus complete file listings for MacCube Vol 1 and 2, MacSilverWare, IMG 31 and Ultra Mac Games, so nothing depends on re-running anything\n\n[…]\n\n**You're right that it's a thread, and I'd split it three ways:**\n\n[…]\n\n**The memoir** — the games, the two machines, Grandpa Bob and the CompUSA graphics card. Human-written, ships tagged `none`.\n\n[…]\n\n**How I found the disc**\n\n[…]\n\nThe false positive that looked like the answer is the best beat in it. This is the one that travels furthest, and it has no memoir sensitivity, so it's the easiest to ship first.\n\n[…]\n\n**The arcade** — the playable page, built in your tiers."
+          }
+        ]
+      }
+    },
+    "armor-method": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-19T12:32:49Z",
+      "reference": "Disc-search conversation · inspecting Armor",
+      "excerpt": "I don't need to boot the disc if I can pull the application's resource fork off it and read what's inside.",
+      "context": "The session then extracted the resource fork from the MacSilverWare image. The retained application text supplies the credits and gameplay details; the creator-text presentation is reserved for the companion blog post.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. These turns bracket the inspection and Max’s later recognition. The intervening tool output and arcade work are omitted. Claims about finding no information online describe the search at the time, not proof that no other record exists.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:32:49.221Z",
+            "text": "On it. Starting with Armor — I don't need to boot the disc if I can pull the application's resource fork off it and read what's inside."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:33:44.034Z",
+            "text": "**Armor 1.1, by Brad Sanders, 1991, $10 shareware.** Turn-based, exactly as you remembered."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T14:08:13.783Z",
+            "text": "Lets get into the polite way to have this and how i could host it etc. and legal stuff etc. I'd rather not step on any toes. and i dont mind linking back but it seems like it would just be super cool to have it all on my systems and self hosted. armor is also exactly what i was remembering. the fact that there is nothing about it online is crazy."
+          }
+        ]
+      }
+    },
+    "armor-recognition": {
+      "kind": "Max · conversation",
+      "date": "2026-08-19T14:08:13Z",
+      "reference": "Disc-search conversation · Armor identified",
+      "excerpt": "armor is also exactly what i was remembering.",
+      "context": "Max's confirmation of the game. It does not establish which compilation he originally played it from.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. These turns bracket the inspection and Max’s later recognition. The intervening tool output and arcade work are omitted. Claims about finding no information online describe the search at the time, not proof that no other record exists.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:32:49.221Z",
+            "text": "On it. Starting with Armor — I don't need to boot the disc if I can pull the application's resource fork off it and read what's inside."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:33:44.034Z",
+            "text": "**Armor 1.1, by Brad Sanders, 1991, $10 shareware.** Turn-based, exactly as you remembered."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T14:08:13.783Z",
+            "text": "Lets get into the polite way to have this and how i could host it etc. and legal stuff etc. I'd rather not step on any toes. and i dont mind linking back but it seems like it would just be super cool to have it all on my systems and self hosted. armor is also exactly what i was remembering. the fact that there is nothing about it online is crazy."
+          }
+        ]
+      }
+    },
+    "arcade-request": {
+      "kind": "Max · conversation",
+      "date": "2026-08-19T13:38:01Z",
+      "reference": "Disc-search conversation · first arcade preview",
+      "excerpt": "I also would love to make sure we dig around and let me see all of these games and try to emulate all that we can on the page. also need to make sure they dont overlap eachother when running somehow so we can keep page performance up.",
+      "context": "The first preview already existed. Max asks to expand it and to prevent multiple running emulators from competing. This is the historical request, not a current release instruction.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T13:38:01.616Z",
+            "text": "also, I love that page. so freaking cool. we should publish it with the blog post about it and not before. I also would love to make sure we dig around and let me see all of these games and try to emulate all that we can on the page. also need to make sure they dont overlap eachother when running somehow so we can keep page performance up."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T13:38:26.382Z",
+            "text": "Both good notes — one-at-a-time playback matters for audio as much as CPU. Let me find every game first, then rebuild the page around a single active emulator."
+          }
+        ]
+      }
+    },
+    "hosting-request": {
+      "kind": "Max · conversation",
+      "date": "2026-08-19T14:08:13Z",
+      "reference": "Disc-search conversation · hosting and recognition",
+      "excerpt": "I'd rather not step on any toes. and i dont mind linking back but it seems like it would just be super cool to have it all on my systems and self hosted.",
+      "context": "Selected consecutive sentences from the same message that confirms Armor. This records Max's preference; it is not a legal conclusion about the software.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. These turns bracket the inspection and Max’s later recognition. The intervening tool output and arcade work are omitted. Claims about finding no information online describe the search at the time, not proof that no other record exists.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:32:49.221Z",
+            "text": "On it. Starting with Armor — I don't need to boot the disc if I can pull the application's resource fork off it and read what's inside."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:33:44.034Z",
+            "text": "**Armor 1.1, by Brad Sanders, 1991, $10 shareware.** Turn-based, exactly as you remembered."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T14:08:13.783Z",
+            "text": "Lets get into the polite way to have this and how i could host it etc. and legal stuff etc. I'd rather not step on any toes. and i dont mind linking back but it seems like it would just be super cool to have it all on my systems and self hosted. armor is also exactly what i was remembering. the fact that there is nothing about it online is crazy."
+          }
+        ]
+      }
+    },
+    "arcade-architecture": {
+      "kind": "Codex · issue comment",
+      "date": "2026-09-07T20:08:11Z",
+      "reference": "brain#24 · comment 14778",
+      "excerpt": "emulation and saves run in the browser, while the cluster serves immutable files.",
+      "context": "Selected clause from the completed hosting preparation report. The issue is private; this curated excerpt lets a visitor read the relevant statement without a GitLab account.",
+      "internalReference": "brain#24 / note_14778",
+      "detail": {
+        "kind": "record",
+        "note": "Selected architecture and test observations from the September 7 preparation comment. This is a work record, with deployment instructions and internal artifact locations omitted.",
+        "selections": [
+          {
+            "speaker": "Codex",
+            "date": "2026-09-07T15:08:11.931-05:00",
+            "reference": "brain#24 · comment 14778",
+            "text": "The prepared architecture is `/arcade`, `/arcade/<game>` and two disc pages on probablyfine.dev, embedding **our own** `arcade.probablyfine.dev` runtime. All emulator code, Mac system media, game disks and MacCube CD ranges are local to its static nginx image. Source sites are credited rather than used as visitor media backends. The image serves 12 games, including GTA 2 in a browser-run Windows 95 machine. No per-player server VM or Ceph PVC is required: emulation and saves run in the browser, while the cluster serves immutable files.\n\n[…]\n\nActual gameplay/interactions and complete CD navigation were checked; Mac folder persistence and the visible DOS save control passed. GTA 2 retained saves, physical joysticks and all browser/mobile combinations remain unverified and are described accordingly."
+          }
+        ]
+      }
+    },
+    "edge-failure": {
+      "kind": "Codex · issue comment",
+      "date": "2026-09-07T21:28:32Z",
+      "reference": "brain#24 · comment 14830",
+      "excerpt": "explicit external-route tests encounter Cloudflare Error 1015 while the emulators fetch their disk blocks.",
+      "context": "Selected clause from the release report. Origin checks had passed, but the public route was still failing. This is an agent's contemporaneous report, not a quotation of the browser console.",
+      "internalReference": "brain#24 / note_14830",
+      "detail": {
+        "kind": "record",
+        "note": "Selected comments before and after the external-route repair. Operational configuration and credential-handling details are omitted.",
+        "selections": [
+          {
+            "speaker": "Codex",
+            "date": "2026-09-07T16:28:32.840-05:00",
+            "reference": "brain#24 · comment 14830",
+            "text": "One real release blocker remains: explicit external-route tests encounter Cloudflare Error 1015 while the emulators fetch their disk blocks. DOS checks and a standalone Mac boot passed through Cloudflare before the limit blocked further loading. This is not a clean external release verification."
+          },
+          {
+            "speaker": "Codex",
+            "date": "2026-09-07T16:43:21.875-05:00",
+            "reference": "brain#24 · comment 14847",
+            "text": "Public-DNS browser checks now pass for DOS/Mac saves, pause/fullscreen/stop, retry, navigation/isolation and Mac disk error handling. GTA 2 booted Windows 95, reached the city and accepted movement through Cloudflare, with no owned-origin HTTP errors.\n\n[…]\n\nThe separate Pinball port also has attended gameplay evidence. All fourteen game/disc links and mobile layouts were verified, and the Pages mirror contains twelve cards."
+          }
+        ]
+      }
+    },
+    "edge-recovery": {
+      "kind": "Codex · issue comment",
+      "date": "2026-09-07T21:43:21Z",
+      "reference": "brain#24 · comment 14847",
+      "excerpt": "GTA 2 booted Windows 95, reached the city and accepted movement through Cloudflare, with no owned-origin HTTP errors.",
+      "context": "Selected sentence from the subsequent public-route verification report. The intervening change was a scoped request-rule exception for the arcade, not removal of protections from the rest of the site.",
+      "internalReference": "brain#24 / note_14847",
+      "detail": {
+        "kind": "record",
+        "note": "Selected comments before and after the external-route repair. Operational configuration and credential-handling details are omitted.",
+        "selections": [
+          {
+            "speaker": "Codex",
+            "date": "2026-09-07T16:28:32.840-05:00",
+            "reference": "brain#24 · comment 14830",
+            "text": "One real release blocker remains: explicit external-route tests encounter Cloudflare Error 1015 while the emulators fetch their disk blocks. DOS checks and a standalone Mac boot passed through Cloudflare before the limit blocked further loading. This is not a clean external release verification."
+          },
+          {
+            "speaker": "Codex",
+            "date": "2026-09-07T16:43:21.875-05:00",
+            "reference": "brain#24 · comment 14847",
+            "text": "Public-DNS browser checks now pass for DOS/Mac saves, pause/fullscreen/stop, retry, navigation/isolation and Mac disk error handling. GTA 2 booted Windows 95, reached the city and accepted movement through Cloudflare, with no owned-origin HTTP errors.\n\n[…]\n\nThe separate Pinball port also has attended gameplay evidence. All fourteen game/disc links and mobile layouts were verified, and the Pages mirror contains twelve cards."
+          }
+        ]
+      }
+    },
+    "memoir-release": {
+      "kind": "Release record · issue",
+      "date": "2026-09-08",
+      "reference": "brain#21 · published memoir",
+      "excerpt": "The approved human-written memoir uses the research assist label, with editing explained in its process note.",
+      "context": "Selected sentence from the release issue. Max supplied and approved the memoir's prose. The live post explains the research and editing assistance.",
+      "internalReference": "brain#21",
+      "url": "https://probablyfine.dev/blog/i-just-wanted-to-play-games"
+    },
+    "chronochasm-direction": {
+      "kind": "Max · design conversation",
+      "date": "2026-09-14",
+      "reference": "Chronochasm planning · selected direction",
+      "excerpt": "I want people to be able to click around and find several different threads.",
+      "context": "Max's direction while reviewing this private companion. The connection to the August request to save the search is an editorial return to that earlier idea, not evidence of an automated conversation fork.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-09-14T23:21:05.553Z",
+            "text": "I want people to be able to click around and find several different threads. I think each vertical line on this timeline needs to be something, like a category or a domain of the homelab or my activity, not totally sure. and maybe we set it up almost as a graph with graph logic so threads can split off and separate as the tangents i described were triggered while one conversation was open or something. not totally sure.\n\n[…]\n\nI want to be able to thoroughly review it before we make it public. and lets make sure, like i said, that we have a number of threads that we are able to curate well for public consumption. I'm good with exposing a decent amount and providing direct quotes and even gitlab issue numbers or merge requests and comment quotes etc. if that makes sense."
+          },
+          {
+            "speaker": "Codex",
+            "date": "2026-09-14T23:21:10.276Z",
+            "text": "I’ll improve the motion, then curate several connected threads from the disc search, Armor, and the arcade work, with selected quotes and source references.\n\n[…]\n\nI’ll try named lanes for broader areas of activity, with branches showing where one thread prompted another. I’ll only draw those connections where the record supports them."
+          }
+        ]
+      }
+    },
+    "dns-diagnosis": {
+      "kind": "Work record · issue comment",
+      "date": "2026-08-20T22:08:05Z",
+      "reference": "homelab-gitops#244 · comment 5528",
+      "excerpt": "The Ingress routes to a Service named `dummy` that does not exist, in a namespace holding nothing else.",
+      "context": "Selected sentence from the investigation record. The historical account posted under Max’s shared account does not establish that Max personally ran the commands. This excerpt identifies the abandoned probe without reproducing internal hosts or addresses.",
+      "internalReference": "homelab-gitops#244 / note_5528",
+      "detail": {
+        "kind": "record",
+        "note": "Selections from the diagnosis and the later cleanup. Option (a) was to remove the abandoned ingress; option (b) was to configure the child zone. The four records were the probe’s A and HTTPS records and two ownership TXT records. The shared historical account does not establish who wrote these comments, so they are attributed as work records. Commands, host addresses, and internal artifact locations are omitted.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-20T17:08:05.008-05:00",
+            "reference": "homelab-gitops#244 · comment 5528",
+            "text": "The Ingress routes to a Service named `dummy` that does not exist, in a namespace holding nothing\nelse. It has no ArgoCD tracking-id and no labels, and neither `tls-probe` nor `tls-test` appears\nanywhere in `homelab-gitops/apps/` or `infrastructure/`. It was applied by hand on 2026-05-28 and\nleft behind.\n\n[…]\n\nThat makes (a) strictly better than (b), and better than this issue assumed: deleting the Ingress\nremoves the cause, and it touches nothing in `apps/dnsweaver/configmap.yaml` — so **no ArgoCD sync\nto production is involved**, which was the reason (b) was being held back. (b) would have been\nbuilding configuration to serve a dead probe."
+          },
+          {
+            "speaker": "Work record",
+            "date": "2026-08-22T09:27:14.675-05:00",
+            "reference": "homelab-gitops#244 · comment 6043",
+            "text": "**Executed 2026-08-22 — option (a), the loop is stopped at the source.**\n\n[…]\n\nThat is the zone-shadowing bug confirming itself: dnsweaver cannot read back the child zone it wrote into, so it cannot recognise its own record as an orphan. Both follow-up items in the description were therefore real, and all four records had to go by hand.\n\n[…]\n\nAnd dnsweaver's logs still show high volumes of `record already exists with correct target` at DEBUG across every hostname — that is normal idempotent behaviour and **not** this bug; the real symptom was Technitium rejecting the writes."
+          }
+        ]
+      }
+    },
+    "dns-outcome": {
+      "kind": "Work record · issue comment",
+      "date": "2026-08-22T14:27:14Z",
+      "reference": "homelab-gitops#244 · comment 6043",
+      "excerpt": "**Executed 2026-08-22 — option (a), the loop is stopped at the source.**",
+      "context": "The report records removal of the abandoned ingress and subsequent manual cleanup. It also states that the separate child-zone readback limitation was not repaired by this work. The original Markdown and shared-account authorship are preserved.",
+      "internalReference": "homelab-gitops#244 / note_6043",
+      "detail": {
+        "kind": "record",
+        "note": "Selections from the diagnosis and the later cleanup. Option (a) was to remove the abandoned ingress; option (b) was to configure the child zone. The four records were the probe’s A and HTTPS records and two ownership TXT records. The shared historical account does not establish who wrote these comments, so they are attributed as work records. Commands, host addresses, and internal artifact locations are omitted.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-20T17:08:05.008-05:00",
+            "reference": "homelab-gitops#244 · comment 5528",
+            "text": "The Ingress routes to a Service named `dummy` that does not exist, in a namespace holding nothing\nelse. It has no ArgoCD tracking-id and no labels, and neither `tls-probe` nor `tls-test` appears\nanywhere in `homelab-gitops/apps/` or `infrastructure/`. It was applied by hand on 2026-05-28 and\nleft behind.\n\n[…]\n\nThat makes (a) strictly better than (b), and better than this issue assumed: deleting the Ingress\nremoves the cause, and it touches nothing in `apps/dnsweaver/configmap.yaml` — so **no ArgoCD sync\nto production is involved**, which was the reason (b) was being held back. (b) would have been\nbuilding configuration to serve a dead probe."
+          },
+          {
+            "speaker": "Work record",
+            "date": "2026-08-22T09:27:14.675-05:00",
+            "reference": "homelab-gitops#244 · comment 6043",
+            "text": "**Executed 2026-08-22 — option (a), the loop is stopped at the source.**\n\n[…]\n\nThat is the zone-shadowing bug confirming itself: dnsweaver cannot read back the child zone it wrote into, so it cannot recognise its own record as an orphan. Both follow-up items in the description were therefore real, and all four records had to go by hand.\n\n[…]\n\nAnd dnsweaver's logs still show high volumes of `record already exists with correct target` at DEBUG across every hostname — that is normal idempotent behaviour and **not** this bug; the real symptom was Technitium rejecting the writes."
+          }
+        ]
+      }
+    },
+    "bookmark-intent": {
+      "kind": "Max · conversation",
+      "date": "2026-09-12T19:19:09Z",
+      "reference": "Homepage conversation · the workflow Max wanted",
+      "excerpt": "I want to make my browsers ephemeral and stop having 50 million tabs and tab groups.",
+      "context": "Exact sentence from Max’s request. The number is his colloquial description, not a measured tab count. No browsing-history entries are included.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. This was the initial interpretation. The later bookmark passage follows the correction to the oversized result.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-09-12T19:19:09.519Z",
+            "text": "I want to include all of the websites from every domain in here almost as a bookmark system. finance, government etc. all should be there. I want to make my browsers ephemeral and stop having 50 million tabs and tab groups."
+          },
+          {
+            "speaker": "Codex",
+            "date": "2026-09-12T19:20:14.085Z",
+            "text": "Understood. I’ll revise this from a curated “frequent sites” tab into a durable browser-independent bookmark surface. I’ll keep the useful frequent tab, add every distinct destination domain—including finance and government—and exclude only hosts that are not usable destinations at all, such as tracking pixels or OAuth callback machinery."
+          }
+        ]
+      }
+    },
+    "bookmark-correction": {
+      "kind": "Codex · issue comment",
+      "date": "2026-09-12T19:45:05Z",
+      "reference": "homelab-gitops#610 · comment 19553",
+      "excerpt": "Max reviewed the merged result and rejected the one-card-per-host interpretation as overzealous.",
+      "context": "The correction followed an initial broad archive. The record retained legitimate bookmark categories while removing technical handoff hosts, duplication, and incidental browsing. This is a report of Max’s review, not his verbatim wording.",
+      "internalReference": "homelab-gitops#610 / note_19553",
+      "detail": {
+        "kind": "record",
+        "note": "Selected correction and delivery comments. Individual browsing destinations and the raw history inventory are omitted.",
+        "selections": [
+          {
+            "speaker": "Codex",
+            "date": "2026-09-12T14:45:05.043-05:00",
+            "reference": "homelab-gitops#610 · comment 19553",
+            "text": "Max reviewed the merged result and rejected the one-card-per-host interpretation as overzealous. #610 is reopened for a corrective pass. Finance, government, health, benefits and private communities remain legitimate bookmark categories; the correction is to remove technical handoff hosts, temporary previews, duplicate service subdomains and one-off browsing rather than exclude sensitive topics.\n\n[…]\n\nNext correction: retain the frequent Web tab and replace the 881-host archive with a smaller, searchable set of real destinations."
+          },
+          {
+            "speaker": "Codex",
+            "date": "2026-09-12T15:00:57.966-05:00",
+            "reference": "homelab-gitops#610 · comment 19627",
+            "text": "Merged, deployed, and live-verified. MR !283 replaced the raw 881-host archive with a reviewed bookmark catalogue that is useful as a durable browser start page without reproducing incidental browsing infrastructure.\n\n[…]\n\nThe separate frequent-use Web tab remains 40 cards across seven groups."
+          }
+        ]
+      }
+    },
+    "bookmark-delivery": {
+      "kind": "Codex · issue comment",
+      "date": "2026-09-12T20:00:57Z",
+      "reference": "homelab-gitops#610 · comment 19627 · MR !283",
+      "excerpt": "MR !283 replaced the raw 881-host archive with a reviewed bookmark catalogue that is useful as a durable browser start page without reproducing incidental browsing infrastructure.",
+      "context": "The issue records the corrected catalogue as merged, deployed, and checked. The quoted count describes the superseded archive; the delivered catalogue contained 38 destinations. Actual destinations are excluded from this preview.",
+      "internalReference": "homelab-gitops#610 / note_19627 / MR !283",
+      "detail": {
+        "kind": "record",
+        "note": "Selected correction and delivery comments. Individual browsing destinations and the raw history inventory are omitted.",
+        "selections": [
+          {
+            "speaker": "Codex",
+            "date": "2026-09-12T14:45:05.043-05:00",
+            "reference": "homelab-gitops#610 · comment 19553",
+            "text": "Max reviewed the merged result and rejected the one-card-per-host interpretation as overzealous. #610 is reopened for a corrective pass. Finance, government, health, benefits and private communities remain legitimate bookmark categories; the correction is to remove technical handoff hosts, temporary previews, duplicate service subdomains and one-off browsing rather than exclude sensitive topics.\n\n[…]\n\nNext correction: retain the frequent Web tab and replace the 881-host archive with a smaller, searchable set of real destinations."
+          },
+          {
+            "speaker": "Codex",
+            "date": "2026-09-12T15:00:57.966-05:00",
+            "reference": "homelab-gitops#610 · comment 19627",
+            "text": "Merged, deployed, and live-verified. MR !283 replaced the raw 881-host archive with a reviewed bookmark catalogue that is useful as a durable browser start page without reproducing incidental browsing infrastructure.\n\n[…]\n\nThe separate frequent-use Web tab remains 40 cards across seven groups."
+          }
+        ]
+      }
+    },
+    "bookmark-availability": {
+      "kind": "Codex · issue comment",
+      "date": "2026-09-12T20:39:28Z",
+      "reference": "homelab-gitops#610 · comment 19696 · MR !284",
+      "excerpt": "Availability regression resolved and live-verified.",
+      "context": "An additional missing-configuration-file correction followed the catalogue work. The record reports a clean replacement pod and repeated successful page requests after MR !284. No current uptime claim is made from that historical check.",
+      "internalReference": "homelab-gitops#610 / note_19696 / MR !284",
+      "detail": {
+        "kind": "record",
+        "note": "Selected explanation of the missing configuration file and resulting availability gap. Hostnames, pod identifiers, and operational links are omitted.",
+        "selections": [
+          {
+            "speaker": "Codex",
+            "date": "2026-09-12T15:12:14.383-05:00",
+            "reference": "homelab-gitops#610 · comment 19671",
+            "text": "This was a real intermittent backend outage, not browser cache. The replacement pod restarted twice with exit code 1. Its previous log showed Homepage v1.13.2 failing to initialize `/app/config/proxmox.yaml`: it tried to copy the skeleton into `/app/config` and received `EACCES`. The operator ConfigMap/Deployment lacked both that key and its `subPath` mount; the household workload already had them.\n\n[…]\n\nThe page currently returns 200 and the pod is Ready, but that is temporary rather than proof of stability until !284 is merged, reconciled, and observed without further restarts."
+          },
+          {
+            "speaker": "Codex",
+            "date": "2026-09-12T15:39:28.595-05:00",
+            "reference": "homelab-gitops#610 · comment 19696",
+            "text": "Availability regression resolved and live-verified.\n\n[…]\n\nThe live ConfigMap now supplies `proxmox.yaml: {}`, and the Deployment mounts it read-only at `/app/config/proxmox.yaml` using `subPath: proxmox.yaml`.\n\n[…]\n\nThe browser screenshot was therefore a real transient single-backend gap caused by the previous pod exits, not stale browser content."
+          }
+        ]
+      }
+    },
+    "later-memories": {
+      "kind": "Max · dictated editorial review",
+      "date": "2026-09-14T18:10:04Z",
+      "reference": "Returning to the search · later recollections",
+      "excerpt": "I remember more of all of this just by going through this process.",
+      "context": "In this September14 dictation, Max recalled the Mac box set, putting the discs into the drive, and a prebuilt little house in a 3D modeling program. These are later recollections, not facts the August search had independently proved.",
+      "detail": {
+        "kind": "record",
+        "note": "A longer selection from Max’s later dictation. The surrounding article-editing discussion is omitted.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-09-14T18:10:04.695Z",
+            "text": "I since then have remembered that it was, in fact, the Mac box set. It was the seven discs or whatever. And I remember putting them into the disk drive and running the games because it was like two discs of games or one disc of games and then a bunch of other crap, right? There was like a 3D modeling thing that had like a pre-built little house or something. I remember more of all of this just by going through this process. And that has been really, really, really cool."
+          }
+        ]
+      }
+    },
+    "reader-no-volume": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-18T22:32:50.079Z",
+      "reference": "Disc-search tools · first reader attempt",
+      "excerpt": "not an HFS volume",
+      "context": "The first reader attempt rejected the image. Later tool output recovered its catalog; this was not evidence that the archive lacked a Macintosh filesystem."
+    },
+    "reader-empty": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-18T22:33:30.823Z",
+      "reference": "Disc-search tools · second reader attempt",
+      "excerpt": "0 catalog bytes",
+      "context": "The next attempt reached the image but returned no catalog bytes. The subsequent output records the repair."
+    },
+    "reader-filenames": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-18T22:35:11.725Z",
+      "reference": "Disc-search tools · filenames recovered",
+      "excerpt": "BBEdit 4.0 Demo Folder",
+      "context": "A selected filename from the first useful catalog output. The same output includes QuickDraw 3D and other software; it does not establish that the remembered games were on this disc."
+    },
+    "mixed-memories": {
+      "kind": "Max · conversation",
+      "date": "2026-08-18T23:32:22.977Z",
+      "reference": "Disc-search conversation · the limits of the memory",
+      "excerpt": "I remember black and white. some color apps. i might be conflating since i was like 3-7. that goes for the magazines too.",
+      "context": "Max was responding to questions about the display and magazine. This is his uncertainty at the time of the search, before his later recollections of the box set.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. The proposed search method was followed by questions about the memory itself.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T22:32:10.274Z",
+            "text": "The MacAddict discs are raw HFS images, but the HFS catalog stores filenames in plaintext — so I can read the partition map and catalog extents over HTTP range requests and search a 650 MB disc by pulling about a megabyte of it. Building that."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-18T22:40:46.235Z",
+            "text": "Two things that would narrow this a lot faster than brute force:\n\n[…]\n\n**Was the Mac color or black-and-white?** Chrysanthemum ran on System 7.0 through 7.6, and TaskMaker had a B&W 1989 release and a color 1993 one. Which version you remember dates the disc.\n\n[…]\n\n**Do you remember the magazine at all** — MacAddict, Macworld, MacUser, Mac Home Journal? MacAddict didn't start until September 1996, so if the disc came home in 1994 it was one of the others and I should re-point the sweep."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-18T23:32:22.977Z",
+            "text": "I remember black and white. some color apps. i might be conflating since i was like 3-7. that goes for the magazines too."
+          }
+        ]
+      }
+    },
+    "partial-tree": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-19T02:21:01.805Z",
+      "reference": "Disc-search conversation · missing catalog entries",
+      "excerpt": "The tree walker was only following part of the leaf chain — Swoop and TaskMaker are on that disc but weren't in its output. Fixing it to scan every node.",
+      "context": "Claude explains the incomplete traversal. The next tool result supplies the recovered paths; this report is read together with that result."
+    },
+    "taskmaker-path": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-19T02:21:13.051Z",
+      "reference": "Disc-search tools · the repaired listing",
+      "excerpt": "IMG Oct/95/Shareware/TaskMaker 2.1.1",
+      "context": "One selected path from the repaired listing. The output also contains Swoop paths and reports no Chrysanthemum matches in this pass."
+    },
+    "stalled-worker": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-19T02:43:52.891Z",
+      "reference": "Disc-search conversation · why the sweep stopped progressing",
+      "excerpt": "the Macintosh Garden aggregator items hold *thousands* of `.dmg` files each, and my probe was walking every one of them in a single worker.",
+      "context": "Selected explanation from Claude after Max asked for an update. Process/file checks preceded it, and the resumed sweep output follows it. Its presence does not establish complete archive coverage."
+    },
+    "resumed-maccube": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-19T02:45:07.731Z",
+      "reference": "Disc-search tools · the resumed sweep reaches MacCube",
+      "excerpt": "mac-cube-volume-1-arcade-games\tMacCube Volume 1: Arcade Games.iso\tChrysanthemum,Maelstrom,Swoop\t92160 catalog bytes",
+      "context": "Selected row after the bounded sweep resumed. It places remembered names together on MacCube; the directory inspection and Max's reaction occur later."
+    },
+    "one-at-a-time-request": {
+      "kind": "Max · conversation",
+      "date": "2026-08-19T13:38:01.616Z",
+      "reference": "Disc-search conversation · reviewing the first arcade",
+      "excerpt": "also need to make sure they dont overlap eachother when running somehow so we can keep page performance up.",
+      "context": "Max liked the preview and asked to explore more games. In the same message he required the arcade to publish with the blog post, not before it.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T13:38:01.616Z",
+            "text": "also, I love that page. so freaking cool. we should publish it with the blog post about it and not before. I also would love to make sure we dig around and let me see all of these games and try to emulate all that we can on the page. also need to make sure they dont overlap eachother when running somehow so we can keep page performance up."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T13:38:26.382Z",
+            "text": "Both good notes — one-at-a-time playback matters for audio as much as CPU. Let me find every game first, then rebuild the page around a single active emulator."
+          }
+        ]
+      }
+    },
+    "one-at-a-time-response": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-19T13:38:26.382Z",
+      "reference": "Disc-search conversation · a single active emulator",
+      "excerpt": "Let me find every game first, then rebuild the page around a single active emulator.",
+      "context": "Claude responds to Max's playback requirement. Later code inspection and the built-page check support the implementation account.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message.",
+        "selections": [
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T13:38:01.616Z",
+            "text": "also, I love that page. so freaking cool. we should publish it with the blog post about it and not before. I also would love to make sure we dig around and let me see all of these games and try to emulate all that we can on the page. also need to make sure they dont overlap eachother when running somehow so we can keep page performance up."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T13:38:26.382Z",
+            "text": "Both good notes — one-at-a-time playback matters for audio as much as CPU. Let me find every game first, then rebuild the page around a single active emulator."
+          }
+        ]
+      }
+    },
+    "no-autoload": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-19T13:48:39.543Z",
+      "reference": "Arcade build · no automatic emulator frames",
+      "excerpt": "iframes in built HTML (should be 0 — all created on click): 0",
+      "context": "A static check of the built page, not proof that every game played successfully. The implementation used one active player and created a frame when Play was pressed."
+    },
+    "preview-corrections": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-19T13:47:20.637Z",
+      "reference": "Disc-search conversation · two fixes after a clean build",
+      "excerpt": "Two things to fix before this is right — the Volume 2 filename is a guess, and `astro:page-load` fires on initial load too, so the listeners would double-bind.",
+      "context": "The preceding build completed successfully. Claude then identified a guessed filename and a handler-registration problem; follow-up metadata and patch output are retained."
+    },
+    "verified-volume-name": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-19T13:47:30.114Z",
+      "reference": "Archive metadata · the actual second-disc filename",
+      "excerpt": "MacCube Volume 2: Adventure, Card, Casino & Puzzle Games.iso",
+      "context": "The filename returned by the archive metadata lookup. It replaced the guessed Volume 2 path."
+    },
+    "patched-disc-check": {
+      "kind": "Claude · tool output",
+      "date": "2026-08-19T13:47:56.075Z",
+      "reference": "Arcade build · corrected disc requests",
+      "excerpt": "proxy fetch 206 (1024 bytes)\n  proxy fetch 206 (1024 bytes)",
+      "context": "Selected result from checking both mounted-disc URLs after the patch. Each returned the requested chunk. This supports the request path, not complete gameplay."
+    },
+    "logs-retry-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-23T14:37:19Z",
+      "reference": "homelab-gitops · commit 6654a53",
+      "excerpt": "fix(journal-upload): survive a log-store restart instead of giving up forever",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-23T14:37:19Z",
+            "reference": "homelab-gitops · commit 6654a53",
+            "text": "fix(journal-upload): survive a log-store restart instead of giving up forever\n\n[…]\n\nsystemd-journal-upload EXITS when it cannot reach the store. The packaged unit\nships Restart=on-failure with StartLimitBurst=5 over the default 10s window, so\nan unreachable store burns all five restarts within seconds and systemd then\ngives up PERMANENTLY. The host silently stops shipping and nothing reports it.\n\n[…]\n\nAdds a drop-in with StartLimitIntervalSec=0 and Restart=always, RestartSec=30 -\nretry forever with backoff rather than giving up. 30s is long enough not to\nhammer a store that is still starting, short enough that an outage costs\nseconds of buffered journal rather than minutes."
+          }
+        ]
+      }
+    },
+    "cold-model-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-24T15:22:50Z",
+      "reference": "homelab-gitops · commit 5ce7f87",
+      "excerpt": "ai: let a cold Ollama model load finish, and stop unloading what took minutes to load",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-24T15:22:50Z",
+            "reference": "homelab-gitops · commit 5ce7f87",
+            "text": "ai: let a cold Ollama model load finish, and stop unloading what took minutes to load\n\n[…]\n\nRestarting the Ollama pod for OLLAMA_CONTEXT_LENGTH threw away 83 days of page\ncache, and that turned out to be the only reason model loads were ever fast.\nCold, qwen3.5:9b reaches progress 0.24 and hits Ollama's 5-minute default load\ntimeout; every retry restarts the clock, so it never finishes and every chat\nturn 500s with 'unexpected server status: llm server loading model'.\n\n[…]\n\nA plain sequential read of the same volume measures 435 MB/s, so this is\nOllama's mmap access pattern against RBD rather than sick storage. Raise\nOLLAMA_LOAD_TIMEOUT to 30m so a cold load completes, and set OLLAMA_KEEP_ALIVE\nto 24h so a loaded model is not discarded after five idle minutes"
+          }
+        ]
+      }
+    },
+    "movie-interrupted-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-26T01:36:03Z",
+      "reference": "homelab-gitops · commit db23e23",
+      "excerpt": "Found 2026-08-26 while Max was watching something and Plex kept cutting out.",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-26T01:36:03Z",
+            "reference": "homelab-gitops · commit db23e23",
+            "text": "Found 2026-08-26 while Max was watching something and Plex kept cutting out.\n\n[…]\n\nLiveness allowed 3 x 30s = 90 seconds, so it killed PMS mid-scan. That is not\na harmless restart: it ended a live Android transcode of a TV episode and made\nplex-orchestrator tell plex-worker-gpu-0 to abandon a job it was 168 segments\nin. On restart the metadata scan resumes and the whole cycle repeats, which is\nwhy it presented as Plex 'cutting out' rather than as one clean failure.\n\n[…]\n\nRaised to 20 failures — ten minutes of CONTINUOUS unresponsiveness. That still\ncatches a genuinely wedged server, which is the only thing this probe was ever\nable to do here.\n\n[…]\n\nReadiness keeps its short fuse on purpose. Taking a busy PMS out of the\nService is recoverable; killing it is not."
+          }
+        ]
+      }
+    },
+    "logs-count-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-26T22:18:13Z",
+      "reference": "homelab-gitops · commit cb4eb70",
+      "excerpt": "The mechanism was fixed there; the detection was not, and that is what this adds.",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-26T22:18:13Z",
+            "reference": "homelab-gitops · commit cb4eb70",
+            "text": "it watches TOTAL ingest, which barely moves when 2 of 18 hosts drop out. The\nmechanism was fixed there; the detection was not, and that is what this adds.\n\n[…]\n\nCounts distinct hosts appearing in the store and alerts via ntfy when fewer\nthan 18 do.\n\n[…]\n\nThe 6h window is deliberate and should not be shortened.\n\n[…]\n\nMeasured: a 15m window returns 16 on a perfectly healthy fleet,\nwhich is exactly the false alarm that trains someone to ignore the alert.\n\n[…]\n\nThis is the same design principle as #289/#314: alert on the rate and recency\nof things working, not on a terminal failure state."
+          }
+        ]
+      }
+    },
+    "model-loading-check-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-27T21:14:36Z",
+      "reference": "homelab-gitops · commit 26a9a5b",
+      "excerpt": "fix(comfyui): stop the liveness probe killing the pod during model load",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-27T21:14:36Z",
+            "reference": "homelab-gitops · commit 26a9a5b",
+            "text": "fix(comfyui): stop the liveness probe killing the pod during model load\n\n[…]\n\nComfyUI serves HTTP from the same thread that loads models, so it stops\nanswering for as long as a checkpoint takes to read - minutes for a ~7GB\nsafetensors coming cold off Ceph RBD. With the default timeoutSeconds: 1 and\nfailureThreshold: 3, kubelet concluded the container was wedged after 90\nseconds of that and restarted it mid-generation, taking the queued work with\nit.\n\n[…]\n\nLiveness now tolerates ~10 minutes of blocking load before concluding the\nprocess is stuck, and readiness ~90 seconds before pulling it from the\nservice. Both keep their probes rather than dropping them, so a genuinely\nhung process is still caught."
+          }
+        ]
+      }
+    },
+    "red-status-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-29T23:19:55Z",
+      "reference": "homelab-gitops · commit 3dba648",
+      "excerpt": "glance: last two red squares were the check, not the service",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-29T23:19:55Z",
+            "reference": "homelab-gitops · commit 3dba648",
+            "text": "glance: last two red squares were the check, not the service\n\n[…]\n\nThe OPNsense pair answers in about 40ms on its own but flapped when a full page\nof checks fired at once, so both edge boxes get a 10s timeout. A square that\ngoes red under load is worse than no square."
+          }
+        ]
+      }
+    },
+    "armor-truncated-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-30T19:07:37Z",
+      "reference": "haliphron-homelab · commit c597326",
+      "excerpt": "The printable-run regex capped strings at 120 characters, silently truncating anything longer.",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-30T19:07:37Z",
+            "reference": "haliphron-homelab · commit c597326",
+            "text": "The printable-run regex capped strings at 120 characters, silently truncating anything longer.\n\n[…]\n\nCap raised to 1000,\nand the print limit from 120 to 400 distinct strings.\n\n[…]\n\nFound while fact-checking the disc-hunt post (brain#22)."
+          }
+        ]
+      }
+    },
+    "recipes-import-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-08-30T19:21:55Z",
+      "reference": "haliphron-homelab · commit 22e21ab",
+      "excerpt": "the import is idempotent by recipe name so a\ncorrection made in Tandoor is never stomped by a re-run.",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-08-30T19:21:55Z",
+            "reference": "haliphron-homelab · commit 22e21ab",
+            "text": "Typing nine recipes into a web form is a waste of an evening, so the vault Markdown is parsed\ninto Tandoor's nested recipe payload instead; the import is idempotent by recipe name so a\ncorrection made in Tandoor is never stomped by a re-run."
+          }
+        ]
+      }
+    },
+    "battery-readings-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-01T12:15:55Z",
+      "reference": "homelab-gitops · commit 3ab30df",
+      "excerpt": "feat(monitoring): collect both UPS units into the textfile collector",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-09-01T12:15:55Z",
+            "reference": "homelab-gitops · commit 3ab30df",
+            "text": "feat(monitoring): collect both UPS units into the textfile collector\n\n[…]\n\nNeither UPS was monitored by anything, so the estate could not say how much of\nits battery it was using, how long it would last, or that one of the two is well\npast its replacement date.\n\n[…]\n\nThe second unit is a Back-UPS RS 1500G on USB with no card at all, read through\nNUT. Its udev rules only fire on device enumeration, so a UPS already plugged in\nwhen NUT is installed keeps a root-owned USB node and the driver fails claiming\nno HID device exists rather than reporting the permissions problem it actually\nhas; the role re-triggers udev instead of requiring someone to walk over and\nunplug it."
+          }
+        ]
+      }
+    },
+    "finished-job-alert-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-04T14:17:18Z",
+      "reference": "homelab-gitops · commit 427070c",
+      "excerpt": "fix(monitoring): ignore terminal pods in waiting alert",
+      "context": "Selected original text from the retained commit record. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment."
+    },
+    "private-cache-test-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-05T16:20:01Z",
+      "reference": "Unreleased project · selected work record",
+      "excerpt": "test(cache): verify font invalidation without installed font assumptions",
+      "context": "Selected original text. The project name and repository locator are withheld in this preview. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment."
+    },
+    "private-installer-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-05T19:25:08Z",
+      "reference": "Unreleased project · selected work record",
+      "excerpt": "measured zlib extraction trades a larger download for lower unpacking time.",
+      "context": "Selected original text. The project name and repository locator are withheld in this preview. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment."
+    },
+    "private-preview-test-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-13T21:15:36Z",
+      "reference": "Unreleased project · selected work record",
+      "excerpt": "test: await final preview debounce before replying",
+      "context": "Selected original text. The project name and repository locator are withheld in this preview. The timestamp is when the change was recorded; it does not establish when the work began or prove a live deployment."
+    },
+    "maccube-candidate": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-19T02:48:15.946Z",
+      "reference": "Disc-search conversation · overnight candidate",
+      "excerpt": "A seven-volume boxed shareware set.",
+      "context": "Selected sentence from the candidate report. Claude asserted that the collection was identified; this preview treats it as a candidate until Max returned to the results. The retained catalog supplies the selected game names.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. Claude initially treated the collection as settled. The selection includes the subsequent return to checking rival discs. Claims about finding no information online describe the search at the time, not proof that no other record exists.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T02:48:15.946Z",
+            "text": "**Found it. _The MacCube_ — Aztech New Media, 1995.** A seven-volume boxed shareware set. \"The one pack we got\" was literally a pack.\n\n[…]\n\n**The tank is the one loose end.** `Armor 1.1` is right there on Volume 1 next to Chrysanthemum, and there is nothing about it anywhere online — no Macintosh Garden entry, no Repository page, nothing. It's a folder with an application and an icon."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T12:21:20.918Z",
+            "text": "omg I remember these. Thats incredible. how's the last sweep done? and what can we do next? I think this search is a fantastic small post opportunity. on top of the post about the games and then hosting them to play in a browser. This is an entire thread of posts we should make sure to store all of the detail to pull from later."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:21:59.287Z",
+            "text": "Sweep's at 47 of 76 and it just turned up rivals — three more discs carry Chrysanthemum. Checking them before I let the MacCube conclusion stand."
+          }
+        ]
+      }
+    },
+    "armor-extraction-report": {
+      "kind": "Claude · conversation",
+      "date": "2026-08-19T12:33:44.034Z",
+      "reference": "Disc-search conversation · extraction report",
+      "excerpt": "**Armor 1.1, by Brad Sanders, 1991, $10 shareware.**",
+      "context": "Selected attribution from Claude’s report after inspecting the application. Max’s confirmation came later, at 14:08 UTC. This is the session’s report, not a reproduction of the creator’s original instructions.",
+      "detail": {
+        "kind": "exchange",
+        "note": "Selected turns in their original order. Intervening messages are omitted; […] marks a cut within a message. These turns bracket the inspection and Max’s later recognition. The intervening tool output and arcade work are omitted. Claims about finding no information online describe the search at the time, not proof that no other record exists.",
+        "selections": [
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:32:49.221Z",
+            "text": "On it. Starting with Armor — I don't need to boot the disc if I can pull the application's resource fork off it and read what's inside."
+          },
+          {
+            "speaker": "Claude",
+            "date": "2026-08-19T12:33:44.034Z",
+            "text": "**Armor 1.1, by Brad Sanders, 1991, $10 shareware.** Turn-based, exactly as you remembered."
+          },
+          {
+            "speaker": "Max",
+            "date": "2026-08-19T14:08:13.783Z",
+            "text": "Lets get into the polite way to have this and how i could host it etc. and legal stuff etc. I'd rather not step on any toes. and i dont mind linking back but it seems like it would just be super cool to have it all on my systems and self hosted. armor is also exactly what i was remembering. the fact that there is nothing about it online is crazy."
+          }
+        ]
+      }
+    },
+    "site-analytics-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-02T23:36:40Z",
+      "reference": "homelab-gitops · commit 1b93489",
+      "excerpt": "feat(ai): add bounded Umami MCP adapter",
+      "context": "Selected original commit subject. The retained change was inspected for this passage. The timestamp locates the work record and does not establish duration or a current deployment."
+    },
+    "household-start-page-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-10T22:48:32Z",
+      "reference": "homelab-gitops · commit fc73082",
+      "excerpt": "feat(portal): prepare shared home and operator root dashboards",
+      "context": "Selected original commit subject. The retained change was inspected for this passage. The timestamp locates the work record and does not establish duration or a current deployment."
+    },
+    "kitchen-backup-cache-record": {
+      "kind": "Work record · selected commit",
+      "date": "2026-09-11T17:32:45Z",
+      "reference": "homelab-gitops · commit 6774cab",
+      "excerpt": "fix(grocy): give Restic a bounded writable cache",
+      "context": "Selected original commit subject. The retained change was inspected for this passage. The timestamp locates the work record and does not establish duration or a current deployment.",
+      "detail": {
+        "kind": "record",
+        "note": "Selected commit text. […] marks omitted text. The timestamp records the change; it does not establish work duration or a live deployment.",
+        "selections": [
+          {
+            "speaker": "Work record",
+            "date": "2026-09-11T17:32:45Z",
+            "reference": "homelab-gitops · commit 6774cab",
+            "text": "fix(grocy): give Restic a bounded writable cache\n\n[…]\n\nThe attended backup reached Restic but failed before repository access because the non-root image derived /.cache on its read-only root. Point XDG_CACHE_HOME at the existing bounded temporary volume; a read-only repository inspection then verified zero locks and zero snapshots."
+          }
+        ]
+      }
+    }
+  },
+  "moments": [
+    {
+      "id": "remembering",
+      "thread": "disc-hunt",
+      "lane": "memory",
+      "date": "2026-08-18T21:46:20Z",
+      "level": 0,
+      "title": "A disc full of half-remembered games",
+      "deck": "One name survived. The others were a shovel, a tank, and insects on a screen.",
+      "paragraphs": [
+        "Max came to the search with Chrysanthemum already in mind. He remembered a Macintosh magazine with games on a disc, or perhaps a pack of discs, and wanted to find what he had played. The other games were harder to name. There was a tank battle that might have been turn based, something like an old roguelike, and a Galaga-like game with insects.",
+        "Those descriptions were enough to begin a conversation, but they left room for a lot of wrong answers. Claude suggested candidates. Max supplied more details, including a shovel, sand, and places to visit, which moved the roguelike search toward TaskMaker. The useful clues came from that back and forth.",
+        "The disc mattered as much as any individual title. If they could find the collection, it might bring back games Max hadn't thought to ask about. His opening message also proposed a place on the website where some of them could be played. The search and the arcade started in the same idea."
+      ],
+      "sources": [
+        "first-clues"
+      ],
+      "quote": "first-clues",
+      "time": {
+        "kind": "point",
+        "start": "2026-08-18T21:46:20Z",
+        "note": "A recorded moment; duration is unknown."
+      },
+      "quoteText": "there was a tank battle thing, maybe turn based."
+    },
+    {
+      "id": "catalogs",
+      "thread": "catalogs",
+      "lane": "recovery",
+      "date": "2026-08-18T22:32:10Z",
+      "level": 1,
+      "title": "Searching inside the discs",
+      "deck": "The archive descriptions could point to a collection. The file catalogs could say what was on it.",
+      "paragraphs": [
+        "An archived CD can have a useful title and a description without telling you whether one particular application is buried inside it. The search had reached that limit. Claude proposed reading the old Macintosh file catalogs from the disc images themselves.",
+        "That changed the work. Instead of relying on a search result about a disc, the session could retrieve the portions containing its catalog and inspect the names stored there. Claude built the tools under Max's direction, using HTTP range requests to ask for pieces of an image. The early parser needed repairs before the results were useful.",
+        "A list of names was still only a beginning. The first promising Chrysanthemum result would make that clear. They needed to know where the file lived inside the collection."
+      ],
+      "sources": [
+        "catalog-proposal",
+        "flowers-path"
+      ],
+      "quote": "catalog-proposal",
+      "time": {
+        "kind": "point",
+        "start": "2026-08-18T22:32:10Z",
+        "note": "A recorded moment; duration is unknown."
+      },
+      "quoteText": "I can read the partition map and catalog extents over HTTP range requests"
+    },
+    {
+      "id": "first-names",
+      "thread": "catalogs",
+      "lane": "recovery",
+      "date": "2026-08-18T22:32:50.079Z",
+      "level": 1,
+      "title": "The first names off the disc",
+      "deck": "Before the reader could find a game, it had to read the disc correctly.",
+      "paragraphs": [
+        "The first attempt didn't produce a list of games. It reported that the image wasn't an HFS volume. The next attempt returned zero catalog bytes. Claude had proposed looking inside the discs, but the tool it was building couldn't yet do that reliably.",
+        "Claude inspected the volume information and corrected the reader. A few minutes later, the output contained recognizable software names. BBEdit and QuickDraw 3D were among them. They weren't the games Max was looking for, but they showed that the session could reach past the archive description and read names from the disc itself.",
+        "Later that evening, filenames beginning with Chrysanthemums would send the search into a collection of color palettes."
+      ],
+      "sources": [
+        "reader-no-volume",
+        "reader-empty",
+        "reader-filenames",
+        "catalog-proposal",
+        "flowers-path"
+      ],
+      "time": {
+        "kind": "span",
+        "start": "2026-08-18T22:32:50.079Z",
+        "sources": [
+          "reader-no-volume",
+          "reader-empty",
+          "reader-filenames",
+          "catalog-proposal"
+        ],
+        "note": "First and last selected records; this is elapsed time, not a measure of continuous work.",
+        "end": "2026-08-18T22:35:11.725Z"
+      }
+    },
+    {
+      "id": "memory-colors",
+      "thread": "disc-hunt",
+      "lane": "memory",
+      "date": "2026-08-18T23:32:22.977Z",
+      "level": 1,
+      "title": "Black and white, with some color mixed in",
+      "deck": "Max remembered black and white, and some color applications too.",
+      "paragraphs": [
+        "Claude asked whether the Macintosh had been color or black and white, and whether Max could remember the magazine. Either answer might help narrow the collections being searched. Max remembered black and white, but he also remembered some color applications. He had been very young, and the machines, software, and magazines might have become mixed together in his memory.",
+        "The search still had to allow for more than one machine or collection."
+      ],
+      "sources": [
+        "mixed-memories"
+      ],
+      "time": {
+        "kind": "point",
+        "start": "2026-08-18T23:32:22.977Z",
+        "sources": [
+          "mixed-memories"
+        ],
+        "note": "A recorded moment; duration is unknown."
+      },
+      "quote": "mixed-memories",
+      "quoteText": "i might be conflating since i was like 3-7."
+    },
+    {
+      "id": "flowers",
+      "thread": "catalogs",
+      "lane": "recovery",
+      "date": "2026-08-18T23:34:45Z",
+      "level": 2,
+      "title": "The wrong flowers",
+      "deck": "The name matched. Its location told a different story.",
+      "paragraphs": [
+        "Claude announced a hit on a MacAddict disc. The returned names looked close. They began with Chrysanthemums, followed by numbers. But close was not the same as the game Max remembered.",
+        "The session expanded the parser to recover complete paths. The promising entries were tucked inside a review of Chromatica, in a collection of palettes named after artists. These chrysanthemums belonged to Renoir.",
+        "The conversation kept the confident first announcement, the tool output, and the correction. Reading them together explains why the lead was abandoned. Repeating the announcement by itself would have preserved Claude's words accurately and still told the wrong story."
+      ],
+      "sources": [
+        "flowers-claim",
+        "flowers-path",
+        "flowers-correction"
+      ],
+      "quote": "flowers-correction",
+      "time": {
+        "kind": "span",
+        "start": "2026-08-18T23:33:05Z",
+        "end": "2026-08-18T23:34:45Z",
+        "sources": [
+          "flowers-claim",
+          "flowers-correction"
+        ],
+        "note": "First and last selected records; this is elapsed time, not a measure of continuous work."
+      },
+      "quoteText": "those \"Chrysanthemums\" are Renoir color palettes in a Chromatica review folder, not the game."
+    },
+    {
+      "id": "missing-games",
+      "thread": "catalogs",
+      "lane": "recovery",
+      "date": "2026-08-19T02:21:01.805Z",
+      "level": 1,
+      "title": "The games missing from the list",
+      "deck": "A fuller listing lost names that the earlier search had already found.",
+      "paragraphs": [
+        "By the early hours of August 19, Inside Mac Games had become a promising candidate. The search had found Swoop and TaskMaker on its October 1995 disc. But when Claude tried to recover the directory tree, those names were missing from the output.",
+        "The session now had two results from the same disc that didn't agree. Claude found that the tree reader was following only part of the catalog and changed it to inspect all of the nodes. The next output included the TaskMaker folder and paths for Swoop. The missing names had been a problem with the reader, rather than a reason to discard the disc.",
+        "Inside Mac Games stayed in consideration. It held several recognizable games, but this pass still had no Chrysanthemum match. The search continued with a better tool and an incomplete answer."
+      ],
+      "sources": [
+        "partial-tree",
+        "taskmaker-path"
+      ],
+      "time": {
+        "kind": "span",
+        "start": "2026-08-19T02:21:01.805Z",
+        "sources": [
+          "partial-tree",
+          "taskmaker-path"
+        ],
+        "note": "First and last selected records; this is elapsed time, not a measure of continuous work.",
+        "end": "2026-08-19T02:21:13.051Z"
+      }
+    },
+    {
+      "id": "stalled-search",
+      "thread": "catalogs",
+      "lane": "recovery",
+      "date": "2026-08-19T02:43:52.891Z",
+      "level": 1,
+      "title": "The search was running, but going nowhere",
+      "deck": "An update request led back to the search machinery.",
+      "paragraphs": [
+        "Max asked for an update. A search process was still running, but the file checks showed that part of the sweep had stopped producing new results. Claude traced the stall to archive entries that grouped thousands of individual disk images together. A worker was spending its time walking through those entries while the rest of the search appeared to wait.",
+        "Claude limited how much the sweep would take on from those entries and resumed it. The new output soon included MacCube Volume 1, with Chrysanthemum and Swoop together. That gave the conversation a different candidate to inspect.",
+        "The next step was to open the collection and see what else was there. The row in the search output wasn't enough to identify Max's childhood discs on its own, but it finally brought the name he remembered most clearly alongside another of the games."
+      ],
+      "sources": [
+        "stalled-worker",
+        "resumed-maccube"
+      ],
+      "time": {
+        "kind": "span",
+        "start": "2026-08-19T02:43:52.891Z",
+        "sources": [
+          "stalled-worker",
+          "resumed-maccube"
+        ],
+        "note": "First and last selected records; this is elapsed time, not a measure of continuous work.",
+        "end": "2026-08-19T02:45:07.731Z"
+      }
+    },
+    {
+      "id": "maccube",
+      "thread": "disc-hunt",
+      "lane": "memory",
+      "date": "2026-08-19T02:48:15.946Z",
+      "level": 0,
+      "title": "Several clues on the same discs",
+      "deck": "Several of the clues finally appeared together.",
+      "paragraphs": [
+        "The search reached MacCube, a boxed shareware collection. Its first volume listed Chrysanthemum, Swoop, and a folder called Armor 1.1. TaskMaker appeared on another volume. Several of Max's clues now had a place beside one another."
+      ],
+      "sources": [
+        "maccube-list",
+        "maccube-candidate"
+      ],
+      "time": {
+        "kind": "point",
+        "start": "2026-08-19T02:48:15.946Z",
+        "sources": [
+          "maccube-candidate"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      }
+    },
+    {
+      "id": "keep-record",
+      "thread": "chronochasm",
+      "lane": "sharing",
+      "date": "2026-08-19T12:21:20Z",
+      "level": 1,
+      "title": "Save this. There are posts in it.",
+      "deck": "A new writing idea arrived before the search was finished.",
+      "paragraphs": [
+        "Max's reply began with recognition and moved almost immediately to what they could do next. He saw more than the post about the games. The search itself could be another piece, and a browser arcade could give people something to try.",
+        "He asked for the detail to be kept so there would be material to return to. An idea had appeared while another project was in motion. Saving the detail gave it somewhere to wait until he had time to return.",
+        "The preserved conversation now supplies the clues, the failed lead, the change of method, and his reaction to the results. This companion returns to that record weeks later."
+      ],
+      "sources": [
+        "save-the-detail"
+      ],
+      "quote": "save-the-detail",
+      "time": {
+        "kind": "point",
+        "start": "2026-08-19T12:21:20Z",
+        "note": "A recorded moment; duration is unknown."
+      },
+      "quoteText": "This is an entire thread of posts we should make sure to store all of the detail to pull from later."
+    },
+    {
+      "id": "recognizing-games",
+      "thread": "disc-hunt",
+      "lane": "memory",
+      "level": 1,
+      "title": "Returning to a familiar collection",
+      "deck": "The candidate was waiting when Max came back to the conversation.",
+      "paragraphs": [
+        "When he returned to the conversation that morning, he recognized the games. There was still a distinction between recognizing the software and identifying the exact discs he had owned. MacSilverWare also carried several of the same titles. The games had traveled through more than one collection.",
+        "Armor was the remaining tank-game candidate. It had a name now, and an application to investigate. In the same reply that welcomed the results, Max also started thinking about what else the search could become."
+      ],
+      "sources": [
+        "recognizing-collection",
+        "maccube-list"
+      ],
+      "date": "2026-08-19T12:21:20Z",
+      "time": {
+        "kind": "point",
+        "start": "2026-08-19T12:21:20Z",
+        "sources": [
+          "recognizing-collection"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      },
+      "quote": "recognizing-collection",
+      "quoteAfter": 0,
+      "quoteText": "omg I remember these. Thats incredible."
+    },
+    {
+      "id": "armor",
+      "thread": "armor",
+      "lane": "recovery",
+      "date": "2026-08-19T12:32:49Z",
+      "level": 0,
+      "title": "Finding Armor",
+      "deck": "The application still had a way to explain itself.",
+      "paragraphs": [
+        "A folder named Armor 1.1 was a lead, but the name alone did not tell Max whether it was his tank game. Claude had not found enough useful web information to identify it confidently. Claude could still inspect the application itself.",
+        "Classic Macintosh software could store help and credits in a resource fork, a separate part of the file. Claude wrote an extractor and retrieved Armor's resource fork from the MacSilverWare image. MacCube had supplied a promising listing; the extraction came from this other disc.",
+        "The retained material named Brad Sanders, carried a 1991 copyright notice, and described units moving and firing on a grid. The player commanded tanks and infantry. Movement and firing had separate phases. That gave the candidate a much more specific shape than the original memory of a battle that was perhaps turn based."
+      ],
+      "sources": [
+        "maccube-list",
+        "armor-method",
+        "armor-extraction-report"
+      ],
+      "time": {
+        "kind": "span",
+        "start": "2026-08-19T12:32:49Z",
+        "end": "2026-08-19T12:33:44.034Z",
+        "sources": [
+          "armor-method",
+          "armor-extraction-report"
+        ],
+        "note": "The retained extraction exchange. Max’s later confirmation is a separate moment."
+      }
+    },
+    {
+      "id": "one-player",
+      "thread": "arcade",
+      "lane": "sharing",
+      "date": "2026-08-19T13:38:01.616Z",
+      "level": 1,
+      "title": "Only one game should be running",
+      "deck": "Trying the preview turned a collection of embeds into a player.",
+      "paragraphs": [
+        "By the afternoon, there was a page for Max to try. He liked it and wanted more of the games available there, but he also wanted a way to keep them from running over one another. Adding another emulator for every game could leave several old computers competing inside one browser tab, with their sound and processor use piling up.",
+        "Max asked for the page to keep that under control. Claude rebuilt it around one active emulator. Starting a game would replace the one already running, and visiting the page would not start all of them in the background. The built HTML contained no emulator frames waiting to load automatically.",
+        "This was also where Max made the release pairing explicit. The arcade should go out with the post about the games."
+      ],
+      "sources": [
+        "one-at-a-time-request",
+        "one-at-a-time-response",
+        "no-autoload",
+        "arcade-request"
+      ],
+      "time": {
+        "kind": "span",
+        "start": "2026-08-19T13:38:01.616Z",
+        "sources": [
+          "one-at-a-time-request",
+          "one-at-a-time-response",
+          "no-autoload",
+          "arcade-request"
+        ],
+        "note": "First and last selected records; this is elapsed time, not a measure of continuous work.",
+        "end": "2026-08-19T13:48:39.543Z"
+      },
+      "quote": "one-at-a-time-request",
+      "quoteText": "also need to make sure they dont overlap eachother when running somehow"
+    },
+    {
+      "id": "disc-address",
+      "thread": "arcade",
+      "lane": "recovery",
+      "date": "2026-08-19T13:47:20.637Z",
+      "level": 1,
+      "title": "A clean build, and the wrong disc address",
+      "deck": "The page could compile while a game still pointed at a guess.",
+      "paragraphs": [
+        "The rebuilt arcade passed its build, but Claude noticed two problems before calling the page ready. The address for MacCube Volume 2 had been guessed, and a page-load handler could attach the same controls twice. Neither mistake had stopped the site from compiling.",
+        "The archive metadata supplied the real disc filename. Claude replaced the guessed address and added a check to avoid binding a control that was already bound. After the patch, both mounted-disc addresses returned the requested chunks through the emulator proxy.",
+        "The corrected addresses could serve the disc data. Checking the games themselves would take more than a successful request."
+      ],
+      "sources": [
+        "preview-corrections",
+        "verified-volume-name",
+        "patched-disc-check"
+      ],
+      "time": {
+        "kind": "span",
+        "start": "2026-08-19T13:47:20.637Z",
+        "sources": [
+          "preview-corrections",
+          "verified-volume-name",
+          "patched-disc-check"
+        ],
+        "note": "First and last selected records; this is elapsed time, not a measure of continuous work.",
+        "end": "2026-08-19T13:47:56.075Z"
+      }
+    },
+    {
+      "id": "arcade",
+      "thread": "arcade",
+      "lane": "sharing",
+      "date": "2026-08-19T14:08:13Z",
+      "level": 0,
+      "title": "Could the games live here?",
+      "deck": "Finding them led to a place where someone else could play.",
+      "paragraphs": [
+        "A first arcade preview existed before the disc-search conversation ended. Max wanted to see more of the games and emulate as many as possible. He also spotted a practical problem early. The emulators should not all keep running over one another.",
+        "His preference was to host the experience on his own systems, with care for the people who had made the software. That turned the project into more than a page of archival links. It needed game pages, media, emulator controls, and a way to start and stop a session without making the page fight itself."
+      ],
+      "sources": [
+        "arcade-request",
+        "hosting-request"
+      ],
+      "links": [
+        {
+          "label": "Visit the arcade",
+          "url": "https://probablyfine.dev/arcade"
+        }
+      ],
+      "time": {
+        "kind": "point",
+        "start": "2026-08-19T14:08:13Z",
+        "sources": [
+          "hosting-request"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      }
+    },
+    {
+      "id": "armor-confirmed",
+      "thread": "armor",
+      "lane": "recovery",
+      "level": 1,
+      "title": "That was the tank game",
+      "deck": "The application’s details matched what Max remembered.",
+      "paragraphs": [
+        "Max confirmed Armor that afternoon. In the same message, he returned to the question of hosting the games on his own systems."
+      ],
+      "sources": [
+        "armor-recognition",
+        "hosting-request"
+      ],
+      "date": "2026-08-19T14:08:13Z",
+      "time": {
+        "kind": "point",
+        "start": "2026-08-19T14:08:13Z",
+        "sources": [
+          "armor-recognition"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      },
+      "quote": "armor-recognition",
+      "quoteAfter": 0,
+      "quoteText": "armor is also exactly what i was remembering."
+    },
+    {
+      "id": "dnsweaver",
+      "thread": "dnsweaver",
+      "lane": "infrastructure",
+      "date": "2026-08-20T22:08:05Z",
+      "level": 0,
+      "title": "A DNS record that would not stay found",
+      "deck": "The proposed configuration fix was serving a test that no longer existed.",
+      "paragraphs": [
+        "Elsewhere in the lab, DNSWeaver kept trying to recreate the same ownership record. The DNS server rejected each write because the record already existed. On the next cycle, the service tried again.",
+        "The investigation found a mismatch between where the DNS server placed a record and where DNSWeaver looked for it. Writes went into a more specific child zone; reads checked the configured parent zone. The record could exist without appearing in the next readback.",
+        "Adding configuration for the child zone was one possible answer. But the hostname belonged to an old test probe, and the investigation found that its ingress pointed to a service that did not exist. The test setup was still asking for DNS even though there was nothing left behind it. It did not need more configuration to keep it alive."
+      ],
+      "sources": [
+        "dns-diagnosis"
+      ],
+      "quote": "dns-diagnosis",
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-20T22:08:05Z",
+        "sources": [
+          "dns-diagnosis"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      },
+      "quoteText": "The Ingress routes to a Service named `dummy` that does not exist"
+    },
+    {
+      "id": "dns-cleanup",
+      "thread": "dnsweaver",
+      "lane": "infrastructure",
+      "level": 1,
+      "title": "The old test could go",
+      "deck": "The later work record reports the cleanup and what remained unresolved.",
+      "paragraphs": [
+        "The August 22 work record reports that the abandoned ingress was removed and the repeated-write loop stopped. The remaining records were then cleaned up manually. The underlying child-zone limitation remained a separate problem; stopping this loop had not fixed every case that could trigger it."
+      ],
+      "sources": [
+        "dns-outcome"
+      ],
+      "independent": true,
+      "date": "2026-08-22T14:27:14Z",
+      "time": {
+        "kind": "point",
+        "start": "2026-08-22T14:27:14Z",
+        "sources": [
+          "dns-outcome"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      },
+      "quote": "dns-outcome",
+      "quoteAfter": 0,
+      "quoteText": "the loop is stopped at the source."
+    },
+    {
+      "id": "logs-retry",
+      "thread": "keeping-watch",
+      "lane": "infrastructure",
+      "date": "2026-08-23T14:37:19Z",
+      "level": 1,
+      "title": "The logs stopped coming",
+      "deck": "The store came back. Some of its senders did not.",
+      "paragraphs": [
+        "A restart of the log store had left two machines no longer sending their logs. Their upload services had used up all of their restart attempts within seconds. When the store returned, those services stayed stopped.",
+        "The repair changed the retry behavior so an unavailable destination would lead to another attempt after a delay. It was ordinary maintenance, but the missing records mattered: a healthy log store could still be receiving an incomplete account of the lab."
+      ],
+      "sources": [
+        "logs-retry-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-23T14:37:19Z",
+        "sources": [
+          "logs-retry-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "cold-model",
+      "thread": "local-models",
+      "lane": "everyday",
+      "date": "2026-08-24T15:22:50Z",
+      "level": 1,
+      "title": "Waiting for the model to load",
+      "deck": "A restart exposed how much the service had depended on cached data.",
+      "paragraphs": [
+        "After a restart, the local model took long enough to load that the service gave up before it finished. Retrying meant starting over. The same model had seemed quick while its data was still cached.",
+        "The configuration change allowed a longer cold start and kept a loaded model available for longer. It also reduced the context allocation to leave room for the other model sharing the GPU. A setting that fit during an isolated test did not fit the ordinary workload."
+      ],
+      "sources": [
+        "cold-model-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-24T15:22:50Z",
+        "sources": [
+          "cold-model-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "movie-interrupted",
+      "thread": "household",
+      "lane": "everyday",
+      "date": "2026-08-26T01:36:03Z",
+      "level": 1,
+      "title": "Playback kept cutting out",
+      "deck": "A library scan was being interrupted by the service meant to keep playback healthy.",
+      "paragraphs": [
+        "Max was watching something when Plex kept cutting out. The investigation recorded a metadata scan blocking the server long enough for its health check to restart it. That ended playback, and the scan resumed after the restart.",
+        "The committed fix gave the server more time before a failed liveness check would kill it."
+      ],
+      "sources": [
+        "movie-interrupted-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-26T01:36:03Z",
+        "sources": [
+          "movie-interrupted-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "logs-count",
+      "thread": "keeping-watch",
+      "lane": "infrastructure",
+      "date": "2026-08-26T22:18:13Z",
+      "level": 1,
+      "title": "Checking who was still sending",
+      "deck": "A total could look healthy while individual machines went quiet.",
+      "paragraphs": [
+        "The earlier log-upload repair had addressed why the senders stopped. It had not provided a useful warning when a sender disappeared. Watching the total amount of incoming data could miss a small number of quiet machines.",
+        "The follow-up added a check for how many hosts were represented in recent logs. Its time window allowed for machines that naturally wrote very little. Otherwise, an ordinary quiet period could look like another failure."
+      ],
+      "sources": [
+        "logs-count-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-26T22:18:13Z",
+        "sources": [
+          "logs-count-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "model-loading-check",
+      "thread": "local-models",
+      "lane": "everyday",
+      "date": "2026-08-27T21:14:36Z",
+      "level": 1,
+      "title": "Two jobs disappeared from the queue",
+      "deck": "The image tool was still loading when its health check decided it had stopped.",
+      "paragraphs": [
+        "Two submitted image-generation jobs disappeared without producing output. The retained investigation tied the restart to a health check failing while the application loaded a large model.",
+        "The adjustment allowed a longer loading interval while retaining a way to detect a stuck process."
+      ],
+      "sources": [
+        "model-loading-check-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-27T21:14:36Z",
+        "sources": [
+          "model-loading-check-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "red-status",
+      "thread": "keeping-watch",
+      "lane": "infrastructure",
+      "date": "2026-08-29T23:19:55Z",
+      "level": 1,
+      "title": "The last two red squares",
+      "deck": "The dashboard still needed work after the services were answering.",
+      "paragraphs": [
+        "The new starting page still showed failures for services that could answer requests. One check used a hostname the recipe application would not accept. Others became unreliable when a whole page of checks ran together.",
+        "The change corrected the route for the recipe check and gave the slower checks more time."
+      ],
+      "sources": [
+        "red-status-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-29T23:19:55Z",
+        "sources": [
+          "red-status-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "armor-truncated",
+      "thread": "armor",
+      "lane": "recovery",
+      "date": "2026-08-30T19:07:37Z",
+      "level": 1,
+      "title": "The sentence had been cut short",
+      "deck": "Returning to the game uncovered a fault in the extraction tool.",
+      "paragraphs": [
+        "Fact-checking the disc-search material brought the extraction tool back into use. Its import path still pointed to the place it had lived before moving into a repository. There was also a less obvious problem: the tool cut off printable strings after 120 characters.",
+        "That limit had left an incomplete sentence in the saved Armor notes. The repair made the imports relative to the tool and raised the extraction limit. The game had retained more of its instructions than the earlier capture showed."
+      ],
+      "sources": [
+        "armor-truncated-record"
+      ],
+      "independent": false,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-30T19:07:37Z",
+        "sources": [
+          "armor-truncated-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "recipes-import",
+      "thread": "household",
+      "lane": "everyday",
+      "date": "2026-08-30T19:21:55Z",
+      "level": 1,
+      "title": "Getting the recipes into the kitchen app",
+      "deck": "Nine recipes were already written down. They did not need typing out again.",
+      "paragraphs": [
+        "The recipe collection already existed as Markdown in the notes vault. A small importer converted those entries into the structure Tandoor expected, avoiding a second round of typing them into forms.",
+        "The importer checked recipe names before adding entries. Running it again was meant to leave corrections made inside the kitchen app alone."
+      ],
+      "sources": [
+        "recipes-import-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-08-30T19:21:55Z",
+        "sources": [
+          "recipes-import-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "battery-readings",
+      "thread": "keeping-watch",
+      "lane": "infrastructure",
+      "date": "2026-09-01T12:15:55Z",
+      "level": 1,
+      "title": "Reading the batteries",
+      "deck": "The backup power units needed to appear in the monitoring too.",
+      "paragraphs": [
+        "The lab had two backup power units, but their battery readings were not being collected. This change added collectors for both, using the different interfaces each unit offered.",
+        "Collecting those readings was separate from deciding what should shut down during a power outage. The work record explicitly left automatic shutdown disabled."
+      ],
+      "sources": [
+        "battery-readings-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-01T12:15:55Z",
+        "sources": [
+          "battery-readings-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "site-analytics",
+      "thread": "site-care",
+      "lane": "sharing",
+      "date": "2026-09-02T23:36:40Z",
+      "level": 1,
+      "title": "Reading the site’s traffic",
+      "deck": "A small integration brought the analytics into the tools used around the lab.",
+      "paragraphs": [
+        "Alongside the site itself, the work record adds an adapter for Umami, the site analytics service. That gave the AI tooling an integration for reading those analytics."
+      ],
+      "sources": [
+        "site-analytics-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-02T23:36:40Z",
+        "sources": [
+          "site-analytics-record"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      }
+    },
+    {
+      "id": "finished-job-alert",
+      "thread": "keeping-watch",
+      "lane": "infrastructure",
+      "date": "2026-09-04T14:17:18Z",
+      "level": 1,
+      "title": "A finished job was still in the alert",
+      "deck": "One monitoring rule needed to distinguish waiting from already done.",
+      "paragraphs": [
+        "A later monitoring change excluded completed or failed pods from an alert about containers waiting to start. The rule needed to describe work that was still waiting, rather than continue reporting a job that had already reached its final state."
+      ],
+      "sources": [
+        "finished-job-alert-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-04T14:17:18Z",
+        "sources": [
+          "finished-job-alert-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "private-cache-test",
+      "thread": "unreleased-tool",
+      "lane": "everyday",
+      "date": "2026-09-05T16:20:01Z",
+      "level": 1,
+      "title": "The test depended on the machine",
+      "deck": "An unreleased project needed a less fragile way to check its cache.",
+      "paragraphs": [
+        "On another project, still unreleased, a test changed a font setting and expected the resulting files to differ. On a machine where both requested fonts resolved to the same fallback, that comparison could fail even when the application had refreshed its cached output correctly.",
+        "The revised test inspected the cache entries and generated content more directly."
+      ],
+      "sources": [
+        "private-cache-test-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-05T16:20:01Z",
+        "sources": [
+          "private-cache-test-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "private-installer",
+      "thread": "unreleased-tool",
+      "lane": "everyday",
+      "date": "2026-09-05T19:25:08Z",
+      "level": 1,
+      "title": "A faster unpack, a larger download",
+      "deck": "Feedback on a private preview led back into the installer.",
+      "paragraphs": [
+        "Installer walkthrough feedback on the same unreleased project led to a change in compression. The retained change describes a measured trade: a larger package, with less time spent unpacking it.",
+        "The private preview was also getting adjustments to its controls and visual presentation."
+      ],
+      "sources": [
+        "private-installer-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-05T19:25:08Z",
+        "sources": [
+          "private-installer-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "arcade-hosting",
+      "thread": "arcade",
+      "lane": "sharing",
+      "level": 1,
+      "title": "The browser could do the old computer’s work",
+      "deck": "The next selected arcade record describes how it would run.",
+      "paragraphs": [
+        "By September 7, the preparation record described the chosen division of work. The cluster served the files; the visitor's browser ran the emulation and kept the saves. There was no separate server-side machine for each player. The browser was doing the old computer's work.",
+        "Getting that arrangement to run in a test environment was one step. The next check had to follow the route a visitor would actually take."
+      ],
+      "sources": [
+        "arcade-architecture"
+      ],
+      "date": "2026-09-07T20:08:11Z",
+      "time": {
+        "kind": "point",
+        "start": "2026-09-07T20:08:11Z",
+        "sources": [
+          "arcade-architecture"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      },
+      "quote": "arcade-architecture",
+      "quoteAfter": 0,
+      "quoteText": "emulation and saves run in the browser, while the cluster serves immutable files."
+    },
+    {
+      "id": "public-route",
+      "thread": "arcade",
+      "lane": "recovery",
+      "date": "2026-09-07T21:28:32Z",
+      "level": 2,
+      "title": "It worked until it went the long way around",
+      "deck": "A visitor's route exposed a problem the origin checks had missed.",
+      "paragraphs": [
+        "The arcade could load games at its origin. The release checks had reached actual play, not just a healthy web page. Then the checks followed the public route through Cloudflare, where the emulators' requests for disk blocks encountered a rate limit.",
+        "That changed the meaning of the earlier success. The files and emulators could work while the route in front of them still prevented a visitor from getting far enough to play. The September 7 comment recorded the failure instead of calling the external release verified.",
+        "A later report recorded the scoped correction and another run through the public route. Windows 95 booted, and GTA 2 reached the city and accepted movement."
+      ],
+      "sources": [
+        "edge-failure",
+        "edge-recovery"
+      ],
+      "quote": "edge-recovery",
+      "dateNote": "Failure reported at 21:28 UTC; successful public-route check reported at 21:43 UTC.",
+      "time": {
+        "kind": "span",
+        "start": "2026-09-07T21:28:32Z",
+        "end": "2026-09-07T21:43:21Z",
+        "sources": [
+          "edge-failure",
+          "edge-recovery"
+        ],
+        "note": "First and last selected records; this is elapsed time, not a measure of continuous work."
+      },
+      "quoteText": "GTA 2 booted Windows 95, reached the city and accepted movement through Cloudflare"
+    },
+    {
+      "id": "memoir",
+      "thread": "memoir",
+      "lane": "memory",
+      "date": "2026-09-08",
+      "level": 1,
+      "title": "The games had a story around them",
+      "deck": "The arcade could show what Max played. The memoir could say what it meant to him.",
+      "paragraphs": [
+        "The disc hunt supplied names and files, but it could not write Max's memories for him. He wanted to write the personal piece himself. The manuscript followed the games into the larger story of how he got into computers, with the recovery of those old titles bringing the account back to the present.",
+        "The arcade was released on September 7. The memoir followed on September 8, with links between the writing and the playable collection. The post's research-assist label and process note explained where AI had helped with finding the games and editing the supplied prose.",
+        "The memoir remains Max's account of his life. The arcade gives its readers a way to spend some time with the games themselves."
+      ],
+      "sources": [
+        "memoir-release"
+      ],
+      "links": [
+        {
+          "label": "Read I just wanted to play games",
+          "url": "https://probablyfine.dev/blog/i-just-wanted-to-play-games"
+        },
+        {
+          "label": "Play the recovered games",
+          "url": "https://probablyfine.dev/arcade"
+        }
+      ],
+      "time": {
+        "kind": "day",
+        "start": "2026-09-08",
+        "note": "Only the date is established. The shaded day is date precision, not a full day of work."
+      }
+    },
+    {
+      "id": "household-start-page",
+      "thread": "household",
+      "lane": "everyday",
+      "date": "2026-09-10T22:48:32Z",
+      "level": 1,
+      "title": "A starting page for the household",
+      "deck": "The shared page and the administration page could serve different purposes.",
+      "paragraphs": [
+        "The dashboard work separated a shared household starting page from the page used to operate the lab. The preparation included a catalogue of household destinations and desktop and mobile examples.",
+        "It was another use for a starting page: somewhere to open the services used around the house, without starting from an administrator’s collection of tools."
+      ],
+      "sources": [
+        "household-start-page-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-10T22:48:32Z",
+        "sources": [
+          "household-start-page-record"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      }
+    },
+    {
+      "id": "kitchen-backup-cache",
+      "thread": "household",
+      "lane": "infrastructure",
+      "date": "2026-09-11T17:32:45Z",
+      "level": 1,
+      "title": "The backup needed somewhere to write",
+      "deck": "It failed before it could reach the backup repository.",
+      "paragraphs": [
+        "An attended backup of the household inventory service reached Restic and then failed. The program had chosen a cache location on its read-only root filesystem.",
+        "The fix pointed that cache at an existing temporary volume where it could write. A read-only check could then inspect the repository, which contained no snapshots yet."
+      ],
+      "sources": [
+        "kitchen-backup-cache-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-11T17:32:45Z",
+        "sources": [
+          "kitchen-backup-cache-record"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      }
+    },
+    {
+      "id": "bookmarks",
+      "thread": "bookmarks",
+      "lane": "everyday",
+      "date": "2026-09-12T19:19:09Z",
+      "level": 0,
+      "title": "The browser was not supposed to be storage",
+      "deck": "Saving useful destinations meant understanding which parts of the browsing record mattered.",
+      "paragraphs": [
+        "Max wanted to be able to discard a browser session without losing the useful things he had found. Keeping more tabs and tab groups was becoming its own kind of storage. A searchable starting page could hold the destinations while the browser itself stayed temporary.",
+        "The request grew from frequently visited sites into a broader bookmark system. Max clarified that finance, government, and other ordinary parts of his life belonged there too. The next implementation took that breadth literally and produced one card for every host in the supplied export."
+      ],
+      "sources": [
+        "bookmark-intent"
+      ],
+      "quote": "bookmark-intent",
+      "independent": true,
+      "quoteAfter": 0,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-12T19:19:09Z",
+        "sources": [
+          "bookmark-intent"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      },
+      "quoteText": "I want to make my browsers ephemeral and stop having 50 million tabs and tab groups."
+    },
+    {
+      "id": "bookmark-revision",
+      "thread": "bookmarks",
+      "lane": "everyday",
+      "level": 1,
+      "title": "Every host was too much",
+      "deck": "The first catalogue had taken the request too literally.",
+      "paragraphs": [
+        "He reviewed the result and sent it back. A browser history contains more than places someone would deliberately bookmark. It also contains authentication handoffs, duplicate service hosts, temporary previews, and incidental stops. Keeping the categories he used did not mean keeping every piece of infrastructure the browser had passed through.",
+        "The correction reduced the archive of 881 hosts to 38 selected destinations. The work record ties that change to MR !283."
+      ],
+      "sources": [
+        "bookmark-correction",
+        "bookmark-delivery"
+      ],
+      "independent": true,
+      "date": "2026-09-12T19:45:05Z",
+      "time": {
+        "kind": "span",
+        "start": "2026-09-12T19:45:05Z",
+        "end": "2026-09-12T20:00:57Z",
+        "sources": [
+          "bookmark-correction",
+          "bookmark-delivery"
+        ],
+        "note": "The recorded correction and delivery in this episode. A subsequent availability repair is shown separately."
+      }
+    },
+    {
+      "id": "bookmark-repair",
+      "thread": "bookmarks",
+      "lane": "everyday",
+      "level": 1,
+      "title": "The new starting page needed one more fix",
+      "deck": "A missing configuration file interrupted the corrected page.",
+      "paragraphs": [
+        "A separate availability repair followed the catalogue change. A missing configuration file had caused the application to restart. The later work record reports a clean replacement and repeated successful page requests after MR !284.",
+        "The goal was a place he could return to, without requiring the browser session to remember everything for him."
+      ],
+      "sources": [
+        "bookmark-availability"
+      ],
+      "independent": true,
+      "date": "2026-09-12T20:39:28Z",
+      "time": {
+        "kind": "point",
+        "start": "2026-09-12T20:39:28Z",
+        "sources": [
+          "bookmark-availability"
+        ],
+        "note": "A dated part of the work. No duration is established by this record."
+      }
+    },
+    {
+      "id": "private-preview-test",
+      "thread": "unreleased-tool",
+      "lane": "everyday",
+      "date": "2026-09-13T21:15:36Z",
+      "level": 1,
+      "title": "Waiting for the last change",
+      "deck": "The preview test was replying before the final request had been sent.",
+      "paragraphs": [
+        "A week later, a test on the unreleased project was exercising a preview while settings changed. It could select a request that was newer than the original one but still older than the change waiting to be sent.",
+        "The correction used the test clock to finish that short delay before choosing the reply. The test could then respond to the latest settings request."
+      ],
+      "sources": [
+        "private-preview-test-record"
+      ],
+      "independent": true,
+      "time": {
+        "kind": "point",
+        "start": "2026-09-13T21:15:36Z",
+        "sources": [
+          "private-preview-test-record"
+        ],
+        "note": "Timestamp of the retained change record. Work duration is not established."
+      }
+    },
+    {
+      "id": "chronochasm",
+      "thread": "chronochasm",
+      "lane": "sharing",
+      "date": "2026-09-14",
+      "level": 0,
+      "title": "Returning to the conversation",
+      "deck": "The detail saved for later became the material for this timeline.",
+      "paragraphs": [
+        "In September, Max returned to the game search while thinking about his next post. The retained conversation gave him more than the answer to a forgotten title. It showed the questions he had asked, the directions Claude had tried, the correction after the false hit, and the point where he recognized Armor.",
+        "Returning to the search also brought more memories back. By September 14, Max recalled putting the discs from the Mac box set into the drive and could picture a little house from a 3D modeling program. More of the collection was coming back to him than the games he had originally been able to name.",
+        "He wanted that material to read as a story. The sources could sit underneath it for anyone who wanted to look more closely, without requiring everyone to reconstruct the sequence from a list of issues and comments.",
+        "The interface followed the same idea. A timeline could show the larger work, then make room for a chapter. Max chose a vertical version that could be scrolled through, with explicit controls for looking closer. He also wanted several threads to explore, including the tangents that appeared while something else was underway.",
+        "The August request to save the detail is one of those connections. It gives this return somewhere concrete to begin."
+      ],
+      "sources": [
+        "save-the-detail",
+        "chronochasm-direction",
+        "later-memories"
+      ],
+      "quote": "chronochasm-direction",
+      "quoteAfter": 3,
+      "time": {
+        "kind": "day",
+        "start": "2026-09-14",
+        "note": "Only the date is established. The shaded day is date precision, not a full day of work."
+      },
+      "quoteText": "I want people to be able to click around and find several different threads."
+    }
+  ],
+  "relations": [
+    {
+      "from": "remembering",
+      "to": "catalogs",
+      "kind": "method",
+      "label": "The search needed a way inside the discs",
+      "sources": [
+        "first-clues",
+        "catalog-proposal"
+      ]
+    },
+    {
+      "from": "recognizing-games",
+      "to": "keep-record",
+      "kind": "tangent",
+      "label": "The results prompted another writing idea",
+      "sources": [
+        "recognizing-collection",
+        "save-the-detail"
+      ]
+    },
+    {
+      "from": "recognizing-games",
+      "to": "armor",
+      "kind": "continuation",
+      "label": "The tank-game candidate needed identifying",
+      "sources": [
+        "maccube-list",
+        "armor-method"
+      ]
+    },
+    {
+      "from": "armor-confirmed",
+      "to": "arcade",
+      "kind": "companion",
+      "label": "Recognition and the existing hosting idea in the same reply",
+      "sources": [
+        "armor-recognition",
+        "hosting-request"
+      ]
+    },
+    {
+      "from": "arcade-hosting",
+      "to": "public-route",
+      "kind": "continuation",
+      "label": "Making the games work for a visitor",
+      "sources": [
+        "arcade-architecture",
+        "edge-failure",
+        "edge-recovery"
+      ]
+    },
+    {
+      "from": "arcade-hosting",
+      "to": "memoir",
+      "kind": "companion",
+      "label": "The playable collection and its companion post",
+      "sources": [
+        "arcade-request",
+        "memoir-release"
+      ]
+    },
+    {
+      "from": "keep-record",
+      "to": "chronochasm",
+      "kind": "return",
+      "label": "An earlier idea picked up again",
+      "sources": [
+        "save-the-detail",
+        "chronochasm-direction"
+      ]
+    },
+    {
+      "from": "catalogs",
+      "to": "first-names",
+      "kind": "method",
+      "label": "Making the catalog reader work",
+      "sources": [
+        "catalog-proposal",
+        "reader-filenames"
+      ]
+    },
+    {
+      "from": "first-names",
+      "to": "flowers",
+      "kind": "continuation",
+      "label": "Names needed their full paths",
+      "sources": [
+        "reader-filenames",
+        "flowers-path"
+      ]
+    },
+    {
+      "from": "remembering",
+      "to": "memory-colors",
+      "kind": "continuation",
+      "label": "The limits of the remembered details",
+      "sources": [
+        "first-clues",
+        "mixed-memories"
+      ]
+    },
+    {
+      "from": "memory-colors",
+      "to": "maccube",
+      "kind": "continuation",
+      "label": "A collection to compare with the memory",
+      "sources": [
+        "mixed-memories",
+        "maccube-list"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "missing-games",
+      "kind": "continuation",
+      "label": "The search continued, and the reader needed another repair",
+      "sources": [
+        "flowers-correction",
+        "partial-tree"
+      ]
+    },
+    {
+      "from": "missing-games",
+      "to": "stalled-search",
+      "kind": "continuation",
+      "label": "Checking why the broader sweep had stopped progressing",
+      "sources": [
+        "partial-tree",
+        "stalled-worker"
+      ]
+    },
+    {
+      "from": "stalled-search",
+      "to": "maccube",
+      "kind": "continuation",
+      "label": "The resumed sweep reached MacCube",
+      "sources": [
+        "resumed-maccube",
+        "maccube-list"
+      ]
+    },
+    {
+      "from": "one-player",
+      "to": "disc-address",
+      "kind": "continuation",
+      "label": "Checking the rebuilt player before calling it ready",
+      "sources": [
+        "one-at-a-time-response",
+        "preview-corrections"
+      ]
+    },
+    {
+      "from": "one-player",
+      "to": "arcade",
+      "kind": "companion",
+      "label": "The early player and its later hosting direction",
+      "sources": [
+        "one-at-a-time-request",
+        "hosting-request"
+      ]
+    },
+    {
+      "from": "disc-address",
+      "to": "public-route",
+      "kind": "return",
+      "label": "Later checks followed the route a visitor would use",
+      "sources": [
+        "patched-disc-check",
+        "edge-failure"
+      ]
+    },
+    {
+      "from": "logs-retry",
+      "to": "logs-count",
+      "kind": "continuation",
+      "label": "Adding detection after repairing the sender",
+      "sources": [
+        "logs-retry-record",
+        "logs-count-record"
+      ]
+    },
+    {
+      "from": "armor",
+      "to": "armor-truncated",
+      "kind": "return",
+      "label": "Fact-checking the retained game text",
+      "sources": [
+        "maccube-list",
+        "armor-truncated-record"
+      ]
+    },
+    {
+      "from": "private-cache-test",
+      "to": "private-installer",
+      "kind": "companion",
+      "label": "Separate changes on the same private preview",
+      "sources": [
+        "private-cache-test-record",
+        "private-installer-record"
+      ]
+    },
+    {
+      "from": "private-installer",
+      "to": "private-preview-test",
+      "kind": "return",
+      "label": "A later test revision on the same project",
+      "sources": [
+        "private-installer-record",
+        "private-preview-test-record"
+      ]
+    },
+    {
+      "from": "maccube",
+      "to": "recognizing-games",
+      "kind": "return",
+      "label": "Max returned to the results that morning",
+      "sources": [
+        "maccube-candidate",
+        "recognizing-collection"
+      ]
+    },
+    {
+      "from": "armor",
+      "to": "armor-confirmed",
+      "kind": "return",
+      "label": "Max confirmed the identification later that afternoon",
+      "sources": [
+        "armor-method",
+        "armor-recognition"
+      ]
+    },
+    {
+      "from": "arcade",
+      "to": "arcade-hosting",
+      "kind": "return",
+      "label": "The next selected arcade episode is in September",
+      "sources": [
+        "hosting-request",
+        "arcade-architecture"
+      ]
+    },
+    {
+      "from": "dnsweaver",
+      "to": "dns-cleanup",
+      "kind": "return",
+      "label": "The cleanup was recorded two days after the investigation",
+      "sources": [
+        "dns-diagnosis",
+        "dns-outcome"
+      ]
+    },
+    {
+      "from": "bookmarks",
+      "to": "bookmark-revision",
+      "kind": "return",
+      "label": "Max’s review led to a smaller catalogue",
+      "sources": [
+        "bookmark-intent",
+        "bookmark-correction"
+      ]
+    },
+    {
+      "from": "bookmark-revision",
+      "to": "bookmark-repair",
+      "kind": "return",
+      "label": "A separate availability repair followed delivery",
+      "sources": [
+        "bookmark-delivery",
+        "bookmark-availability"
+      ]
+    }
+  ],
+  "chapters": [
+    {
+      "id": "finding-the-discs",
+      "title": "Looking for the discs",
+      "moments": [
+        "remembering",
+        "catalogs",
+        "first-names",
+        "memory-colors",
+        "flowers",
+        "missing-games",
+        "stalled-search",
+        "maccube",
+        "recognizing-games",
+        "keep-record",
+        "armor",
+        "armor-confirmed",
+        "armor-truncated"
+      ]
+    },
+    {
+      "id": "making-the-arcade",
+      "title": "Giving the games somewhere to run",
+      "moments": [
+        "one-player",
+        "disc-address",
+        "arcade",
+        "arcade-hosting",
+        "public-route",
+        "memoir"
+      ]
+    },
+    {
+      "id": "watching-the-lab",
+      "title": "Keeping an eye on the lab",
+      "moments": [
+        "logs-retry",
+        "logs-count",
+        "red-status",
+        "battery-readings",
+        "finished-job-alert"
+      ]
+    },
+    {
+      "id": "household-work",
+      "title": "The household services",
+      "moments": [
+        "movie-interrupted",
+        "recipes-import",
+        "household-start-page",
+        "kitchen-backup-cache"
+      ]
+    },
+    {
+      "id": "local-tools",
+      "title": "Making the local tools work",
+      "moments": [
+        "cold-model",
+        "model-loading-check"
+      ]
+    },
+    {
+      "id": "private-revisions",
+      "title": "Revising an unreleased project",
+      "moments": [
+        "private-cache-test",
+        "private-installer",
+        "private-preview-test"
+      ]
+    },
+    {
+      "id": "dns-investigation",
+      "title": "An old test and a repeating DNS record",
+      "moments": [
+        "dnsweaver",
+        "dns-cleanup"
+      ]
+    },
+    {
+      "id": "bookmark-work",
+      "title": "A starting point beyond the browser",
+      "moments": [
+        "bookmarks",
+        "bookmark-revision",
+        "bookmark-repair"
+      ]
+    }
+  ],
+  "revision": "2026-09-15-public-selection"
+}
