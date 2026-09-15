@@ -172,6 +172,6 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
   <Comments />
 
   <ReadTracker event="post-read" key="slug" id={post.id} />
-  {/* note-read + post-outbound signals; see public/js/post-signals.js */}
-  <script is:inline defer src="/js/post-signals.js"></script>
+  {/* Reading-note and link signals; emitted with a content hash. */}
+  <script src="../../scripts/post-signals.js"></script>
 </Layout>

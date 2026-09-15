@@ -1,17 +1,7 @@
-// Legacy URL retained for already-open pages. New pages load the content-hashed
-// module built from src/scripts/post-signals.js.
-// Two post-page signals beyond raw pageviews, both anonymous counters:
-//
-//   note-read      — the "How this one was made" process note entered the
-//                    viewport. The AI policy's bet is that per-post notes are
-//                    the real disclosure; this measures whether they get read.
-//   post-outbound  — a reader clicked an external link inside the article
-//                    body (a cited source, not site chrome). Measures whether
-//                    readers follow evidence.
-//
-// Static file in public/ for the same CSP reason as read-tracker.js: an
-// inlined Astro script would pin a sha256 hash that silently breaks on edit.
-// No PII, no-ops when the tracker is absent or blocked.
+// Blog reading-note and link counters. Astro emits this script with a content
+// hash so the immutable asset cache cannot retain an older implementation.
+// Its page-load listener follows ClientRouter navigation; the module runs once.
+// Only public link destinations and fixed labels are sent, with no query strings.
 document.addEventListener('astro:page-load', () => {
   const article = document.querySelector('article');
   if (!article) return;

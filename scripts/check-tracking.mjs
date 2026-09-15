@@ -45,7 +45,7 @@ const DECLARED = new Set([
   'chronochasm-navigation', // previous, next or related passage
   'chronochasm-source',   // opened a selected public source
   'email-click',       // a mailto link
-  'nav-menu',          // the mobile disclosure menu was opened
+  'nav-menu',          // a navigation disclosure menu was used
   'note-read',         // the process note scrolled into view (post-signals.js)
   'outbound-arcade',   // an external link on /arcade
   'outbound-bluesky',

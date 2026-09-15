@@ -3,9 +3,8 @@ const { pathname } = Astro.url;
 const isActive = (href: string) =>
   href === '/' ? pathname === '/' : pathname.startsWith(href);
 
-// Shape kept deliberately identical to personal-site/src/components/Nav.astro:
-// the nav skeleton is part of the verbatim identity layer shared by both sites.
-// Only the link list and the wordmark differ. Edit both together.
+// Keep the shared wordmark and visual identity. This site groups its growing
+// collection of reading and interactive destinations in a smaller primary row.
 interface NavLink {
   href: string;
   label: string;
@@ -18,12 +17,16 @@ const links: NavLink[] = [
   { href: '/blog', label: 'Blog' },
   { href: '/labs', label: 'Labs' },
   { href: '/arcade', label: 'Arcade' },
+  { href: '/chronochasm', label: 'Chronochasm', umami: 'chronochasm-link' },
   { href: '/now', label: 'Now' },
   { href: '/ai', label: 'AI' },
   { href: '/pets', label: 'Pets' },
   { href: 'https://status.probablyfine.dev', label: 'Status', external: true, umami: 'outbound-status' },
   { href: 'https://maxfieldallison.com?utm_source=probablyfine&utm_medium=site', label: 'About me', external: true, umami: 'outbound-maxfieldallison' },
 ];
+
+const primary = links.filter((l) => ['/blog', '/labs', '/arcade', '/chronochasm'].includes(l.href));
+const secondary = links.filter((l) => l.href !== '/' && !primary.includes(l));
 
 const linkClass = (l: NavLink) => [
   'no-underline hover:no-underline transition-colors',
@@ -45,12 +48,14 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
     {/* Desktop: inline row */}
     <div class="hidden sm:flex items-center gap-6 font-mono text-sm">
       {
-        links.map((l) => (
+        primary.map((l) => (
           <a
             href={l.href}
             rel={relFor(l)}
             data-umami-event={l.external ? l.umami : undefined}
             data-track={l.external ? undefined : l.umami}
+            data-track-where={l.href === '/chronochasm' ? 'site-nav' : undefined}
+            data-track-destination={l.href === '/chronochasm' ? l.href : undefined}
             aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
             class:list={linkClass(l)}
           >
@@ -58,6 +63,16 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
           </a>
         ))
       }
+      <details class="relative">
+        <summary class="nav-disclosure cursor-pointer" data-umami-event="nav-menu">More <span aria-hidden="true">⌄</span></summary>
+        <div class="nav-menu absolute right-0 top-full mt-2 z-50 rounded border border-[var(--color-line)] bg-[var(--color-surface)] p-2 flex flex-col shadow-lg">
+          {secondary.map((l) => (
+            <a href={l.href} rel={relFor(l)} data-umami-event={l.umami}
+              aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
+              class:list={['menu-link rounded hover:bg-[var(--color-base)]', ...linkClass(l)]}>{l.label}</a>
+          ))}
+        </div>
+      </details>
     </div>
 
     {/* Mobile: no-JS disclosure menu. ClientRouter re-renders the header on
@@ -65,7 +80,7 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
     <details class="sm:hidden relative open:[&_.chev]:rotate-180">
       <summary
         data-umami-event="nav-menu"
-        class="list-none [&::-webkit-details-marker]:hidden cursor-pointer text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] flex items-center gap-1.5"
+        class="nav-disclosure list-none [&::-webkit-details-marker]:hidden cursor-pointer text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] flex items-center gap-1.5"
         aria-label="Menu"
       >
         <span class="font-mono text-sm">menu</span>
@@ -73,7 +88,7 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
           <path d="m6 9 6 6 6-6" />
         </svg>
       </summary>
-      <div class="absolute right-0 top-full mt-2 z-50 w-44 rounded border border-[var(--color-line)] bg-[var(--color-surface)] p-2 flex flex-col font-mono text-sm shadow-lg">
+      <div class="absolute right-0 top-full mt-2 z-50 nav-menu rounded border border-[var(--color-line)] bg-[var(--color-surface)] p-2 flex flex-col font-mono text-sm shadow-lg">
         {
           links.map((l) => (
             <a
@@ -81,8 +96,10 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
               rel={relFor(l)}
               data-umami-event={l.external ? l.umami : undefined}
             data-track={l.external ? undefined : l.umami}
+            data-track-where={l.href === '/chronochasm' ? 'site-nav' : undefined}
+            data-track-destination={l.href === '/chronochasm' ? l.href : undefined}
               aria-current={!l.external && isActive(l.href) ? 'page' : undefined}
-              class:list={['px-2 py-1.5 rounded hover:bg-[var(--color-base)]', ...linkClass(l)]}
+              class:list={['menu-link rounded hover:bg-[var(--color-base)]', ...linkClass(l)]}
             >
               {l.label}
             </a>
@@ -93,7 +110,29 @@ const relFor = (l: NavLink) => (l.external ? 'noopener' : undefined);
   </nav>
 </header>
 
+<script>
+  // Native disclosures work without JS; add familiar dismissal when it is available.
+  document.addEventListener('click', (event) => {
+    document.querySelectorAll<HTMLDetailsElement>('nav[aria-label="Primary"] details[open]').forEach((menu) => {
+      if (event.target instanceof Node && !menu.contains(event.target)) menu.open = false;
+    });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll<HTMLDetailsElement>('nav[aria-label="Primary"] details[open]').forEach((menu) => {
+      if (menu.contains(document.activeElement)) menu.querySelector('summary')?.focus();
+      menu.open = false;
+    });
+  });
+</script>
+
 <style>
+  nav > div > a, .nav-disclosure { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; }
+  .nav-disclosure { gap: 6px; list-style: none; }
+  .nav-disclosure::-webkit-details-marker { display: none; }
+  .nav-menu { width: 224px; max-height: calc(100dvh - 80px); overflow-y: auto; }
+  .menu-link { min-height: 44px; padding: 10px 12px; display: flex; align-items: center; }
+  nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 5px; }
   @media (min-width: 640px) and (max-width: 899px) { nav > div { display: none; } nav > details { display: block; } }
-  @media (min-width: 900px) { nav > div { gap: 18px; font-size: 12px; } }
+  @media (min-width: 900px) { nav > div { gap: 20px; font-size: 14px; } }
 </style>
