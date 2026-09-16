@@ -7,6 +7,13 @@ const $=id=>document.getElementById(id);
 const viewport=$('viewport'), timeline=$('timeline'), marks=$('marks');
 const mobile=matchMedia('(max-width:600px)'), narrow=matchMedia('(max-width:1199px)'), reduced=matchMedia('(prefers-reduced-motion:reduce)');
 let data, level=0, selected=null, opened=false, filter='all', motionPaused=false, frame=0, lastFrame=0;
+// Opening a passage pushes a history entry so the phone Back gesture closes the reader instead of leaving the page (probablyfine-site#13).
+let historyPushed=false, historyBase='';
+const phone=matchMedia('(max-width:700px)');
+const hhmm=value=>new Date(value).toISOString().slice(11,16);
+// Source excerpts keep the writer's **bold** and `code`; render those two marks as elements, never as HTML.
+function richText(host,text){const parts=text.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/);for(const part of parts){if(!part)continue;if(part.startsWith('**')&&part.endsWith('**')&&part.length>4)host.append(element('strong','',part.slice(2,-2)));else if(part.startsWith('`')&&part.endsWith('`')&&part.length>2)host.append(element('code','',part.slice(1,-1)));else host.append(document.createTextNode(part));}return host;}
+function markBehindReader(){const reading=opened&&!narrow.matches;const left=reading?$('reader').getBoundingClientRect().left:Infinity;for(const card of marks.querySelectorAll('.event')){card.classList.toggle('behind-reader',reading&&card.getBoundingClientRect().right>left-16);}}
 let positions=new Map(), bars=[], nodeElements=[], connectorElements=[], leaderElements=[];
 const driftStates=new Map();
 const element=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
@@ -63,7 +70,7 @@ function makeTimeMap(visible){
   }
   windows.sort((a,b)=>a.start-b.start);
   const merged=[];
-  for(const window of windows){const last=merged.at(-1);if(last&&window.start-last.end<=48*3600000)last.end=Math.max(last.end,window.end);else merged.push({...window});}
+  for(const window of windows){const last=merged.at(-1);if(last&&window.start-last.end<=[48,12,4][level]*3600000)last.end=Math.max(last.end,window.end);else merged.push({...window});}
   timeOrigin=merged[0].start;
   let y=chartOrigin;timeSegments=[];
   const add=(start,end,gap=false)=>{
@@ -206,7 +213,7 @@ function render({anchor=null,animate=false}={}){
     const node=element('span','event-node');node.dataset.moment=m.id;node.style.cssText='top:'+p.y+'px;left:'+(p.x-4)+'px;background:'+color;marks.append(node);nodeElements.push(node);
     const card=element('button','event'+(m.id===selected?' selected':''));card.id='event-'+m.id;card.dataset.moment=m.id;card.style.width=cardWidth+'px';card.style.setProperty('--lane',color);
     card.setAttribute('aria-expanded',String(opened&&selected===m.id));card.setAttribute('aria-controls','reader');
-    card.append(element('span','date',thread(m.thread).name.toUpperCase()),element('strong','',m.title),element('small','',m.deck),element('small','moment-time',m.time.kind==='day'?'Date only':new Date(m.time.start).toISOString().slice(11,16)+' UTC'+(m.time.kind==='span'?' · recorded exchange':' · moment')));
+    card.append(element('span','date',thread(m.thread).name.toUpperCase()),element('strong','',m.title),element('small','',m.deck),element('small','moment-time',m.time.kind==='day'?'Time of day not recorded':hhmm(m.time.start)+' UTC'+(m.time.kind==='span'?' · a recorded exchange':'')));
     card.append(element('span','read','Read this moment →'));
     if(level===2)card.append(element('span','chapter-detail',m.sources.length+' selected sources'));
     card.addEventListener('click',()=>openStory(m.id));marks.append(card);
@@ -236,21 +243,21 @@ function render({anchor=null,animate=false}={}){
     for(let time=startTick;time<=part.end;time+=tickStep){
       const y=timeY(time),midnight=time%DAY===0;
       const tick=element('div','time-tick'+(midnight?' day-tick':''));tick.style.top=y+'px';tick.dataset.time=String(time);
-      tick.append(element('span','',dateLabel(time)+(midnight?'':' · '+new Date(time).toISOString().slice(11,16))));marks.append(tick);
+      tick.append(element('span','',midnight?dateLabel(time):phone.matches?hhmm(time):dateLabel(time)+' · '+hhmm(time)));marks.append(tick);
     }
   }
-  const end=element('p','end-note','Within each unfolded section, vertical distance follows time. Labelled breaks fold intervals between selected records. Hover or focus a moment to see its story and connections. Click to read. Bars show retained exchanges. Later returns have separate moments, joined by dotted connections. Hollow day bands mean the time is unknown.');end.style.top=(contentEnd+50)+'px';marks.append(end);
+  const end=element('p','end-note','Within each unfolded section, vertical distance follows time. Labelled breaks fold intervals between selected records. Hover, focus or tap a moment to see its connections; open it to read. Bars show retained exchanges. Later returns have separate moments, joined by dotted connections. Hollow day bands mean the time is unknown.');end.style.top=(contentEnd+50)+'px';marks.append(end);
   if(anchor)viewport.scrollTop=timeY(anchor.time)-anchor.y;
   if(animate&&!reduced.matches)for(const e of marks.querySelectorAll('.event')){
     const before=old.get(e.dataset.moment);if(before!==undefined)e.animate([{translate:'0 '+(before-e.getBoundingClientRect().top)+'px'},{translate:'0 0'}],{duration:360,easing:'cubic-bezier(.22,1,.36,1)'});
   }
   $('zoom-out').disabled=level===0;$('zoom-in').disabled=level===2;
   document.querySelectorAll('[data-level]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.level===level)));
-  $('depth-hint').textContent=['1 hour / 8 px','1 hour / 96 px','1 hour / 384 px'][level]+' · '+(foldedTime?'gaps folded':'full elapsed time')+' · zoom to separate moments';
+  $('depth-hint').textContent=['Weeks in view','Days in view','Hours in view'][level]+' · '+(foldedTime?'quiet stretches folded':'full elapsed time')+' · − and + change the scale';
   const gaps=timeSegments.filter(part=>part.gap),expanded=gaps.filter(part=>!part.folded).length;
   $('expand-gaps').disabled=expanded===gaps.length;$('collapse-gaps').disabled=expanded===0;
-  $('gap-status').textContent=gaps.length?expanded+' of '+gaps.length+' gaps expanded':'No skipped intervals';
-  $('browse-moments').textContent='Browse all '+data.moments.length+' moments';updateConnections();updateCurrentDate();startMotion();
+  $('gap-status').textContent=gaps.length?expanded+' of '+gaps.length+' gaps expanded':'No skipped intervals';document.querySelector('.gap-controls').hidden=gaps.length===0;
+  $('browse-moments').textContent=(phone.matches?'All ':'Browse all ')+data.moments.length+' moments';updateConnections();updateCurrentDate();startMotion();
 }
 function toggleGap(part){
   trackChronochasm('chronochasm-control',{control:'gaps',scope:'interval',expanded:part.folded});
@@ -278,12 +285,15 @@ function openMomentIndex(){
     button.append(element('small','',dateLabel(m.time.start)+' · '+thread(m.thread).name),element('strong','',m.title));
     button.addEventListener('click',()=>{$('moment-index').close();openStory(m.id,{travel:true});});list.append(button);
   }
-  $('moment-index-count').textContent=data.moments.length+' moments across '+data.threads.length+' threads. Every passage is listed, including those revealed on hover.';
+  $('moment-index-count').textContent=data.moments.length+' moments across '+data.threads.length+' threads. Every passage is listed, including the ones the timeline only shows up close.';
   $('moment-index').showModal();
 }
 function anchorAtCurrentPosition(){
   const choice=positions.get(hoverMoment||focusMoment||selected);
   if(choice){const y=choice.y-viewport.scrollTop;if(y>=0&&y<viewport.clientHeight-120)return{time:Date.parse(choice.m.time.start),y};}
+  const focusY=viewport.scrollTop+viewport.clientHeight*.4;
+  let nearest=null;for(const p of positions.values())if(!nearest||Math.abs(p.y-focusY)<Math.abs(nearest.y-focusY))nearest=p;
+  if(nearest){const y=Math.min(Math.max(nearest.y-viewport.scrollTop,96),viewport.clientHeight-220);return{time:Date.parse(nearest.m.time.start),y};}
   const y=viewport.clientHeight*.4;
   return{time:timeAtY(viewport.scrollTop+y),y};
 }
@@ -300,7 +310,7 @@ function updateCurrentDate(){
       if(other.left<r.right+12&&other.right>r.left-12&&other.top<r.bottom+12&&other.bottom>r.top-12)card.classList.add('occluded');
     }
   }
-  syncGraphMotion();
+  syncGraphMotion();markBehindReader();
 }
 function zoom(next){next=Math.max(0,Math.min(2,next));if(next===level)return;const anchor=anchorAtCurrentPosition();level=next;trackChronochasm('chronochasm-control',{control:'zoom',level:['chapters','moments','hours'][level]});render({anchor,animate:true});$('announcement').textContent=['Weeks in view','Days in view','Hours in view'][level];}
 function sourceButton(id,label){const b=element('button','source-button',label||data.sources[id].reference);b.addEventListener('click',()=>openSource(id));return b;}
@@ -322,13 +332,13 @@ function openSource(id){
       if(selection.reference)turn.append(element('p','source-turn-reference',selection.reference));
       selection.text.split('\n\n[…]\n\n').forEach((part,index)=>{
         if(index)turn.append(element('p','source-omission','[…]'));
-        turn.append(element('blockquote','source-words',part));
+        turn.append(richText(element('blockquote','source-words'),part));
       });
       turns.append(turn);
     }
     body.append(turns);
   }else{
-    const excerpt=element('blockquote','source-words',source.excerpt);excerpt.id='source-excerpt';body.append(excerpt);
+    const excerpt=richText(element('blockquote','source-words'),source.excerpt);excerpt.id='source-excerpt';body.append(excerpt);
   }
   $('source-scope').textContent=detail?'Selected original words, with omissions noted above. The complete conversation or issue is not included.':'This retained selection is the available source here; no fuller exchange is included.';
   $('source').showModal();$('source-scroll').scrollTop=0;
@@ -373,9 +383,9 @@ function openStory(id,{travel=false}={}){
   const m=moment(id);if(!m)return;trackChronochasm('chronochasm-moment',{moment:id,thread:m.thread});selected=id;opened=true;if(filter!=='all'&&filter!==m.thread){filter='all';$('thread-filter').value='all';}if(travel)level=Math.max(level,m.level);render();if(travel)viewport.scrollTop=Math.max(0,positions.get(id).y-viewport.clientHeight*.4);
   const article=$('story');renderPassage(article,id,{headingId:'story-title'});renderReadingNavigation(id);
   const back=element('button','back','← Return to this moment in the timeline');back.addEventListener('click',closeStory);article.append(back);
-  $('reader-crumb').textContent=thread(m.thread).name.toUpperCase();$('reader').inert=false;document.body.classList.add('reading');modalMode();$('reader-scroll').scrollTop=0;$('reader').scrollTop=0;updateConnections();$('close-reader').focus({preventScroll:true});history.replaceState(null,'','#'+id);document.dispatchEvent(new CustomEvent('chronochasm:story',{detail:{id,article}}));
+  $('reader-crumb').textContent=thread(m.thread).name.toUpperCase();$('reader').inert=false;document.body.classList.add('reading');modalMode();$('reader-scroll').scrollTop=0;$('reader').scrollTop=0;updateConnections();$('close-reader').focus({preventScroll:true});if(location.hash!=='#'+id){if(historyPushed)history.replaceState(null,'','#'+id);else{historyBase=location.hash;history.pushState(null,'','#'+id);historyPushed=true;}}requestAnimationFrame(markBehindReader);document.dispatchEvent(new CustomEvent('chronochasm:story',{detail:{id,article}}));
 }
-function closeStory(){if(opened)trackChronochasm('chronochasm-control',{control:'close-reader'});opened=false;document.body.classList.remove('reading');modalMode();$('reader').inert=true;render();$('event-'+selected)?.focus({preventScroll:true});history.replaceState(null,'',location.pathname+location.search);}
+function closeStory(){if(opened)trackChronochasm('chronochasm-control',{control:'close-reader'});opened=false;document.body.classList.remove('reading');modalMode();$('reader').inert=true;render();$('event-'+selected)?.focus({preventScroll:true});if(historyPushed&&historyBase===''){historyPushed=false;history.back();}else{historyPushed=false;history.replaceState(null,'',location.pathname+location.search);}}
 let hoverExit;
 function engage(event,active){
   const target=event.target.closest('.event,.activity');if(!target)return;
@@ -411,7 +421,10 @@ function bind(){
   for(const id of ['source','moment-index'])$(id).addEventListener('click',e=>{if(e.target!==$(id))return;const r=$(id).getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$(id).close();});
   document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;if(e.key==='Escape'&&opened){e.preventDefault();closeStory();}if(e.key==='Tab'&&opened&&narrow.matches){const list=[...$('reader').querySelectorAll('button:not(:disabled),a[href]')];const first=list[0],last=list.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
   narrow.addEventListener('change',modalMode);mobile.addEventListener('change',()=>render({anchor:anchorAtCurrentPosition()}));reduced.addEventListener('change',startMotion);document.addEventListener('visibilitychange',startMotion);
-  window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(moment(id))openStory(id,{travel:true});else if(opened)closeStory();});
+  window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(moment(id))openStory(id,{travel:true});else if(opened){historyPushed=false;closeStory();}});
+  timeline.addEventListener('transitionend',e=>{if(e.propertyName==='transform')markBehindReader();});
+  $('filters-toggle').addEventListener('click',()=>{const header=document.querySelector('header.site');const open=header.classList.toggle('filters-open');$('filters-toggle').setAttribute('aria-expanded',String(open));});
+  phone.addEventListener('change',()=>{if(!data)return;$('browse-moments').textContent=(phone.matches?'All ':'Browse all ')+data.moments.length+' moments';render({anchor:anchorAtCurrentPosition()});});
   // Wheel/touch scrolling and browser zoom remain native. No modifier is required.
 }
 let resolveReady;

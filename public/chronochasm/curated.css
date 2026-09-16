@@ -132,3 +132,41 @@ header.site{max-height:45dvh;overflow-y:auto;scrollbar-width:thin}
 @media(max-width:760px){.title-actions .companion-link{font-size:12px;padding:6px}.title-actions #current-date{display:none}}
 
 .product-brand .product-parent{color:var(--dim);text-decoration:none}.product-brand .product-parent:hover{color:var(--green)}
+
+/* 2026-09-16, probablyfine-site#13: phones and short screens get one header row, a single-row dock and a shorter intro;
+   the reader on wide screens fades the cards it covers; source excerpts render bold and code. */
+[hidden]{display:none!important}
+.filters-toggle{display:none}
+.label-short{display:none}
+@media(hover:none){.pointer-only{display:none}}
+@media(hover:hover){.touch-only{display:none}}
+.event.behind-reader{opacity:.14;pointer-events:none;transition:opacity .3s}
+header.site{max-height:45svh}
+.source-words strong{font-weight:600;color:var(--ink)}.source-words code{font:.9em var(--mono);background:#ffffff0d;padding:1px 4px;border-radius:4px}
+@media(max-width:700px),(max-height:520px){
+  header.site{max-height:none;overflow:visible;padding:0 14px}
+  .title-row{min-height:0;gap:6px 10px;padding:4px 0 8px;align-items:center}
+  .product-brand{flex:1 1 auto;min-width:0}.product-home{padding:4px 0}.product-parent{margin-bottom:1px}.product-title{font-size:20px}.preview-badge{margin-left:6px}
+  .filters-toggle{display:inline-flex;align-items:center;justify-content:center;font:12px var(--mono);color:var(--dim);background:var(--surface);border:1px solid var(--line);border-radius:6px;min-height:40px;padding:0 12px;white-space:nowrap}
+  .filters-toggle[aria-expanded=true]{color:var(--green);border-color:#3fb95055}
+  .title-actions{display:flex;flex-wrap:nowrap;gap:8px;align-items:center}
+  .title-actions .companion-link,.browse-moments{font-size:12px;padding:0 10px;min-height:40px;height:40px;white-space:nowrap;justify-content:center;text-align:center;display:inline-flex;align-items:center}
+  .title-actions #current-date{display:none}
+  .title-nav{display:none}
+  header.site.filters-open .title-nav{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:6px 0 14px;border-top:1px solid var(--line)}
+  header.site.filters-open .gap-controls{order:0;width:100%;margin:0}
+  header.site.filters-open .thread-filter{max-width:none;margin:0}
+  .thread-filter select{font-size:16px;padding:10px 12px;width:100%;max-width:none}
+  .intro{top:14px}.intro .eyebrow{display:none}.intro h1{font-size:1.75rem;margin-bottom:6px}.intro p:not(.eyebrow){font-size:.9375rem;line-height:1.5}.intro .hint{margin-top:6px!important;font-size:.8125rem!important}.intro .time-explanation{display:none}
+  .dock{bottom:10px;padding:8px 10px;width:min(740px,calc(100vw - 24px))}.dock-hint{display:none}
+  .dock-top{flex-wrap:nowrap;justify-content:space-between;gap:4px}
+  .depths{order:0;flex:1 1 auto;display:flex;gap:2px;flex-wrap:nowrap}.depths button{min-height:44px;padding:8px 4px;font-size:.8125rem;flex:1 1 0}
+  .zoom-button{min-width:44px;width:44px;height:44px}.motion-toggle{width:36px;min-width:36px}
+}
+@media(max-width:700px){
+  .title-row{flex-wrap:wrap}
+  .title-actions{flex:1 0 100%;order:3;width:100%}
+  .title-actions>*{flex:1 1 0;min-width:0}
+  .label-long{display:none}.label-short{display:inline}
+  .time-tick span{max-width:64px}
+}
