@@ -1,5 +1,5 @@
 /**
- * Origin failover Worker for probablyfine.dev.
+ * Origin failover Worker for %{domain}.
  *
  * K8s homelab is the primary origin. If it is unreachable or returns a 5xx,
  * fall back to the Cloudflare Pages mirror. Both serve the identical static

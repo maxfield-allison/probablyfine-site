@@ -1,11 +1,11 @@
 name: Deploy
 
-# Hybrid deploy for the probablyfine.dev blog.
+# Hybrid deploy for %{deployDescription}.
 #   1. Build the static site and publish it to Cloudflare Pages (external mirror
 #      / failover, zero homelab footprint).
 #   2. Build a container image and push to ghcr.io. The homelab Kubernetes
 #      cluster (via ArgoCD Image Updater) picks that up and serves the primary
-#      origin from probablyfine.dev.
+#      origin from %{domain}.
 #
 # Direction is one-way: GitHub is the source of truth.
 #
@@ -62,7 +62,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx --yes wrangler@3 pages deploy dist --project-name=probablyfine-site --branch=main --commit-dirty=true
+        run: npx --yes wrangler@3 pages deploy dist --project-name=%{pagesProject} --branch=main --commit-dirty=true
 
   image:
     name: Container image (ghcr.io)
@@ -86,7 +86,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/maxfield-allison/probablyfine-site:latest
-            ghcr.io/maxfield-allison/probablyfine-site:${{ github.sha }}
+            ghcr.io/maxfield-allison/%{image}:latest
+            ghcr.io/maxfield-allison/%{image}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

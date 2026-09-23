@@ -27,7 +27,9 @@
     "check:headers": "node scripts/shared/headers.mjs --check",
     "check:ai-notes": "node scripts/check-ai-notes.mjs",
     "check:tracking": "node scripts/check-tracking.mjs",
-    "check:arcade": "node scripts/arcade/smoke.mjs"
+    "check:arcade": "node scripts/arcade/smoke.mjs",
+    "shared:sync": "node scripts/shared/sync-shared.mjs",
+    "shared:check": "node scripts/shared/sync-shared.mjs --check"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
