@@ -1,12 +1,19 @@
 name: Sync to GitLab
 
-# Mirrors the public source of truth (GitHub) into the GitLab instance, one-way:
+# Mirrors the public source of truth (GitHub) into the private GitLab project, one-way:
 #   GitHub (main, tags)  ->  GitLab
 #
-# Required repository secrets:
-#   GITLAB_TOKEN         - GitLab project access token with write_repository
-#   GITLAB_HOST          - e.g. gitlab.probablyfine.dev
-#   GITLAB_PROJECT_PATH  - e.g. root/probablyfine-site
+# The push is a plain fast-forward. If GitLab's main has diverged from GitHub's,
+# the push is rejected and this job fails; reconcile by hand rather than forcing.
+#
+# Required repository secret:
+#   GITLAB_TOKEN  - GitLab project access token on the project below, role
+#                   Maintainer (main is protected for Maintainers), scope
+#                   write_repository only.
+#
+# The token is sent as an HTTP header scoped to the GitLab host through
+# environment-only git config. It is never written into a remote URL, into
+# .git/config, or onto a command line.
 
 on:
   push:
@@ -21,6 +28,10 @@ concurrency:
   group: sync-to-gitlab
   cancel-in-progress: false
 
+env:
+  GITLAB_HOST: gitlab.probablyfine.dev
+  GITLAB_PROJECT_PATH: probablyfine/probablyfine-site
+
 jobs:
   sync:
     name: Push to GitLab
@@ -29,20 +40,48 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Push main and tags to GitLab
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-          GITLAB_HOST: ${{ secrets.GITLAB_HOST }}
-          GITLAB_PROJECT_PATH: ${{ secrets.GITLAB_PROJECT_PATH }}
         run: |
           set -euo pipefail
 
-          if [ -z "${GITLAB_TOKEN}" ] || [ -z "${GITLAB_HOST}" ] || [ -z "${GITLAB_PROJECT_PATH}" ]; then
-            echo "::error::GITLAB_TOKEN, GITLAB_HOST, and GITLAB_PROJECT_PATH secrets must be set."
+          if [ -z "${GITLAB_TOKEN}" ]; then
+            echo "::error::The GITLAB_TOKEN repository secret is not set."
             exit 1
           fi
 
-          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@${GITLAB_HOST}/${GITLAB_PROJECT_PATH}.git"
-          git push gitlab "HEAD:refs/heads/main" --force
-          git push gitlab --tags --force
+          # Basic auth as oauth2:<token>. The encoded form is a new string, so
+          # mask it before anything can print it.
+          auth="$(printf 'oauth2:%s' "${GITLAB_TOKEN}" | base64 -w0)"
+          echo "::add-mask::${auth}"
+          unset GITLAB_TOKEN
+
+          export GIT_TERMINAL_PROMPT=0
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0="http.https://${GITLAB_HOST}/.extraheader"
+          export GIT_CONFIG_VALUE_0="Authorization: Basic ${auth}"
+
+          url="https://${GITLAB_HOST}/${GITLAB_PROJECT_PATH}.git"
+          # Push GitHub's main explicitly, whatever ref triggered the run.
+          source_main="refs/remotes/origin/main"
+
+          if ! git push "${url}" "${source_main}:refs/heads/main"; then
+            echo "::error::Pushing main to GitLab failed. An authentication error means GITLAB_TOKEN is expired, revoked or lacks write access. A rejected (non-fast-forward) push means GitLab has commits GitHub does not; reconcile them by hand and do not force-push."
+            exit 1
+          fi
+
+          if ! git push "${url}" --tags; then
+            echo "::error::Pushing tags to GitLab failed. A rejected tag already exists there with a different target; tags are never overwritten."
+            exit 1
+          fi
+
+          want="$(git rev-parse "${source_main}")"
+          have="$(git ls-remote "${url}" refs/heads/main | cut -f1)"
+          if [ "${want}" != "${have}" ]; then
+            echo "::error::GitLab main is ${have:-missing}, expected ${want}."
+            exit 1
+          fi
+          echo "GitLab main is ${have}."
