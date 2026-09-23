@@ -6,13 +6,15 @@
       "domain": "probablyfine.dev",
       "deployDescription": "the probablyfine.dev blog",
       "pagesProject": "probablyfine-site",
-      "image": "probablyfine-site"
+      "image": "probablyfine-site",
+      "gitlabProject": "probablyfine/probablyfine-site"
     },
     "personal-site": {
       "domain": "maxfieldallison.com",
       "deployDescription": "the portfolio site",
       "pagesProject": "personal-site",
-      "image": "personal-site"
+      "image": "personal-site",
+      "gitlabProject": "probablyfine/personal-site"
     }
   },
   "files": [
@@ -29,11 +31,8 @@
     { "path": ".dockerignore", "mode": "verbatim" },
     { "path": ".github/dependabot.yml", "mode": "verbatim" },
     { "path": ".github/workflows/deploy.yml", "mode": "template" },
-    {
-      "path": ".github/workflows/sync-to-gitlab.yml",
-      "mode": "hold",
-      "reason": "Being rewritten separately. Only the example project path in a comment differs between the sites. Move it to a template once the rewrite lands."
-    },
+    { "path": ".github/workflows/check.yml", "mode": "verbatim" },
+    { "path": ".github/workflows/sync-to-gitlab.yml", "mode": "template" },
 
     { "path": "worker/failover.js", "mode": "template" },
     { "path": "public/robots.txt", "mode": "template" },
