@@ -176,7 +176,7 @@ const groups: Group[] = [
         aka: "Juni",
         kind: "black and white",
         since: "2020",
-        note: "A rescue out of Greater Birmingham. Sweet and lovely, and all she wants is to sit next to you and have her belly rubbed. She's also the most explosively reactive dog in the bunch \u2014 if she sees something, you will know about it, and it will be one of the most annoying sounds you have ever heard. Love her anyway, because she's so damn sweet.",
+        note: "A rescue out of Greater Birmingham. Sweet and lovely, and all she wants is to sit next to you and have her belly rubbed. She's also the most explosively reactive dog in the bunch. If she sees something, you will know about it, and it will be one of the most annoying sounds you have ever heard. Love her anyway, because she's so damn sweet.",
         shots: [
           { file: "2021-juniper-portrait", alt: "Black and white photo of a black-and-white dog standing on a wooden deck looking up", caption: "Black and white, which suits her." },
         ],
@@ -185,7 +185,7 @@ const groups: Group[] = [
         name: "Krombopulus Michael",
         kind: "small, tan and white",
         since: "2021",
-        note: "He's deaf, which is how he ended up with a name that long. You normally want something short so a dog can hear it and understand it, and none of that applies here, so we could call him whatever we liked. He also has vestibular disease \u2014 we considered Nascar, because he leans to the left and only runs in left-hand circles. Total goober, can't hear a word you say, and probably the happiest dog I've ever met.",
+        note: "He's deaf, which is how he ended up with a name that long. You normally want something short so a dog can hear it and understand it, and none of that applies here, so we could call him whatever we liked. He also has vestibular disease. We considered Nascar, because he leans to the left and only runs in left-hand circles. Total goober, can't hear a word you say, and probably the happiest dog I've ever met.",
         shots: [
           { file: "2022-krombopulus-michael-harness", alt: "A tan and white dog in a yellow harness looking up at the camera on a dark floor", caption: "Ready for something. No idea what." },
           { file: "2024-krombopulus-michael-crate", alt: "A tan and white dog lying on a patterned bed inside an open wire crate", caption: "Even the goober needs a lie down." },
@@ -414,7 +414,7 @@ const captionFor = (a: Animal, s: Shot) =>
 
 // A closed range is the only thing on this page that says an animal has died. No badge,
 // no symbol, no separate section.
-const lifespan = (a: Animal) => (a.until ? `${a.since}\u2013${a.until}` : a.since);
+const lifespan = (a: Animal) => (a.until ? `${a.since}-${a.until}` : a.since);
 
 const counts = groups.map((g) => ({ label: g.heading, value: String(g.animals.length) }));
 const total = groups.reduce((n, g) => n + g.animals.length, 0);
@@ -422,7 +422,7 @@ const total = groups.reduce((n, g) => n + g.animals.length, 0);
 
 <Layout
   title="The zoo · ProbablyFine"
-  description="Every animal that lives here, or has. Cats, dogs, horses, rabbits, birds, a ball python and a fish tank — the other thing the money goes to."
+  description="Every animal that lives here, or has. Cats, dogs, horses, rabbits, birds, a ball python and a fish tank: the other thing the money goes to."
   ogImage="/og/pets.jpg?v=1"
 >
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
