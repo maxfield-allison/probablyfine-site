@@ -23,12 +23,39 @@ import Layout from '../layouts/Layout.astro';
 //     script served at /pf-insights/script.js is the base tracker with no
 //     replay, heatmap or mousemove code in it.
 //
+// RE-CHECKED 2026-09-23 for v1.5. The DB was not queried;
+// these come from the running pod and the upstream source for its exact tag:
+//   - comentario v3.18.0 (image tag, and the version its embed API reports).
+//     Its startup log prints the effective config: Logging.FullIPs=false and
+//     Stats.MaxDays=30. With FullIPs off, every write path (comments, signup,
+//     login sessions, page views) passes the IP through util.MaskIP, which keeps
+//     the first two IPv4 octets or IPv6 groups; the country is looked up first.
+//     Sessions last 28 days (util.UserSessionDuration) and the built-in cleaner
+//     deletes expired ones daily; page views are deleted after MaxDays+1 = 31.
+//   - the widget sets comentario_commenter_session (SameSite=Strict, 30 days)
+//     for every reader of a post, holding a fixed all-zero token until sign-in,
+//     and comentario_settings (sort order) in localStorage. Seen in headless
+//     Chromium against the live site, and in embed/src/api.ts.
+//   - self-service deletion: the widget's Settings > "Edit Comentario profile"
+//     opens the admin UI profile page, whose "Delete my account" calls
+//     DELETE /api/auth/profile. The strings are in the live admin bundle.
+//     Not exercised end to end: that would mean creating an account in prod.
+//   - server logs: Traefik access logs for the public routers show Cloudflare
+//     edge addresses as the client; the cluster's log store keeps them for
+//     14 days, read from its live retention setting.
+// The runbook for access and erasure requests is kept privately.
+//
 // If you change what is collected, change this page in the same commit, and add
 // a log entry at the bottom. The old entries stay.
-const version = 'v1.4';
-const updated = '2026-09-15';
+const version = 'v1.5';
+const updated = '2026-09-23';
 
 const log = [
+  {
+    version: 'v1.5',
+    date: '2026-09-23',
+    body: 'Corrected the comments section: the comment server shortens IP addresses before saving them, and it also records browser and operating system against login sessions and page views. Added how long sessions and page views last, the cookie and local storage the comment box uses, arcade saves, the web server logs, and how to delete a comment account yourself.',
+  },
   {
     version: 'v1.4',
     date: '2026-09-15',
@@ -160,9 +187,17 @@ const log = [
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         Here's what the comment server keeps. Against a comment: the text, the name you typed, and
-        your IP address with a country. Against an account: your email address, your display name,
-        and the IP you signed up from. Against a login session: your IP again. It also keeps its
-        own count of views on pages that have comments, with an IP, for 30 days.
+        a shortened IP address with a country. Against an account: your email address, your display
+        name, and a shortened IP address and country from when you signed up. Against a login
+        session: a shortened IP address again, plus your browser and operating system. Sessions
+        expire after 28 days, or when you sign out, and are deleted then. It also keeps its own
+        count of views on pages that have comments, with a shortened IP address and your browser
+        and operating system, and deletes each view after 31 days.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Shortened means the server keeps the first two of the four parts of an IPv4 address, like
+        203.0.x.x, or the first two groups of an IPv6 one. It works out the country first and then
+        drops the rest before anything is saved.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         The IP logging is for spam and abuse, and that's all I use it for. I don't cross-reference
@@ -181,6 +216,35 @@ const log = [
         from a new account. That reproduces what requiring a GitHub account was doing by accident,
         without charging everyone a GitHub account to get in. It also means your comment might sit
         in a queue for a while. I'm one person.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># in your browser</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        The analytics store nothing in your browser. Two other things do, and only on the pages
+        that use them.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        On a post with comments, the comment box sets a cookie called
+        <span class="font-mono text-sm">comentario_commenter_session</span> and keeps your comment
+        sort order in local storage. Until you sign in, the cookie holds the same placeholder value
+        for everyone. Once you sign in, it holds your login session.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        The arcade can keep saved games and disk changes in your browser's storage for
+        arcade.probablyfine.dev. They stay on your device. The arcade server only hands out files
+        and has nothing that could receive them. Clearing that site's data removes them.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># server logs</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        The web servers in my cluster log each request: the address it came from, the page, the
+        referrer and the browser. For visits from the internet that address is Cloudflare's rather
+        than yours, because Cloudflare sits in front of the site. The logs are kept for 14 days and
+        are used to find faults.
       </p>
     </div>
 
@@ -210,6 +274,15 @@ const log = [
         <a href="mailto:hello@maxfieldallison.com" data-umami-event="email-click" class="hover:text-[var(--color-ink)]">hello@maxfieldallison.com</a>
         {' '}and I'll delete it. A comment, your account, everything attached to it, your choice.
         You don't have to give a reason and I won't ask for one.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        If you made an account, you can also delete it yourself. In the comment box, open Settings,
+        then "Edit Comentario profile", then "Delete my account". You choose whether your comments
+        go with it. If you keep them, they stay up under the name "Deleted User".
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        If you commented without an account, there's no email address to match you by. Tell me
+        which post and roughly when, and I'll remove it.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         Same address if you think something on this page is wrong, or if you want to know what's
