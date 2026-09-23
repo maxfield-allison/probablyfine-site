@@ -1,13 +1,36 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { AI_ROLES, aiRoleLabel } from '../lib/aiRole';
 
 // The living AI policy. The essay at /blog/how-i-use-ai is where these rules
 // came from and stays frozen as a dated post; THIS page is what is currently
 // true. Rule changes land in the log at the bottom and old entries stay.
 // The aiRole chip on every post links here, so this page is the answer to
 // "according to what standard?" at the moment a reader asks it.
-const version = 'v1.1';
-const updated = '2026-08-26';
+const version = 'v1.2';
+const updated = '2026-09-23';
+
+// "Where that stands today" is counted from the published posts at build time.
+// Written by hand, it said every post was ai-drafted for fifteen days after that
+// stopped being true (v1.2 below).
+const published = await getCollection('posts', ({ data }) => !data.draft);
+const used = AI_ROLES.map((role) => ({
+  label: aiRoleLabel(role),
+  count: published.filter((p) => p.data.aiRole === role).length,
+}))
+  .filter((r) => r.count > 0)
+  .sort((a, b) => b.count - a.count);
+const handWritten = published.filter((p) => p.data.aiRole === 'none').length;
+const verb = (n: number) => (n === 1 ? 'is' : 'are');
+const [first, ...rest] = used;
+const standing =
+  used.length === 1
+    ? `every post published so far is tagged "${first.label}," so the labels don't distinguish anything yet.`
+    : `${first.count} of the ${published.length} posts published so far ${verb(first.count)} tagged "${first.label},"` +
+      rest
+        .map((r, i) => `${i === rest.length - 1 ? ' and' : ''} ${r.count} ${verb(r.count)} tagged "${r.label}${i === rest.length - 1 ? '.' : ','}"`)
+        .join('');
 
 const tags = [
   {
@@ -25,6 +48,11 @@ const tags = [
 ];
 
 const log = [
+  {
+    version: 'v1.2',
+    date: '2026-09-23',
+    body: 'The "where that stands today" note said every published post was tagged "ai-drafted, edited by me." That stopped being true on 2026-09-08, when "I just wanted to play games" shipped as "research assist," and the note stayed wrong for fifteen days. It is now counted from the posts when the site builds, so it changes when a post does.',
+  },
   {
     version: 'v1.1',
     date: '2026-08-26',
@@ -80,9 +108,8 @@ const log = [
         happened to that particular piece, and the note is the real disclosure.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        Where that stands today: every post published so far is tagged "ai-drafted, edited by me,"
-        so the labels don't distinguish anything yet. They start working when the first hand-written
-        piece ships, and one is planned.
+        Where that stands today: {standing}
+        {handWritten === 0 && ' No post is "written by hand" yet, and one is planned.'}
       </p>
     </div>
 
