@@ -1,15 +1,14 @@
-# Cloudflare Pages headers for the failover mirror.
+# GENERATED FILE. Do not edit by hand.
 #
-# The mirror serves the same static build as the K8s origin, but Pages does not
-# run nginx.conf — so without this file the mirror answers with no CSP, no
-# HSTS, and no framing protection. Failover would then silently drop every
-# security header exactly when the site is already having a bad day.
+# Cloudflare Pages headers for the failover mirror, rendered from
+# security-policy.mjs by scripts/shared/headers.mjs. Pages does not run
+# nginx.conf, so without this file the mirror would answer with no CSP, no
+# HSTS and no framing protection exactly when the origin is already down.
+# Change the policy and run `pnpm headers`; the build fails when this file
+# and the policy disagree.
 #
-# Keep in step with nginx.conf. The two are separate files by necessity, so a
-# change to the policy has to be made in both places.
-#
-# `pnpm check:headers` compares them and the build runs it, so drift fails
-# before it ships rather than on the day of a failover.
+# Pages applies every matching rule, so a scoped rule lists only what
+# differs from /* and detaches ("! Name") any header it replaces.
 
 /*
   X-Content-Type-Options: nosniff
@@ -19,24 +18,15 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
   Content-Security-Policy: default-src 'self'; script-src 'self' https://comments.probablyfine.dev; style-src 'self' 'unsafe-inline' https://comments.probablyfine.dev; img-src 'self' data: https://comments.probablyfine.dev; font-src 'self'; connect-src 'self' https://comments.probablyfine.dev; frame-src 'self' https://arcade.probablyfine.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
 
-# Arcade documents need shared-memory isolation for the Mac emulator. Full
-# navigations at this boundary ensure the browser applies these headers.
+# The Mac emulator needs shared-memory isolation. Full navigations at
+# this boundary ensure the browser applies these headers.
 /arcade*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: SAMEORIGIN
-  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://comments.probablyfine.dev; style-src 'self' 'unsafe-inline' https://comments.probablyfine.dev; img-src 'self' data: https://comments.probablyfine.dev; font-src 'self'; connect-src 'self' https://comments.probablyfine.dev; frame-src 'self' https://arcade.probablyfine.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
 
-# The ZERO/DAY playtest build is a single self-contained file with its own
-# inline script, so it gets a scoped policy rather than loosening the site.
+# The ZERO/DAY playtest build ships as a single self-contained HTML file
+# with an inline script. Rather than weaken script-src for the whole
+# site, this path gets its own policy.
 /zeroday/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: SAMEORIGIN
-  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'

@@ -9,11 +9,12 @@
   "scripts": {
     "predev": "node scripts/copy-fonts.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/check-headers.mjs && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs && node scripts/gen-arcade-og.mjs",
+    "prebuild": "node scripts/shared/headers.mjs --check && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs && node scripts/gen-arcade-og.mjs",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "fonts": "node scripts/copy-fonts.mjs",
+    "headers": "node scripts/shared/headers.mjs",
     "og": "node scripts/gen-og.mjs",
     "og:posts": "node scripts/gen-post-og.mjs",
     "og:pets": "node scripts/gen-pets-og.mjs",
@@ -23,7 +24,7 @@
     "photo:find": "node scripts/photo-from-immich.mjs --find",
     "photo:import": "node scripts/photo-import.mjs",
     "check": "astro check",
-    "check:headers": "node scripts/check-headers.mjs",
+    "check:headers": "node scripts/shared/headers.mjs --check",
     "check:ai-notes": "node scripts/check-ai-notes.mjs",
     "check:tracking": "node scripts/check-tracking.mjs",
     "check:arcade": "node scripts/arcade/smoke.mjs"
