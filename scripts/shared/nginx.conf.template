@@ -29,6 +29,10 @@ http {
     # Cache hashed static assets aggressively; HTML stays fresh.
     map $uri $cache_control {
         default                 "public, max-age=3600";
+        # Regexes are tried in order, so /pagefind/ must come before the .js
+        # rule: Pagefind's file names are not content-hashed, and pinning them
+        # as immutable would serve a stale index after a rebuild.
+        ~^/pagefind/            "public, max-age=3600";
         ~*\.(css|js|woff2?)$    "public, max-age=31536000, immutable";
         ~*\.(png|jpg|jpeg|gif|svg|ico|webp)$ "public, max-age=604800";
         ~*\.html$               "public, max-age=0, must-revalidate";

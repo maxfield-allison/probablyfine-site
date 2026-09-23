@@ -57,6 +57,13 @@ const siteCsp = {
   'upgrade-insecure-requests': [],
 };
 
+// Pagefind runs its search index as WebAssembly, and browsers refuse to
+// compile wasm unless script-src carries 'wasm-unsafe-eval'. That source
+// permits wasm compilation only; it does not re-enable eval() or inline
+// script. It is granted on /search and on /pagefind/ (whose worker script
+// takes its policy from its own response), not site-wide.
+const searchCsp = { ...siteCsp, 'script-src': [...siteCsp['script-src'], "'wasm-unsafe-eval'"] };
+
 export default {
   headers: {
     'X-Content-Type-Options': 'nosniff',
@@ -71,6 +78,18 @@ export default {
   },
 
   scopes: [
+    {
+      path: '/search',
+      note: ['Pagefind search: the one page that compiles WebAssembly.'],
+      tryFiles: '$uri $uri.html $uri/index.html @notfound',
+      headers: { 'Content-Security-Policy': searchCsp },
+    },
+    {
+      path: '/pagefind/',
+      note: ["Pagefind's script, worker, wasm and index, loaded only by /search."],
+      tryFiles: '$uri =404',
+      headers: { 'Content-Security-Policy': searchCsp },
+    },
     {
       path: '/arcade',
       note: [

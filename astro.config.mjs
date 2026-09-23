@@ -30,6 +30,8 @@ export default defineConfig({
     filter: (page) => {
       const path = new URL(page).pathname.replace(/\.html$/, '').replace(/\/$/, '');
       if (draftPaths.has(path)) return false;
+      // /search is noindex: a results page has nothing of its own to rank.
+      if (path === '/search') return false;
       return path !== '/integrations' && !path.startsWith('/integrations/');
     },
   })],

@@ -18,6 +18,16 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
   Content-Security-Policy: default-src 'self'; script-src 'self' https://comments.probablyfine.dev; style-src 'self' 'unsafe-inline' https://comments.probablyfine.dev; img-src 'self' data: https://comments.probablyfine.dev; font-src 'self'; connect-src 'self' https://comments.probablyfine.dev; frame-src 'self' https://arcade.probablyfine.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
 
+# Pagefind search: the one page that compiles WebAssembly.
+/search*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://comments.probablyfine.dev 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://comments.probablyfine.dev; img-src 'self' data: https://comments.probablyfine.dev; font-src 'self'; connect-src 'self' https://comments.probablyfine.dev; frame-src 'self' https://arcade.probablyfine.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+
+# Pagefind's script, worker, wasm and index, loaded only by /search.
+/pagefind/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://comments.probablyfine.dev 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://comments.probablyfine.dev; img-src 'self' data: https://comments.probablyfine.dev; font-src 'self'; connect-src 'self' https://comments.probablyfine.dev; frame-src 'self' https://arcade.probablyfine.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+
 # The Mac emulator needs shared-memory isolation. Full navigations at
 # this boundary ensure the browser applies these headers.
 /arcade*

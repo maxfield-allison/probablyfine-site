@@ -11,6 +11,7 @@
     "dev": "astro dev",
     "prebuild": "node scripts/shared/headers.mjs --check && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs && node scripts/gen-arcade-og.mjs",
     "build": "astro check && astro build",
+    "postbuild": "pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "fonts": "node scripts/copy-fonts.mjs",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "pagefind": "1.5.2",
     "playwright": "1.59.1",
     "sharp": "^0.35.3",
     "shiki": "4.3.1",

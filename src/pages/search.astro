@@ -1,0 +1,223 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Full-text search over the blog, served entirely from this origin.
+//
+// The index is built by Pagefind after `astro build` (the postbuild step in
+// package.json) and lands in dist/pagefind/. Only post articles are indexed:
+// src/pages/blog/[slug].astro marks them data-pagefind-body.
+//
+// Three decisions worth knowing before changing this page:
+//
+// - Pagefind's JS and WebAssembly load on this page and nowhere else. The
+//   import below is the only reference to /pagefind/ in the site. The wasm is
+//   why script-src carries 'wasm-unsafe-eval' (see nginx.conf).
+//
+// - The query never goes into the URL. Umami records the page URL, including
+//   its query string, and the Referrer-Policy sends full same-origin URLs, so a
+//   ?q= would put what someone typed into analytics and into the referrer of
+//   the post they open next. Search terms stay in the browser; the only
+//   requests are for index chunks.
+//
+// - fullReload: this page opts out of ClientRouter, so its script runs on a
+//   real page load and never has to re-initialise after a view transition.
+//
+// noindex and absent from the sitemap: a results page has nothing of its own
+// for a search engine to index.
+---
+
+<Layout
+  title="Search · ProbablyFine"
+  description="Search the text of every post on ProbablyFine."
+  noindex
+  fullReload
+>
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 pt-12 sm:pt-16 pb-20">
+    <p class="font-mono text-sm text-[var(--color-accent)] m-0" aria-hidden="true">
+      $ grep -ri "<span id="search-echo"></span>" ./blog<span class="cursor"></span>
+    </p>
+    <h1 class="text-3xl font-bold mt-4 mb-0">Search</h1>
+    <p class="text-[var(--color-ink-dim)] mt-3 mb-0 max-w-[var(--measure-read)]">
+      Searches the full text of every post. The index is downloaded and searched in your browser.
+    </p>
+
+    <div role="search" class="mt-8 max-w-[var(--measure-read)]">
+      <label for="search-input" class="block font-mono text-xs text-[var(--color-ink-dim)]">query</label>
+      <input
+        id="search-input"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        class="search-input mt-2 w-full font-mono text-sm"
+      />
+    </div>
+
+    <noscript>
+      <p class="mt-6 font-mono text-sm text-[var(--color-ink-dim)]">
+        Search runs in the browser and needs JavaScript. Every post is listed on the
+        <a href="/blog">blog index</a> and by <a href="/blog/tags">tag</a>.
+      </p>
+    </noscript>
+
+    <p id="search-status" role="status" class="mt-6 mb-0 font-mono text-xs text-[var(--color-ink-dim)]"></p>
+    <ol id="search-results" class="mt-4 max-w-[var(--measure-read)] list-none p-0"></ol>
+  </section>
+</Layout>
+
+<script>
+  type PagefindResult = {
+    url: string;
+    excerpt: string;
+    meta: { title?: string; date?: string };
+  };
+  type Pagefind = {
+    options: (o: Record<string, unknown>) => Promise<void>;
+    init: () => Promise<void>;
+    debouncedSearch: (
+      q: string,
+      o?: Record<string, unknown>,
+      ms?: number,
+    ) => Promise<{ results: { data: () => Promise<PagefindResult> }[] } | null>;
+  };
+
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const status = document.getElementById('search-status')!;
+  const list = document.getElementById('search-results')!;
+  const echo = document.getElementById('search-echo')!;
+
+  // A variable, so the bundler leaves the path alone: /pagefind/ only exists in
+  // dist after the postbuild step, never in the source tree.
+  const bundle = '/pagefind/pagefind.js';
+  let pagefind: Pagefind | null = null;
+
+  // Pagefind excerpts are HTML with <mark> around matches. Rebuild them from
+  // text nodes and <mark> only, rather than trusting any markup via innerHTML.
+  function excerptNodes(html: string): Node[] {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return [...doc.body.childNodes].map((n) => {
+      if (n.nodeName === 'MARK') {
+        const m = document.createElement('mark');
+        m.textContent = n.textContent;
+        return m;
+      }
+      return document.createTextNode(n.textContent ?? '');
+    });
+  }
+
+  function render(results: PagefindResult[]) {
+    list.replaceChildren(
+      ...results.map((r) => {
+        const li = document.createElement('li');
+        li.className = 'search-hit';
+        const a = document.createElement('a');
+        // The build writes /blog/<slug>.html; the site links clean URLs.
+        a.href = r.url.replace(/\.html$/, '');
+        a.className = 'search-title';
+        a.textContent = r.meta.title ?? a.href;
+        li.append(a);
+        if (r.meta.date) {
+          const t = document.createElement('time');
+          t.dateTime = r.meta.date;
+          t.textContent = r.meta.date;
+          t.className = 'search-date';
+          li.append(t);
+        }
+        const p = document.createElement('p');
+        p.className = 'search-excerpt';
+        p.append(...excerptNodes(r.excerpt));
+        li.append(p);
+        return li;
+      }),
+    );
+  }
+
+  async function run() {
+    const q = input.value.trim();
+    echo.textContent = q;
+    if (!pagefind) return;
+    if (!q) {
+      list.replaceChildren();
+      status.textContent = '';
+      return;
+    }
+    const search = await pagefind.debouncedSearch(q, {}, 200);
+    if (search === null) return; // superseded by a newer keystroke
+    const results = await Promise.all(search.results.slice(0, 20).map((r) => r.data()));
+    if (input.value.trim() !== q) return;
+    render(results);
+    const n = search.results.length;
+    status.textContent = n === 1 ? `1 post matches "${q}"` : `${n} posts match "${q}"`;
+  }
+
+  input.addEventListener('input', run);
+
+  (async () => {
+    try {
+      pagefind = (await import(/* @vite-ignore */ bundle)) as Pagefind;
+      await pagefind.options({ excerptLength: 24 });
+      await pagefind.init();
+      input.dataset.ready = '';
+      // Anything typed while the index loaded, or restored by a back
+      // navigation, is searched as soon as it is ready.
+      if (input.value) run();
+    } catch {
+      status.textContent = 'Search could not load. Every post is listed on the blog index at /blog.';
+    }
+  })();
+</script>
+
+<style>
+  .search-input {
+    min-height: 44px;
+    padding: 10px 12px;
+    color: var(--color-ink);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+  }
+  .search-input:focus-visible {
+    border-color: var(--color-accent);
+  }
+  #search-status:empty {
+    display: none;
+  }
+  :global(.search-hit) {
+    padding: 18px 0;
+    border-top: 1px solid var(--color-line);
+  }
+  :global(.search-hit:first-child) {
+    border-top: 0;
+    padding-top: 0;
+  }
+  :global(.search-title) {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  :global(.search-title:hover) {
+    color: var(--color-accent);
+  }
+  :global(.search-date) {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-dim);
+  }
+  :global(.search-excerpt) {
+    margin: 8px 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-dim);
+  }
+  :global(.search-excerpt mark) {
+    background: transparent;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 3px;
+  }
+</style>

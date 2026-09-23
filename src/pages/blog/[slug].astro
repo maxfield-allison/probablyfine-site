@@ -95,15 +95,25 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
   </Fragment>
   {/* The post shell is the container width; the header and prose hold the
       narrower reading measure inside it, so sessions, figures, and photographs
-      break out wider without the text ever running long. */}
-  <article class="max-w-[var(--container-shell)] mx-auto px-6 pt-12 sm:pt-16 pb-12">
+      break out wider without the text ever running long.
+
+      data-pagefind-body scopes the /search index to the article: only pages
+      carrying it are indexed, and only the text inside it, so nav, footer,
+      listings and comments never match. The chrome inside the article (the
+      prompt line, the date/tag row, older/newer and related posts) is marked
+      data-pagefind-ignore for the same reason. */}
+  <article
+    data-pagefind-body
+    data-pagefind-meta={`date:${dateStr}`}
+    class="max-w-[var(--container-shell)] mx-auto px-6 pt-12 sm:pt-16 pb-12"
+  >
     <header class="max-w-[var(--measure-read)] mx-auto">
-      <p class="font-mono text-xs text-[var(--color-accent)] m-0">
+      <p data-pagefind-ignore class="font-mono text-xs text-[var(--color-accent)] m-0">
         $ cd ./blog<span class="cursor" aria-hidden="true"></span>
       </p>
       <h1 class="text-[2rem] sm:text-[2.5rem] font-bold mt-5 leading-[1.15] tracking-[-0.01em]">{title}</h1>
       <p class="text-lg leading-[1.6] text-[var(--color-ink-dim)] mt-5 mb-0">{description}</p>
-      <div class="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-[var(--color-line)] font-mono text-xs text-[var(--color-ink-dim)]">
+      <div data-pagefind-ignore class="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-[var(--color-line)] font-mono text-xs text-[var(--color-ink-dim)]">
         {draft && <span class="chip chip-draft">draft</span>}
         {genre === 'tutorial' && <span class="chip">tutorial</span>}
         <time datetime={dateStr}>{dateStr}</time>
@@ -138,6 +148,7 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
     {
       (newer || older) && (
         <nav
+          data-pagefind-ignore
           aria-label="More posts"
           class="mt-16 pt-8 border-t border-[var(--color-line)] grid gap-4 sm:grid-cols-2 font-mono text-sm"
         >
@@ -165,7 +176,7 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
 
     {
       related.length > 0 && (
-        <section class="mt-12 pt-8 border-t border-[var(--color-line)]">
+        <section data-pagefind-ignore class="mt-12 pt-8 border-t border-[var(--color-line)]">
           <h2 class="font-mono text-sm text-[var(--color-ink-dim)]">related posts</h2>
           <ul class="mt-4 space-y-3">
             {related.map((r) => (
