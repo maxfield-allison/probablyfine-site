@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { talosNodes } from '../data/facts';
 
 // A /now page (nownownow.com convention): what I'm focused on right now.
 // Keep it current and honest. Update the date when it changes. No internal
@@ -9,7 +10,7 @@ const updated = 'August 2026';
 const focus = [
   {
     heading: 'Running the lab',
-    body: 'Keeping the 9-node Talos Kubernetes cluster healthy under GitOps, and slowly retiring the last of the homegrown glue in favor of boring, standard tooling. Recent work: controlled image updates through Renovate so every version bump is a reviewable, revertible change.',
+    body: `Keeping the ${talosNodes.value}-node Talos Kubernetes cluster healthy under GitOps, and slowly retiring the last of the homegrown glue in favor of boring, standard tooling. Recent work: controlled image updates through Renovate so every version bump is a reviewable, revertible change.`,
   },
   {
     heading: 'Writing it down',
