@@ -15,6 +15,19 @@ const posts = defineCollection({
     // Replaced a boolean that was true on every post and therefore said nothing.
     aiRole: z.enum(AI_ROLES).default('none'),
     draft: z.boolean().default(false),
+    // Post genre. Absent on ordinary posts. `tutorial` adds the header chip and
+    // enables the "what you end up with" panel below.
+    genre: z.enum(['tutorial']).optional(),
+    // Tutorial finish line: one sentence saying what the reader will have, and
+    // the command whose output proves it. Rendered after the post header.
+    outcome: z
+      .object({
+        summary: z.string(),
+        command: z.string(),
+        // Where the command runs, shown in the session bar like a fence's host=.
+        host: z.string().optional(),
+      })
+      .optional(),
   }),
 });
 

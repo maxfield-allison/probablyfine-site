@@ -3,10 +3,13 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ReadTracker from '../../components/ReadTracker.astro';
 import Comments from '../../components/Comments.astro';
-import { readingTime, tagSlug } from '../../lib/posts';
+import CopyCommands from '../../components/CopyCommands.astro';
+import { Code } from 'astro:components';
+import { sessionTheme, sessionTransformers } from '../../lib/session.mjs';
+import { listed, readingTime, tagSlug } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  const posts = (await getCollection('posts', listed)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
   );
   return posts.map((post, i) => {
@@ -33,8 +36,11 @@ export async function getStaticPaths() {
 }
 
 const { post, newer, older, related } = Astro.props;
-const { title, description, date, tags, aiRole } = post.data;
-const { Content } = await render(post);
+const { title, description, date, tags, aiRole, draft, genre, outcome } = post.data;
+const { Content, remarkPluginFrontmatter } = await render(post);
+// The copy script ships only on a page with something to copy: a `$` command
+// in the body (flagged by the command-flag plugin) or a finish-line command.
+const hasCommands = Boolean(remarkPluginFrontmatter?.hasCommands || outcome);
 const dateStr = date.toISOString().slice(0, 10);
 const mins = readingTime(post.body);
 
@@ -79,7 +85,7 @@ const breadcrumbLd = {
 import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
 ---
 
-<Layout title={`${title} · ProbablyFine`} description={description} ogImage={ogImage} ogType="article">
+<Layout title={`${title} · ProbablyFine`} description={description} ogImage={ogImage} ogType="article" noindex={draft}>
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} slot="head" />
   <Fragment slot="head">
@@ -98,6 +104,8 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
       <h1 class="text-[2rem] sm:text-[2.5rem] font-bold mt-5 leading-[1.15] tracking-[-0.01em]">{title}</h1>
       <p class="text-lg leading-[1.6] text-[var(--color-ink-dim)] mt-5 mb-0">{description}</p>
       <div class="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-[var(--color-line)] font-mono text-xs text-[var(--color-ink-dim)]">
+        {draft && <span class="chip chip-draft">draft</span>}
+        {genre === 'tutorial' && <span class="chip">tutorial</span>}
         <time datetime={dateStr}>{dateStr}</time>
         <span>{mins} min read</span>
         {tags.map((t) => (
@@ -106,6 +114,22 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
         <a href="/ai" style={`color: ${aiRoleColor(aiRole)}`} class="no-underline hover:underline" data-track="ai-role-chip" data-track-role={aiRole} data-track-where="post-header">{aiRoleLabel(aiRole)}</a>
       </div>
     </header>
+
+    {
+      outcome && (
+        <section class="outcome max-w-[var(--measure-read)] mx-auto mt-10" aria-labelledby="outcome-title">
+          <h2 id="outcome-title" class="outcome-label">What you end up with</h2>
+          <p class="outcome-summary">{outcome.summary}</p>
+          <Code
+            code={`$ ${outcome.command}`}
+            lang="bash"
+            theme={sessionTheme}
+            transformers={sessionTransformers}
+            meta={`title="${outcome.host ?? 'finish line'}"`}
+          />
+        </section>
+      )
+    }
 
     <div class="prose mt-10">
       <Content />
@@ -174,4 +198,5 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
   <ReadTracker event="post-read" key="slug" id={post.id} />
   {/* Reading-note and link signals; emitted with a content hash. */}
   <script src="../../scripts/post-signals.js"></script>
+  {hasCommands && <CopyCommands />}
 </Layout>

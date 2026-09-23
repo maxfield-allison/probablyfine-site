@@ -305,13 +305,15 @@
    A fenced block renders as a terminal session rather than a bare code slab: a
    label bar saying where the command ran and whether you are looking at input
    or output, then the code. Built by the `session-block` Shiki transformer in
-   astro.config.mjs from the fence info string.
+   src/lib/session.mjs from the fence info string. The same rules style the
+   tutorial "what you end up with" panel, which renders its command through
+   that pipeline outside .prose.
 
    Blocks deliberately break out past the prose measure. Wrapped commands are
    harder to read than a wider block, and the width change is what makes a
    session read as a different kind of object from the paragraph around it.
    --------------------------------------------------------------------------- */
-.prose .session {
+:is(.prose, .outcome) .session {
   width: 100%;
   max-width: var(--container-shell);
   margin: 1.75rem auto;
@@ -320,7 +322,7 @@
   border-radius: 0.375rem;
   overflow: hidden;
 }
-.prose .session-bar {
+:is(.prose, .outcome) .session-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -333,10 +335,10 @@
 }
 /* No opacity here: at 11px, 0.6 on ink-dim gives 3.06:1, under WCAG AA.
    The label is dim enough already by being ink-dim at a small size. */
-.prose .session-kind {
+:is(.prose, .outcome) .session-kind {
   color: var(--color-ink-dim);
 }
-.prose .session pre {
+:is(.prose, .outcome) .session pre {
   margin: 0;
   padding: 1rem 1.25rem;
   overflow-x: auto;
@@ -445,4 +447,244 @@
   font-size: 0.8rem;
   color: var(--color-ink-dim);
   text-align: center;
+}
+
+/* ---------------------------------------------------------------------------
+   Commands, expected output and the tutorial genre
+
+   Built by src/lib/session.mjs (the `$` prompt, `expect`, `collapse=N`) and
+   src/lib/markdown.mjs (step headings, callouts). None of it matches anything
+   a post wrote before it existed, so older posts render as they did.
+
+   Everything decorative here is generated content with empty alternative text
+   (`content: 'x' / ''`), so prompts, checkmarks and brackets are never in a
+   selection, a clipboard or a screen reader's output. The first `content`
+   line is the fallback for browsers without that syntax. No motion.
+   --------------------------------------------------------------------------- */
+
+/* The prompt gutter. The `$` is not in the DOM text at all. */
+:is(.prose, .outcome) .session .line.cmd::before {
+  content: '$ ';
+  content: '$ ' / '';
+  color: var(--color-ink-dim);
+  user-select: none;
+}
+/* A backslash-continued line keeps the command's indent, with no prompt. */
+:is(.prose, .outcome) .session .line.cont::before {
+  content: '  ';
+  content: '  ' / '';
+  user-select: none;
+}
+:is(.prose, .outcome) .session .line.out {
+  color: var(--color-ink-dim);
+}
+/* `# ← this line or stop here`: the line to look for in expected output. */
+:is(.prose, .outcome) .session .anno {
+  color: var(--color-accent);
+}
+.outcome pre code {
+  font-family: var(--font-mono);
+  font-size: 0.84375rem;
+  line-height: 1.7;
+}
+
+/* The dashed rule between a command and its expected output. */
+.session-expect {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-ink-dim);
+}
+.session-expect::after {
+  content: '';
+  flex: 1;
+  border-top: 1px dashed color-mix(in srgb, var(--color-ink-dim) 45%, transparent);
+}
+:is(.prose, .outcome) .session pre:has(+ .session-expect) {
+  padding-bottom: 0.625rem;
+}
+:is(.prose, .outcome) .session .session-expect + pre {
+  padding-top: 0.625rem;
+}
+
+/* collapse=N: output past line N folds into a native disclosure. */
+:is(.prose, .outcome) .session pre:has(+ .session-more) {
+  padding-bottom: 0.25rem;
+}
+.session-more > summary {
+  padding: 0.25rem 1.25rem 0.875rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-dim);
+  cursor: pointer;
+}
+.session-more > summary:hover {
+  color: var(--color-accent);
+}
+.session-more[open] > summary {
+  padding-bottom: 0.25rem;
+}
+:is(.prose, .outcome) .session .session-more > pre {
+  padding-top: 0.25rem;
+}
+
+/* Copy affordance, command blocks only. Shipped hidden; the copy script
+   reveals it. The status line is the live region that confirms a copy. */
+.session-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.session-status {
+  color: var(--color-accent);
+}
+.session-copy {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0 0.5rem;
+  font: inherit;
+  color: var(--color-ink-dim);
+  background: none;
+  border: 1px solid var(--color-line);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+.session-copy:hover {
+  color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
+/* Header chips: the post genre, and "draft" when a draft renders locally. */
+.chip {
+  display: inline-block;
+  padding: 0 0.45em;
+  line-height: 1.6;
+  color: var(--color-accent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 50%, transparent);
+  border-radius: 0.25rem;
+}
+.chip-draft {
+  color: var(--color-warn);
+  border-color: color-mix(in srgb, var(--color-warn) 50%, transparent);
+}
+
+/* What you end up with: the tutorial's finish line, above the body. */
+.outcome {
+  padding: 1.125rem 1.25rem 0.125rem;
+  border: 1px solid var(--color-line);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0.375rem;
+}
+.outcome-label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.outcome-summary {
+  margin: 0.5rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.outcome .session {
+  margin: 1rem 0;
+}
+
+/* Step headings, authored `## [3/6] Deploy dnsweaver`. The chip replaces the
+   `##` marker; it is aria-hidden, and a visually hidden "Step 3 of 6:" says the
+   same thing in words. */
+.prose h2.step::before {
+  content: none;
+}
+.step-chip {
+  display: inline-block;
+  margin-right: 0.6rem;
+  padding: 0 0.45em;
+  vertical-align: 0.15em;
+  font-family: var(--font-mono);
+  font-size: 0.6em;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--color-accent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 50%, transparent);
+  border-radius: 0.25rem;
+  user-select: none;
+}
+
+/* Prerequisites: a GFM task list (`- [x] ...`) reads as `[x]` in mono accent.
+   The checkbox stays in the accessibility tree, where "checked" is the true
+   state of an authored `[x]`; it is only hidden visually. */
+.prose ul.contains-task-list {
+  list-style: none;
+  padding-left: 0;
+}
+.prose .task-list-item {
+  position: relative;
+  padding-left: 2.5rem;
+}
+.prose .task-list-item > input[type='checkbox'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.prose .task-list-item::before {
+  content: '[ ]';
+  content: '[ ]' / '';
+  position: absolute;
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--color-ink-dim);
+  user-select: none;
+}
+.prose .task-list-item:has(> input:checked)::before {
+  content: '[x]';
+  content: '[x]' / '';
+  color: var(--color-accent);
+}
+
+/* Callouts: `> [!NOTE]`, `> [!WARNING]`, `> [!VERIFY]`. A plain blockquote is
+   still a quotation and keeps the italic treatment above. */
+.prose .callout {
+  --callout: var(--color-ink-dim);
+  padding: 0.875rem 1.125rem;
+  font-style: normal;
+  color: var(--color-ink);
+  border-left: 3px solid var(--callout);
+  border-radius: 0 0.375rem 0.375rem 0;
+  background-color: color-mix(in srgb, var(--callout) 7%, transparent);
+}
+.prose .callout[data-kind='warn'] {
+  --callout: var(--color-warn);
+}
+.prose .callout[data-kind='ok'] {
+  --callout: var(--color-accent);
+}
+.prose .callout > :last-child {
+  margin-bottom: 0;
+}
+.prose .callout .session {
+  margin: 1rem 0;
+}
+.prose .callout-label {
+  margin-bottom: 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--callout);
+}
+.prose .callout[data-kind='ok'] .callout-label::before {
+  content: '✓ ';
+  content: '✓ ' / '';
 }

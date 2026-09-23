@@ -3,104 +3,25 @@ import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import { satteri } from '@astrojs/markdown-satteri';
+import { readdirSync, readFileSync } from 'node:fs';
 
-// A deliberately narrow shell-session theme. A real terminal is not a rainbow,
-// and the job here is to separate what was typed from what came back, not to
-// reimplement an editor theme. Five roles, matching the --color-code-* tokens
-// in global.css: output/plain, comments, strings, flags and arguments, and the
-// command itself. Kept as a literal so it needs no import from shiki, which is
-// a literal rather than built with shiki's helpers; shiki itself is a
-// devDependency only so these JSDoc types resolve.
-/** @type {import('shiki').ThemeRegistrationRaw} */
-const sessionTheme = {
-  name: 'probablyfine-session',
-  type: 'dark',
-  colors: {
-    'editor.foreground': '#8b98a5',
-    'editor.background': '#11161c',
-  },
-  settings: [
-    { settings: { foreground: '#8b98a5' } },
-    {
-      scope: ['comment', 'punctuation.definition.comment'],
-      settings: { foreground: '#6e7a87' },
-    },
-    {
-      scope: ['string', 'string.quoted', 'punctuation.definition.string'],
-      settings: { foreground: '#7ee787' },
-    },
-    {
-      scope: [
-        'constant.other.option',
-        'variable.parameter',
-        'constant.numeric',
-        'keyword.operator',
-        'punctuation.separator',
-      ],
-      settings: { foreground: '#e3b341' },
-    },
-    {
-      scope: [
-        'entity.name.function',
-        'entity.name.command',
-        'support.function',
-        'meta.function-call',
-        'keyword.control',
-        'variable.other',
-      ],
-      settings: { foreground: '#3fb950' },
-    },
-  ],
-};
+// Session blocks (fenced code as terminal sessions) and the post-body
+// extensions (step headings, callouts). Both live in src/lib so the post page
+// can reuse the session pipeline; see the comments there.
+import { sessionTheme, sessionTransformers } from './src/lib/session.mjs';
+import { postHastPlugins } from './src/lib/markdown.mjs';
+import { isDraft } from './scripts/lib/drafts.mjs';
 
-// Wrap every fenced block in the session chrome: a label bar naming where the
-// command ran, then the code. Metadata comes off the fence info string, e.g.
-//
-//   ```bash host=pve-00
-//   ```text title="journalctl · ceph-osd@8" kind=output
-//
-// Falls back to the language name, so an unannotated fence still renders as a
-// well-formed block rather than an empty bar.
-/** @type {import('shiki').ShikiTransformer} */
-const sessionBlock = {
-  name: 'session-block',
-  /** @param {any} node */
-  root(node) {
-    const raw = this.options.meta?.__raw ?? '';
-    const lang = this.options.lang ?? 'text';
-    const title =
-      /title="([^"]+)"/.exec(raw)?.[1] ?? /host=(\S+)/.exec(raw)?.[1] ?? lang;
-    const kind = /kind=(\S+)/.exec(raw)?.[1] ?? lang;
-    const pre = node.children.find(
-      /** @param {any} c */ (c) => c.tagName === 'pre',
-    );
-    if (!pre) return;
-    node.children = [
-      {
-        type: 'element',
-        tagName: 'div',
-        properties: { class: 'session' },
-        children: [
-          {
-            type: 'element',
-            tagName: 'div',
-            properties: { class: 'session-bar' },
-            children: [
-              { type: 'element', tagName: 'span', properties: {}, children: [{ type: 'text', value: title }] },
-              {
-                type: 'element',
-                tagName: 'span',
-                properties: { class: 'session-kind' },
-                children: [{ type: 'text', value: kind }],
-              },
-            ],
-          },
-          pre,
-        ],
-      },
-    ];
-  },
-};
+// Draft posts never reach the sitemap, even in a SHOW_DRAFTS preview build,
+// where their pages do exist. Read from the source frontmatter because the
+// sitemap filter runs outside the content layer.
+const draftPaths = new Set(
+  readdirSync('src/content/posts')
+    .filter((f) => /\.mdx?$/.test(f))
+    .filter((f) => isDraft(readFileSync(`src/content/posts/${f}`, 'utf8')))
+    .map((f) => `/blog/${f.replace(/\.mdx?$/, '')}`),
+);
 
 // https://astro.build/config
 export default defineConfig({
@@ -108,15 +29,17 @@ export default defineConfig({
   integrations: [sitemap({
     filter: (page) => {
       const path = new URL(page).pathname.replace(/\.html$/, '').replace(/\/$/, '');
+      if (draftPaths.has(path)) return false;
       return path !== '/integrations' && !path.startsWith('/integrations/');
     },
   })],
   markdown: {
     shikiConfig: {
       theme: sessionTheme,
-      transformers: [sessionBlock],
+      transformers: sessionTransformers,
       wrap: false,
     },
+    processor: satteri({ hastPlugins: postHastPlugins }),
   },
   // Prefetch internal links on hover/tap for near-instant navigation. Static
   // pages, so this is just a small HTML fetch primed into cache.
