@@ -94,6 +94,17 @@
     text-decoration: underline;
   }
 
+  /* A link inside running text needs a cue besides colour (WCAG 1.4.1). The
+     accent green is 2.1:1 against body ink and 1.2:1 against dim ink, well
+     short of the 3:1 that colour alone would need, so sentence links carry a
+     thin underline. Links styled as nav, chips, or cards opt out with
+     `no-underline`, which is a utility and so outranks this layer. */
+  :where(p, li, td, dd, figcaption, blockquote) a {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
   ::selection {
     background-color: var(--color-accent);
     color: var(--color-base);
