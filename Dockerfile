@@ -21,7 +21,7 @@ COPY . .
 RUN pnpm build
 
 # ---- Runtime stage ----
-FROM nginx:1.29-alpine AS runtime
+FROM nginx:1.31-alpine AS runtime
 
 # Non-root: nginx:alpine ships an unprivileged config on 8080 via nginx-unprivileged,
 # but the stock image runs as root. We serve on 8080 and run as an unprivileged user.
