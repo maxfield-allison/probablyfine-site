@@ -126,6 +126,12 @@
   outline-offset: 2px;
 }
 
+/* Its moderator badge is white 9px text on #51cf66 (2.0:1) in both of its
+   themes. Dark text on the same green is 9.6:1. */
+.comentario-root .comentario-badge.comentario-badge-moderator {
+  color: var(--color-base);
+}
+
 /* Skip link — off-screen until focused, then pinned top-left. */
 .skip-link {
   position: absolute;
