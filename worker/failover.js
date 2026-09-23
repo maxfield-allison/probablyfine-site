@@ -7,6 +7,9 @@
  *
  * Bound to the apex + www via routes in wrangler.toml. Configure the two
  * origins with vars PRIMARY_ORIGIN and FALLBACK_ORIGIN.
+ *
+ * Shared with the other site: rendered from probablyfine-site's
+ * scripts/shared/templates/. Edit the template there, not this file.
  */
 
 const TIMEOUT_MS = 3000;

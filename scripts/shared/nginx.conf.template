@@ -1,0 +1,92 @@
+# GENERATED FILE. Do not edit by hand.
+#
+# The security headers come from security-policy.mjs in this repository; the
+# rest of this file comes from scripts/shared/nginx.conf.template, which is
+# shared with the other site and owned by probablyfine-site. Change the policy
+# and run `pnpm headers`. The build fails when this file and the policy
+# disagree. See scripts/shared/README.md.
+
+worker_processes auto;
+pid /run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    tcp_nopush      on;
+    keepalive_timeout  65;
+    server_tokens   off;
+
+    gzip on;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml application/rss+xml;
+    gzip_min_length 256;
+
+    # Cache hashed static assets aggressively; HTML stays fresh.
+    map $uri $cache_control {
+        default                 "public, max-age=3600";
+        # Regexes are tried in order, so /pagefind/ must come before the .js
+        # rule: Pagefind's file names are not content-hashed, and pinning them
+        # as immutable would serve a stale index after a rebuild.
+        ~^/pagefind/            "public, max-age=3600";
+        ~*\.(css|js|woff2?)$    "public, max-age=31536000, immutable";
+        ~*\.(png|jpg|jpeg|gif|svg|ico|webp)$ "public, max-age=604800";
+        ~*\.html$               "public, max-age=0, must-revalidate";
+    }
+
+    server {
+        listen 8080;
+        server_name _;
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # Never emit absolute redirects: behind a reverse proxy an absolute
+        # Location would leak this origin's internal host and port.
+        absolute_redirect off;
+        port_in_redirect off;
+
+        # Security headers, from security-policy.mjs.
+        #
+        # The origin sends the full set so it is safe on its own and the edge
+        # is defence in depth. public/_headers carries the same policy for the
+        # Cloudflare Pages mirror.
+        #
+        # NOTE: nginx `add_header` is not additive across contexts. Any location
+        # block that declares its own add_header drops every header inherited
+        # from here, so every such block below restates the full set. The
+        # generator does that; a hand-written location block would not.
+%{serverHeaders}
+%{scopedLocations}
+        location = /healthz {
+            access_log off;
+            add_header Content-Type text/plain;
+            return 200 "ok\n";
+        }
+
+        # Flat-file build: /about serves /about.html directly, no redirect.
+        # Root and any dir serve their index.html explicitly (naming the file
+        # avoids the trailing-slash directory redirect that leaks the origin).
+        # Unknown paths return a real 404 with the custom page.
+        location / {
+            try_files $uri $uri.html $uri/index.html @notfound;
+        }
+
+        location @notfound {
+            return 404;
+        }
+
+        # Serve the custom 404 body, but never let a CDN cache a negative
+        # response: a 404 for a not-yet-deployed asset would otherwise get
+        # cached and keep 404ing after the asset ships. Cache-Control is
+        # declared here, so the security headers are restated with it.
+        error_page 404 /404.html;
+        location = /404.html {
+            internal;
+%{notFoundHeaders}
+        }
+    }
+}

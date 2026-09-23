@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
-import { collectTags } from '../../../lib/posts';
+import { collectTags, listed } from '../../../lib/posts';
 
-const posts = await getCollection('posts', ({ data }) => !data.draft);
+const posts = await getCollection('posts', listed);
 const tags = collectTags(posts);
 ---
 

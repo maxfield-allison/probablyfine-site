@@ -38,6 +38,30 @@ draft: false
 Body in Markdown.
 ```
 
+Drafts (`draft: true`) render under `pnpm dev` and in a local build run with
+`SHOW_DRAFTS=1`. A normal build leaves them out of every route, the RSS feed, the
+sitemap and the OG cards. `src/content/posts/tutorial-pipeline-fixture.md` is a
+permanent draft that exercises the tutorial syntax below.
+
+### Tutorial posts
+
+```markdown
+genre: tutorial               # frontmatter: adds the "tutorial" header chip
+outcome:                      # frontmatter: the "What you end up with" panel
+  summary: "One sentence on what the reader ends up with."
+  command: "kubectl get nodes" # the finish-line command
+  host: "workstation"         # optional session-bar label
+```
+
+- `- [x] item` lists (GFM task lists) render as `[x]` prerequisites.
+- `## [3/6] Deploy dnsweaver` renders a step chip and gets the id `step-3`.
+- In a fence, lines starting `$ ` are commands: prompt gutter, copy button.
+  A trailing `\` continues a command onto the next line.
+- Fence flag `expect` puts everything after the commands below an
+  "expected output" rule. `collapse=N` folds output past line N into `<details>`.
+  A trailing `# ← ...` on an output line is highlighted.
+- `> [!NOTE]`, `> [!WARNING]` and `> [!VERIFY]` blockquotes become callouts.
+
 ## Development approach
 
 This site is built with AI-assisted engineering: the architecture, technology choices, and

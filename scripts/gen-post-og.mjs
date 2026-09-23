@@ -6,7 +6,8 @@
 // Output is a build artifact (public/og/ is gitignored), so new posts get a
 // card automatically on the next build with no committed binaries.
 import sharp from 'sharp';
-import { readdir, readFile, mkdir } from 'node:fs/promises';
+import { readdir, readFile, mkdir, rm } from 'node:fs/promises';
+import { isDraft, showDrafts } from './lib/drafts.mjs';
 
 const POSTS_DIR = 'src/content/posts';
 const OUT_DIR = 'public/og';
@@ -78,6 +79,13 @@ for (const f of files) {
   const { title } = frontmatter(md);
   if (!title) continue;
   const slug = f.replace(/\.(md|mdx)$/, '');
+  // A draft gets no card: public/og/ is copied into dist/ whole, so a card
+  // written here is served in production even though the post is not. Remove
+  // any card an earlier build left behind for the same reason.
+  if (isDraft(md) && !showDrafts) {
+    await rm(`${OUT_DIR}/${slug}.png`, { force: true });
+    continue;
+  }
   await sharp(Buffer.from(svg(title))).png().toFile(`${OUT_DIR}/${slug}.png`);
   console.log('og:', slug);
 }

@@ -1,0 +1,60 @@
+{
+  "$comment": "The delivery layer probablyfine-site and personal-site share. probablyfine-site is the source of truth; scripts/shared/sync-shared.mjs applies this list to a site checkout and checks it. See scripts/shared/README.md.",
+  "source": "probablyfine-site",
+  "sites": {
+    "probablyfine-site": {
+      "domain": "probablyfine.dev",
+      "deployDescription": "the probablyfine.dev blog",
+      "pagesProject": "probablyfine-site",
+      "image": "probablyfine-site",
+      "gitlabProject": "probablyfine/probablyfine-site"
+    },
+    "personal-site": {
+      "domain": "maxfieldallison.com",
+      "deployDescription": "the portfolio site",
+      "pagesProject": "personal-site",
+      "image": "personal-site",
+      "gitlabProject": "probablyfine/personal-site"
+    }
+  },
+  "files": [
+    { "path": "scripts/shared/README.md", "mode": "verbatim" },
+    { "path": "scripts/shared/manifest.json", "mode": "verbatim" },
+    { "path": "scripts/shared/sync-shared.mjs", "mode": "verbatim" },
+    { "path": "scripts/shared/headers.mjs", "mode": "verbatim" },
+    { "path": "scripts/shared/nginx.conf.template", "mode": "verbatim" },
+
+    { "path": "nginx.conf", "mode": "generated" },
+    { "path": "public/_headers", "mode": "generated" },
+
+    { "path": "Dockerfile", "mode": "verbatim" },
+    { "path": ".dockerignore", "mode": "verbatim" },
+    { "path": ".github/dependabot.yml", "mode": "verbatim" },
+    { "path": ".github/workflows/deploy.yml", "mode": "template" },
+    { "path": ".github/workflows/check.yml", "mode": "verbatim" },
+    { "path": ".github/workflows/sync-to-gitlab.yml", "mode": "template" },
+
+    { "path": "worker/failover.js", "mode": "template" },
+    { "path": "public/robots.txt", "mode": "template" },
+    { "path": "public/.well-known/security.txt", "mode": "template" },
+
+    { "path": "scripts/copy-fonts.mjs", "mode": "verbatim" },
+    { "path": "scripts/gen-og.mjs", "mode": "verbatim" },
+    { "path": "src/components/ReadTracker.astro", "mode": "verbatim" },
+    { "path": "public/js/read-tracker.js", "mode": "verbatim" },
+    { "path": "public/js/interactions.js", "mode": "verbatim" }
+  ],
+  "perSite": {
+    "$comment": "Deliberately not shared. The sites share plumbing, not design.",
+    "security-policy.mjs": "Each site's own security headers; the generated nginx.conf and public/_headers come from it.",
+    "src/layouts/Layout.astro": "Design layer.",
+    "src/styles/global.css": "Design layer.",
+    "src/components/Icon.astro": "Design layer; each site carries its own icon set.",
+    "astro.config.mjs": "The blog carries a bespoke Shiki theme and integrations the portfolio has no use for.",
+    "worker/wrangler.toml": "Worker name, routes and origins are all per site, and the comments explain site-specific routing (blog.probablyfine.dev bypasses the Worker).",
+    "scripts/check-tracking.mjs": "Same check, different event allowlists and privacy-page wording. A candidate for shared logic with a per-site allowlist later.",
+    "public/site.webmanifest": "Names and colours are per site.",
+    "scripts/og.svg": "Per-site card artwork.",
+    "package.json": "Dependencies and scripts differ; each site wires the shared scripts into its own prebuild."
+  }
+}

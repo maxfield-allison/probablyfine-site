@@ -1,7 +1,18 @@
 # Dependabot keeps the three inputs of this site current: the npm dependency
 # tree, the GitHub Actions the workflows pin, and the base images the
 # Dockerfile builds from. Weekly on Monday so a week's updates land together;
-# npm minor and patch bumps arrive as one grouped pull request.
+# npm minor and patch bumps arrive as one grouped pull request, as do the
+# GitHub Actions bumps and the Docker base image minor/patch bumps.
+#
+# Node major bumps are excluded here on purpose. Node.js only promotes
+# even-numbered majors to LTS (odd majors, e.g. 25, go straight from Current
+# to end-of-life with no LTS phase - see nodejs.org/en/about/previous-releases),
+# and node:25-alpine / node:25-bookworm-slim additionally dropped corepack
+# from the base image entirely, which breaks `RUN corepack enable` in both
+# Dockerfiles here (confirmed 2026-09-23 against the live images). Dependabot
+# has no "LTS only" concept, so it will happily propose a jump straight past
+# the current LTS onto a dead-end or build-breaking major. A Node major bump
+# stays a deliberate, human-reviewed change instead.
 #
 # This repository is GitHub-authoritative and mirrors one way into GitLab for
 # CI, so update automation lives here and not on the mirror.
@@ -36,6 +47,10 @@ updates:
     labels:
       - dependencies
       - ci
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: docker
     directory: "/"
@@ -46,3 +61,14 @@ updates:
       prefix: "deps"
     labels:
       - dependencies
+    groups:
+      docker-base-images:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"

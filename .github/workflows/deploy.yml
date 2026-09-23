@@ -9,6 +9,9 @@ name: Deploy
 #
 # Direction is one-way: GitHub is the source of truth.
 #
+# Shared with the other site: rendered from probablyfine-site's
+# scripts/shared/templates/. Edit the template there, not this file.
+#
 # Required repository secrets:
 #   CLOUDFLARE_API_TOKEN   - token with Pages:Edit for the account
 #   CLOUDFLARE_ACCOUNT_ID  - Cloudflare account id
@@ -38,18 +41,19 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      # Stamps the footer so a visitor can tell the mirror is answering. Only
-      # this job sets it; the container build below gets the default and says
-      # the cluster is serving.
+      # Tells the build it is the Pages mirror. Only this job sets it; the
+      # container build below gets the default. A site can use it to show a
+      # visitor that the mirror is answering (probablyfine.dev stamps its
+      # footer); a site that never reads it builds the same output.
       - run: pnpm build
         env:
           PUBLIC_ORIGIN: pages
@@ -67,17 +71,17 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to ghcr.io
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true

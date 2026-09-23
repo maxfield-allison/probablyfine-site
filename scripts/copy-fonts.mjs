@@ -4,7 +4,7 @@
 // rules for every subset (cyrillic, greek, vietnamese, ...) and emits all of
 // their .woff2 files into dist. Browsers only ever download latin for this
 // site's content, so the rest is dead weight in the container image. Copying
-// the latin files by hand gives us two files, stable URLs we can <link
+// the latin files by hand gives us one file per face, stable URLs we can <link
 // rel="preload">, and full control over font-display.
 //
 // Output is a build artifact (public/fonts/ is gitignored), so no binaries are
@@ -16,20 +16,32 @@
 // face or change a subset, CHANGE THE OUTPUT FILENAME too (and the matching
 // @font-face src + <link rel="preload"> in the layout), or clients will hold
 // the old file for up to a year without revalidating.
-import { copyFile, mkdir, stat } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, stat } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const OUT_DIR = 'public/fonts';
 
-// pkg = the fontsource package; file = the latin variable-weight roman face.
-// Roman only: the design uses italic only on annotation text, and a synthetic
+// The faces come from package.json: every @fontsource-variable/<name>
+// dependency contributes its latin variable-weight roman face, copied as
+// <name>-latin.woff2. This script is shared by both sites (see
+// scripts/shared/README.md), and reading the list from the dependencies is
+// what lets one copy serve a site with two faces and a site with three. Adding
+// a face is adding the dependency.
+//
+// Roman only: the designs use italic only on annotation text, and a synthetic
 // oblique is a better trade than doubling the font payload. Revisit if italic
 // emphasis in prose looks wrong.
-const FONTS = [
-  { pkg: '@fontsource-variable/inter', file: 'inter-latin-wght-normal.woff2', out: 'inter-latin.woff2' },
-  { pkg: '@fontsource-variable/jetbrains-mono', file: 'jetbrains-mono-latin-wght-normal.woff2', out: 'jetbrains-mono-latin.woff2' },
-];
+const PREFIX = '@fontsource-variable/';
+const { dependencies = {} } = JSON.parse(await readFile('package.json', 'utf8'));
+const FONTS = Object.keys(dependencies)
+  .filter((pkg) => pkg.startsWith(PREFIX))
+  .sort()
+  .map((pkg) => {
+    const name = pkg.slice(PREFIX.length);
+    return { pkg, file: `${name}-latin-wght-normal.woff2`, out: `${name}-latin.woff2` };
+  });
+if (!FONTS.length) throw new Error(`fonts: no ${PREFIX}* dependencies in package.json`);
 
 await mkdir(OUT_DIR, { recursive: true });
 

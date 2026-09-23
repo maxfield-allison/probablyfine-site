@@ -2,24 +2,28 @@
 import Layout from '../layouts/Layout.astro';
 import Topology from '../components/Topology.astro';
 import rack from '../content/posts/img/2025-basement-rack.jpg';
+import { talosNodes, argoApplications, cephRawTiB, proxmoxNodes, gpus, clusterTotals } from '../data/facts';
 
 // A living tour of the hardware. Specs are captured periodically and drift over
 // time. Network addressing, VLAN IDs, and subnets are deliberately left out.
-const captured = 'July 2026';
+// The figures themselves live in src/data/facts.ts with the date each was checked.
+const captured = 'September 2026';
 
-const nodes = [
-  { name: 'pve-00', cpu: 'AMD EPYC 7282', cores: '16C / 32T', ram: '256 GB ECC', gpu: 'RTX 4070 Ti + GTX 1660', role: 'Flagship compute / GPU' },
-  { name: 'pve-01', cpu: 'Threadripper 2920X', cores: '12C / 24T', ram: '128 GB ECC', gpu: 'GTX 1080 Ti', role: 'Compute / GPU' },
-  { name: 'pve-02', cpu: 'Core i7-6700', cores: '4C / 8T', ram: '64 GB', gpu: 'iGPU only', role: 'Capacity / quorum' },
-  { name: 'pve-03', cpu: 'Core i7-6700', cores: '4C / 8T', ram: '48 GB', gpu: 'iGPU only', role: 'Capacity / quorum' },
-  { name: 'pve-04', cpu: 'Core i7-7700', cores: '4C / 8T', ram: '32 GB', gpu: 'iGPU only', role: 'Capacity / quorum' },
-];
+const nodes = proxmoxNodes.value.map((n) => ({
+  name: n.name,
+  cpu: n.cpu,
+  cores: `${n.cores}C / ${n.threads}T`,
+  ram: `${n.ramGB} GB${n.ecc ? ' ECC' : ''}`,
+  gpu: n.gpu,
+  role: n.role,
+}));
 
-const gpus = [
-  { card: 'RTX 4070 Ti', arch: 'Ada Lovelace', host: 'pve-00', target: 'K8s GPU worker (time-sliced, 2 slots)' },
-  { card: 'GTX 1660', arch: 'Turing', host: 'pve-00', target: 'K8s GPU worker (time-sliced, 2 slots)' },
-  { card: 'GTX 1080 Ti', arch: 'Pascal', host: 'pve-01', target: 'K8s GPU worker (time-sliced, 3 slots)' },
-];
+const gpuRows = gpus.value.map((g) => ({
+  card: g.card,
+  arch: g.arch,
+  host: g.host,
+  target: `K8s GPU worker (time-sliced, ${g.slots} slots)`,
+}));
 
 const pis = [
   { name: 'ocisly', model: 'Raspberry Pi 5 (16 GB)', storage: '2 TB NVMe via PCIe HAT', role: 'Home automation primary', status: 'Live' },
@@ -30,17 +34,17 @@ const pis = [
 const power = [
   { node: 'pve-00', chassis: 'Rosewill RSV-L4412 4U (12 hot-swap bays)', psu: 'EVGA SuperNOVA 1600 P2 (Platinum)' },
   { node: 'pve-01', chassis: 'Corsair Carbide 330R mid-tower', psu: 'EVGA SuperNOVA 850 T2 (Titanium)' },
-  { node: 'pve-02/03/04', chassis: 'HP EliteDesk 800 G2 SFF (stock)', psu: 'HP stock SFF' },
+  { node: 'pve-02/03/04', chassis: 'HP EliteDesk 800 G3 SFF (stock)', psu: 'HP stock SFF' },
 ];
 
 // Aggregate scale, the numbers that make the point without a spec dump.
 const stats: { value: string; unit?: string; label: string }[] = [
-  { value: '9', label: 'Talos K8s nodes' },
-  { value: '51', label: 'applications, GitOps' },
-  { value: '~230', unit: 'TiB', label: 'Ceph raw' },
-  { value: '3', label: 'GPU generations' },
-  { value: '40C/80T', label: 'cluster CPU' },
-  { value: '528', unit: 'GB', label: 'cluster RAM' },
+  { value: String(talosNodes.value), label: 'Talos K8s nodes' },
+  { value: String(argoApplications.value), label: 'applications, GitOps' },
+  { value: `~${cephRawTiB.value}`, unit: 'TiB', label: 'Ceph raw' },
+  { value: String(clusterTotals.gpus), label: 'GPU generations' },
+  { value: `${clusterTotals.cores}C/${clusterTotals.threads}T`, label: 'cluster CPU' },
+  { value: String(clusterTotals.ramGB), unit: 'GB', label: 'cluster RAM' },
 ];
 
 // The software that actually earns its keep. Grouped, not exhaustive, and it
@@ -54,7 +58,7 @@ const services = [
   {
     group: 'home',
     blurb: 'Runs on the Pi fleet so it survives cluster maintenance.',
-    items: 'Home Assistant, Frigate NVR with Coral TPU detection, Music Assistant, and a bag of Zigbee, Z-Wave, and Thread radios.',
+    items: 'Home Assistant, Music Assistant, and a bag of Zigbee, Z-Wave, and Thread radios.',
   },
   {
     group: 'personal cloud',
@@ -150,7 +154,7 @@ const services = [
   <!-- Cluster -->
   <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the cluster</h2>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
+    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="Cluster nodes table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>
@@ -177,10 +181,10 @@ const services = [
         <tfoot class="font-mono text-xs text-[var(--color-ink-dim)] border-t border-[var(--color-line)]">
           <tr>
             <td class="px-4 py-3">totals</td>
-            <td class="px-4 py-3">5 nodes</td>
-            <td class="px-4 py-3">40C / 80T</td>
-            <td class="px-4 py-3">528 GB</td>
-            <td class="px-4 py-3">3 discrete GPUs</td>
+            <td class="px-4 py-3">{clusterTotals.nodes} nodes</td>
+            <td class="px-4 py-3">{clusterTotals.cores}C / {clusterTotals.threads}T</td>
+            <td class="px-4 py-3">{clusterTotals.ramGB} GB</td>
+            <td class="px-4 py-3">{clusterTotals.gpus} discrete GPUs</td>
           </tr>
         </tfoot>
       </table>
@@ -203,7 +207,7 @@ const services = [
       blocks the NVENC and NVDEC engines the transcoding and camera detection depend on.
       Transcode, local inference, and the occasional experiment all land here.
     </p>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
+    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="GPUs table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>
@@ -215,7 +219,7 @@ const services = [
         </thead>
         <tbody>
           {
-            gpus.map((g) => (
+            gpuRows.map((g) => (
               <tr class="border-b border-[var(--color-line)] last:border-0">
                 <td class="px-4 py-3 whitespace-nowrap">{g.card}</td>
                 <td class="px-4 py-3 text-[var(--color-ink-dim)] whitespace-nowrap">{g.arch}</td>
@@ -233,9 +237,9 @@ const services = [
   <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># storage</h2>
     <p class="text-[var(--color-ink-dim)] text-sm mt-3 max-w-2xl leading-relaxed">
-      Everything sits on Ceph, on the order of 230 TiB raw spread across every node. Spinning
-      disks make up the bulk pool, NVMe backs the fast pool and local VM storage, and a couple
-      of Intel Optane drives handle metadata. The big NVMe counts hang off ASUS Hyper M.2
+      Everything sits on Ceph, on the order of {cephRawTiB.value} TiB raw spread across every node. Spinning
+      disks make up the bulk pool, and NVMe backs the fast pool, the metadata, and local VM
+      storage. The big NVMe counts hang off ASUS Hyper M.2
       carrier cards using PCIe bifurcation. This is the layer that taught me the most, mostly
       the hard way, which is a story the blog gets into. Backups run to a dedicated Proxmox
       Backup Server, because "I have backups" and "I have tested restores" are not the same
@@ -256,7 +260,7 @@ const services = [
     </p>
     <p class="text-[var(--color-ink-dim)] text-sm mt-4 max-w-2xl leading-relaxed">
       The per-node 10GbE cards are a museum of whatever was good and cheap at the time: Intel
-      X550, Mellanox ConnectX-3 Pro, and Chelsio T320. They all do the same job. Edge
+      X550, Mellanox ConnectX-3 Pro and ConnectX-5, and Chelsio T320. They all do the same job. Edge
       switching and wireless are UniFi, and an APC UPS with a network card keeps the rack
       alive long enough to shut down cleanly.
     </p>
@@ -271,7 +275,7 @@ const services = [
       after Culture ships, which felt appropriate for machines whose entire job is to be
       quietly competent.
     </p>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
+    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="Pi fleet table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>
@@ -324,7 +328,7 @@ const services = [
   <!-- Power -->
   <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8 pb-16">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># chassis and power</h2>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]">
+    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="Chassis and power table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>

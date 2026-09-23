@@ -21,18 +21,31 @@ import Layout from '../layouts/Layout.astro';
 // same commit. Do not raise the claimed level without an audit that supports it,
 // and if something regresses, say so here rather than quietly dropping the line.
 //
-// The arcade and the ZERO/DAY playtest are deliberately not mentioned. Both
-// posts that link them are draft: true and excluded from the build, so nothing
-// reachable points at them. WHEN THOSE POSTS GO LIVE, AUDIT THOSE PAGES AND
-// REVISIT THIS ONE. Tracked in probablyfine-site#5.
-const version = 'v1.0';
-const updated = '2026-08-22';
+// RE-AUDITED 2026-09-23 after the arcade, Chronochasm, /pets, /support, the
+// integration pages and newer posts went live. That pass ran axe-core 4.13
+// (WCAG 2.0-2.2 A/AA plus best-practice rules) against every page in both
+// sitemaps at 1280px and 390px, plus keyboard walks of the nav, the comment
+// widget, the arcade and Chronochasm, and prefers-reduced-motion emulation.
+// It found that the v1.0 code-comment fix changed a token nothing reads; the
+// Shiki theme in astro.config.mjs carries its own literal colours, so keep the
+// two in step. The fixes shipped with v1.1; the "# known gaps" section lists
+// what was left open. Re-run it whenever a page type is added.
+//
+// The ZERO/DAY playtest is still unlinked and was not audited.
+const version = 'v1.1';
+const updated = '2026-09-23';
 
 const log = [
+  {
+    version: 'v1.1',
+    date: '2026-09-23',
+    body: 'Re-audited after the arcade, Chronochasm, the pets page, the support page and newer posts went up. This pass ran an automated checker, axe-core, against every page in both sitemaps at desktop and phone widths, and walked the navigation, comments, arcade and Chronochasm with a keyboard. Fixed in this version: links inside sentences were marked by colour alone, and now carry an underline. Code comments were still drawn in the old colour (see the correction below). The comment box used its light theme for anyone whose system is in light mode, which put dark grey text on this dark page. Its links showed no focus ring, and its moderator badge was white text on light green. Opening a story in Chronochasm dropped keyboard focus, and Chronochasm had no skip link. The scrolling tables on the labs page could not be reached with Tab. What is still open is listed under known gaps.',
+  },
   {
     version: 'v1.0',
     date: '2026-08-22',
     body: 'First version, written from an audit of the built output of both sites rather than from intent. The audit turned up two contrast problems, in code comments and in the footer small print, and both were fixed before this page went up.',
+    correction: 'Corrected 2026-09-23: only the footer fix reached the page. The code comment fix changed a colour setting that the code blocks never read, so comments in code blocks stayed at 4.15 to 1 until v1.1.',
   },
 ];
 ---
@@ -42,8 +55,8 @@ const log = [
     <p class="font-mono text-sm text-[var(--color-accent)]">$ cat ./accessibility</p>
     <h1 class="text-3xl font-bold mt-3">Accessibility</h1>
     <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-      I build both of my sites against WCAG 2.2 AA. Everything I can measure currently meets it.
-      I'm still not going to write "fully conformant" at the top of this page, because I haven't
+      I build both of my sites against WCAG 2.2 AA. Most of what I can measure meets it, and the
+      places that don't are listed below under known gaps. I'm still not going to write "fully conformant" at the top of this page, because I haven't
       sat down with a screen reader yet, and that's the part no amount of measuring covers.
     </p>
     <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-4">{version} · updated {updated}</p>
@@ -53,7 +66,7 @@ const log = [
     <div class="py-5 border-t border-[var(--color-line)]">
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># what I checked</h2>
       <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
-        Every page these sites link to, 36 of them. Each one declares its language, has a single
+        Every page in both sites' sitemaps, 63 of them. Each one declares its language, has a single
         h1, uses a real <span class="font-mono text-sm">&lt;main&gt;</span> landmark, and offers a
         skip link to it. No heading level is skipped anywhere. Every image has alt text.
       </p>
@@ -64,13 +77,15 @@ const log = [
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         I checked every colour in the palette against both backgrounds it gets used on. The
-        standard asks for 4.5 to 1 on normal text. The weakest thing on the site is 5.1 to 1, body
-        text is 16 to 1, and the dimmed text you're reading now is 6.6 to 1.
+        standard asks for 4.5 to 1 on normal text. The weakest text of the site's own is now 5.1 to
+        1, the comments in code blocks. Body text is 16 to 1, and the dimmed text you're reading
+        now is 6.6 to 1.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        Two of those failed when I first measured them. Comments in code blocks sat at 4.42, and
-        the small print in the footer scraped past at 4.56 on 11 pixel text. I changed both rather
-        than list them here, which is the version of this page I'd rather write.
+        Two of those failed when they were first measured. Comments in code blocks sat at 4.42, and
+        the small print in the footer scraped past at 4.56 on 11 pixel text. Both were changed. The
+        code-comment change didn't reach the code blocks themselves until v1.1, as the log below
+        records.
       </p>
     </div>
 
@@ -84,8 +99,28 @@ const log = [
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         The comment box is someone else's code running on my page. I picked it and I'm responsible
-        for it being there, but I haven't audited it and I can't fix its internals. If it gets in
-        your way, tell me, because that's the sort of thing that decides whether it stays.
+        for it being there. The automated checker has been over it. What it found in normal use is
+        fixed from this side. The error message it shows when it can't load is still low
+        contrast, and I can't fix its internals. If it gets in your way, tell me,
+        because that's the sort of thing that decides whether it stays.
+      </p>
+    </div>
+
+    <div class="py-5 border-t border-[var(--color-line)]">
+      <h2 class="font-mono text-sm text-[var(--color-accent)]"># known gaps</h2>
+      <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
+        On a phone, the tag and label links under post titles are smaller than the 24 pixel
+        target WCAG 2.2 asks for. That shows up on the home page, the blog index and the tag
+        pages.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        The markers on the Chronochasm timeline are also under 24 pixels. Every moment they open
+        can also be reached from its card or from the list of all moments, both of which are full
+        size.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        On a phone, the table in the Ceph metadata post scrolls sideways but can't be reached with
+        Tab, so it can't be scrolled from a keyboard.
       </p>
     </div>
 
@@ -107,9 +142,16 @@ const log = [
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># log</h2>
       {
         log.map((e) => (
-          <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
-            <span class="font-mono text-sm text-[var(--color-ink)]">{e.version} · {e.date}</span> · {e.body}
-          </p>
+          <div class="mt-4">
+            <p class="text-[var(--color-ink-dim)] leading-relaxed">
+              <span class="font-mono text-sm text-[var(--color-ink)]">{e.version} · {e.date}</span> · {e.body}
+            </p>
+            {e.correction && (
+              <p class="text-[var(--color-ink-dim)] mt-2 pl-4 border-l-2 border-[var(--color-accent)] leading-relaxed">
+                {e.correction}
+              </p>
+            )}
+          </div>
         ))
       }
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">

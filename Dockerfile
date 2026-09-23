@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---- Build stage ----
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /app
 
 # Fonts for build-time OG card generation (sharp/librsvg renders SVG text using
@@ -9,20 +9,26 @@ WORKDIR /app
 # DejaVu provides sans-serif + monospace glyphs for the card template.
 RUN apk add --no-cache fontconfig ttf-dejavu && fc-cache -f
 
+# Enable pnpm via corepack
 RUN corepack enable
 
+# Install deps (cached layer)
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
 
+# Build the static site
 COPY . .
 RUN pnpm build
 
 # ---- Runtime stage ----
-FROM nginx:1.29-alpine AS runtime
+FROM nginx:1.31-alpine AS runtime
 
+# Non-root: nginx:alpine ships an unprivileged config on 8080 via nginx-unprivileged,
+# but the stock image runs as root. We serve on 8080 and run as an unprivileged user.
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Drop privileges: create runtime dirs writable by uid 101 (nginx) and run as it
 RUN chown -R 101:101 /usr/share/nginx/html /var/cache/nginx \
     && touch /run/nginx.pid && chown 101:101 /run/nginx.pid
 

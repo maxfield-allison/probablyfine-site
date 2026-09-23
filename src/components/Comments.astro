@@ -7,6 +7,10 @@
 // is a web component that executes in this page's own origin. That is a real
 // trust change, and it is only acceptable because the server is ours. Do not
 // reuse this pattern for a third-party comment host.
+//
+// theme="dark" is required. Without it Comentario follows the visitor's OS
+// colour scheme, so anyone in light mode got its light palette (#343a40 text)
+// on this dark-only page: comment text at 1.7:1 contrast.
 import { comments, commentsEnabled } from '../comments.config';
 ---
 
@@ -15,7 +19,7 @@ import { comments, commentsEnabled } from '../comments.config';
     <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-16" aria-label="Comments">
       <h2 class="font-mono text-sm text-[var(--color-ink-dim)] mb-4">comments</h2>
       <script defer is:inline src={`${comments.host}/comentario.js`} />
-      <comentario-comments />
+      <comentario-comments theme="dark" />
     </section>
   )
 }

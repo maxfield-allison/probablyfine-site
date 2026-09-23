@@ -2,9 +2,9 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
-import { readingTime, tagSlug } from '../../lib/posts';
+import { listed, readingTime, tagSlug } from '../../lib/posts';
 
-const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+const posts = (await getCollection('posts', listed)).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 const [latest, ...archive] = posts;
@@ -34,6 +34,8 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
     </p>
     <p class="mt-3 mb-0 font-mono text-sm">
       <a href="/blog/tags" class="no-underline hover:no-underline">browse by tag →</a>
+      <span class="text-[var(--color-ink-dim)]" aria-hidden="true">&nbsp;·&nbsp;</span>
+      <a href="/search" class="no-underline hover:no-underline">search posts →</a>
     </p>
   </section>
 

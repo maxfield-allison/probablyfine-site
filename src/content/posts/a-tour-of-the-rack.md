@@ -65,8 +65,8 @@ workers.
 
 Running three generations at once is not a flex, it is just what accumulates when you buy GPUs
 over the better part of a decade and refuse to throw working hardware away. It does make
-scheduling interesting. The newer cards get sliced up with MPS so several workloads can share
-a single GPU, while the 1080 Ti stays dedicated to one job. Between them they handle media
+scheduling interesting. All three get time-sliced so several workloads can share a single
+GPU. Between them they handle media
 transcode, local model inference, and whatever experiment I am currently pretending is
 production.
 
