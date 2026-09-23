@@ -297,9 +297,14 @@
 }
 .prose h2::before {
   content: '##';
+  /* The empty alternative text keeps the marker out of the heading's
+     accessible name; without it screen readers read "##" first. Browsers
+     that do not support the slash form keep the line above. */
+  content: '##' / '';
 }
 .prose h3::before {
   content: '###';
+  content: '###' / '';
 }
 .prose p,
 .prose ul,
