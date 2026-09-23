@@ -24,7 +24,7 @@ export const sessionTheme = {
     { settings: { foreground: '#8b98a5' } },
     {
       scope: ['comment', 'punctuation.definition.comment'],
-      settings: { foreground: '#6e7a87' },
+      settings: { foreground: '#7e8996' },
     },
     {
       scope: ['string', 'string.quoted', 'punctuation.definition.string'],
