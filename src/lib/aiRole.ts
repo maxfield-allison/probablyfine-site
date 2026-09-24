@@ -4,13 +4,14 @@
 // information at all. The values describe process, because that is the thing worth
 // disclosing. Each post also carries a short note saying what actually happened to it;
 // these labels are for scanning, the notes are the real disclosure.
-export const AI_ROLES = ['none', 'research', 'drafted'] as const;
+export const AI_ROLES = ['none', 'research', 'dictated', 'drafted'] as const;
 
 export type AiRole = (typeof AI_ROLES)[number];
 
 const LABELS: Record<AiRole, string> = {
   none: 'written by hand',
   research: 'research assist',
+  dictated: 'dictated, ai-edited',
   drafted: 'ai-drafted, edited by me',
 };
 
@@ -19,6 +20,7 @@ const LABELS: Record<AiRole, string> = {
 const COLORS: Record<AiRole, string> = {
   none: 'var(--color-accent)',
   research: 'var(--color-warn)',
+  dictated: 'var(--color-warn)',
   drafted: 'var(--color-warn)',
 };
 
