@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import ReadTracker from '../../components/ReadTracker.astro';
 import Comments from '../../components/Comments.astro';
 import CopyCommands from '../../components/CopyCommands.astro';
+import NullArticle from '../../components/NullArticle.astro';
 import { Code } from 'astro:components';
 import { sessionTheme, sessionTransformers } from '../../lib/session.mjs';
 import { listed, readingTime, tagSlug } from '../../lib/posts';
@@ -141,9 +142,11 @@ import { aiRoleLabel, aiRoleColor } from '../../lib/aiRole';
       )
     }
 
-    <div class="prose mt-10">
-      <Content />
-    </div>
+    {post.id === 'why-i-created-null' ? <NullArticle /> : (
+      <div class="prose mt-10">
+        <Content />
+      </div>
+    )}
 
     {
       (newer || older) && (

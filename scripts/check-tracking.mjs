@@ -59,12 +59,15 @@ const DECLARED = new Set([
   'outbound-status',   // the status page link on the home page
   'photo-browse',      // moved between photos inside the lightbox
   'photo-open',        // a photo was opened (props: where)
+  'post-comparison',   // explicit opening of a passage comparison (fixed passage, slug)
+  'post-document',     // explicit download of a public article version
   'post-internal',     // article/figure link to another site page
   'post-nav',          // older / newer at the foot of a post (props: dir)
   'post-open',         // entered a post from a listing (props: where)
   'post-outbound',     // a source link inside an article (post-signals.js)
   'post-read',         // reached the end of a post (read-tracker.js)
   'post-tag',          // a tag chip (props: tag, where)
+  'post-version',      // explicit article version selection (fixed version, slug)
   'rss-subscribe',
   'skip-link',         // skip-to-content was used
   'tag-open',          // a tag from the tag index (props: tag)

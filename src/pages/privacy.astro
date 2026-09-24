@@ -47,10 +47,15 @@ import Layout from '../layouts/Layout.astro';
 //
 // If you change what is collected, change this page in the same commit, and add
 // a log entry at the bottom. The old entries stay.
-const version = 'v1.5';
-const updated = '2026-09-23';
+const version = 'v1.6';
+const updated = '2026-09-24';
 
 const log = [
+  {
+    version: 'v1.6',
+    date: '2026-09-24',
+    body: 'Added counters for selecting an article version, opening a passage comparison, and downloading an article document. They carry only the article slug and fixed version, passage, or document identifiers.',
+  },
   {
     version: 'v1.5',
     date: '2026-09-23',
@@ -145,7 +150,9 @@ const log = [
         clicked.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
-        Links within blog prose are counted too, including which links are images. On
+        Links within blog prose are counted too, including which links are images. Selecting
+        an article version, opening a passage comparison, or downloading a document is counted with the article slug
+        and a fixed version, passage, or document identifier. The text and your reading position are not sent. On
         Chronochasm, I count opened moments and selected sources, previous and next passage
         navigation, related threads, and links out of the reader. I also count use of the
         thread filter, zoom, gap controls, moment list and motion setting. Those events carry

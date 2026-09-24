@@ -1,0 +1,234 @@
+---
+import { createSatteriMarkdownProcessor } from '@astrojs/markdown-satteri';
+import { alignedPassages, documents, nullSlug, pageProcessNote, versions } from '../lib/null-article';
+
+// Only repository-authored, reviewed Markdown enters this build-time renderer.
+// No reader input or fetched HTML reaches set:html. Disable smart punctuation
+// so the dictation's punctuation is preserved as supplied.
+const markdown = await createSatteriMarkdownProcessor({
+  syntaxHighlight: false,
+  features: { smartPunctuation: false },
+});
+const rows = await Promise.all(alignedPassages().map(async (row) => ({
+  ...row,
+  cells: await Promise.all(row.cells.map(async (cell) => ({
+    ...cell,
+    html: cell.markdown ? (await markdown.render(cell.markdown)).code : '',
+  }))),
+})));
+const comparison = (await markdown.render(documents[3].text)).code;
+const processNote = (await markdown.render(pageProcessNote)).code;
+---
+
+<null-article data-version="researched" class="version-reader mt-10">
+  <div class="reader-intro" data-pagefind-ignore>
+    <p>Three versions of the same article. Switch at any point to compare the corresponding passage. Tap an original passage, or choose “Compare this passage,” to see what changed.</p>
+    <p class="version-key">Original: dictated words, with paragraph breaks. Edited: the first AI-shaped draft and my corrections. Revised: the article after source checks, critique, and several exchanges. These are three stages, not every intermediate draft.</p>
+  </div>
+
+  <div class="version-toolbar" data-pagefind-ignore>
+    <div class="version-buttons" role="group" aria-label="Article version">
+      {versions.map((version, i) => (
+        <button type="button" data-version-button={version.id} aria-pressed={version.id === 'researched'} aria-controls="aligned-article"
+          data-track="post-version" data-track-version={version.id} data-track-slug={nullSlug}>
+          <span aria-hidden="true" class="version-number">0{i + 1}</span>
+          <span>{version.label}</span>
+        </button>
+      ))}
+    </div>
+    <a href="#version-comparison" class="comparison-link" data-comparison-link data-track="post-internal" data-track-where="version-toolbar" data-track-destination="#version-comparison">Compare changes <span aria-hidden="true">↓</span></a>
+  </div>
+
+  <p class="alignment-note" data-pagefind-ignore>Corresponding passages keep their place. Blank space marks a shorter version.</p>
+  <p class="sr-only" role="status" aria-live="polite" data-version-status></p>
+  <noscript><p class="reader-intro">The revised article is shown below. Read the other versions using the document links at the end.</p></noscript>
+
+  <div id="aligned-article" class="aligned-article" aria-label="Revised article">
+    {rows.map((row, index) => (
+      <div class="aligned-passage" data-passage={row.id}>
+        <button type="button" class="passage-compare" data-compare-passage={row.id} aria-label={`Compare passage ${index + 1}`} aria-haspopup="dialog"
+          data-track="post-comparison" data-track-passage={row.id} data-track-slug={nullSlug}>Compare this passage <span aria-hidden="true">↗</span></button>
+        {row.cells.map((cell) => (
+          <div class="version-cell prose" data-cell-version={cell.version}
+            aria-hidden={cell.version !== 'researched' ? 'true' : undefined}
+            inert={cell.version !== 'researched'}
+            data-pagefind-ignore={cell.version !== 'researched' ? true : undefined}>
+            {row.id === 'process-note' && cell.version === 'researched'
+              ? <p class="empty-passage" data-pagefind-ignore>The revised article’s <a href="#page-ai-note">AI-use note follows the comparison</a>.</p>
+              : cell.html ? <Fragment set:html={cell.html} /> : <p class="empty-passage" data-pagefind-ignore>No process note was included in the original dictation.</p>}
+          </div>
+        ))}
+        <template data-passage-note>{row.note}</template>
+      </div>
+    ))}
+  </div>
+
+  <section class="document-section" data-pagefind-ignore aria-labelledby="documents-title">
+    <h2 id="documents-title">The documents</h2>
+    <p>Read or save each version as Markdown, including the comparison with exact text changes.</p>
+    <ul>
+      {documents.map((doc) => <li><a href={`/blog/${nullSlug}/${doc.file}.md`} download data-astro-reload data-track="post-document" data-track-document={doc.id} data-track-slug={nullSlug}>{doc.label} <span class="file-type">.md</span></a></li>)}
+    </ul>
+  </section>
+
+  <details id="version-comparison" class="comparison-section" data-pagefind-ignore>
+    <summary>What changed between versions</summary>
+    <div class="prose comparison-body" set:html={comparison} />
+  </details>
+
+  <div id="page-ai-note" class="prose page-process-note" set:html={processNote} />
+
+  <dialog class="passage-dialog" aria-labelledby="passage-dialog-title" data-pagefind-ignore>
+    <div class="dialog-header">
+      <h2 id="passage-dialog-title">Compare this passage</h2>
+      <button type="button" data-close-dialog autofocus aria-label="Close comparison">Close <span aria-hidden="true">×</span></button>
+    </div>
+    <p class="dialog-note-label">AI-assisted change note</p>
+    <p class="dialog-note" data-dialog-note></p>
+    <div class="dialog-versions" data-dialog-versions></div>
+    <a href="#version-comparison" data-dialog-full data-track="post-internal" data-track-where="passage-dialog" data-track-destination="#version-comparison">Read the full comparison document</a>
+  </dialog>
+</null-article>
+
+<script>
+  class NullArticle extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready) return;
+      this.dataset.ready = 'true';
+      const buttons = this.querySelectorAll<HTMLButtonElement>('[data-version-button]');
+      const cells = this.querySelectorAll<HTMLElement>('[data-cell-version]');
+      const article = this.querySelector<HTMLElement>('#aligned-article');
+      const status = this.querySelector<HTMLElement>('[data-version-status]');
+      buttons.forEach((button) => button.addEventListener('click', () => {
+        const version = button.dataset.versionButton!;
+        if (version === this.dataset.version) return;
+        this.dataset.version = version;
+        buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        cells.forEach((cell) => {
+          const active = cell.dataset.cellVersion === version;
+          cell.inert = !active;
+          if (active) cell.removeAttribute('aria-hidden');
+          else cell.setAttribute('aria-hidden', 'true');
+        });
+        const label = button.querySelector('span:last-child')?.textContent ?? version;
+        article?.setAttribute('aria-label', label);
+        if (status) status.textContent = `${label} selected. Corresponding passages remain aligned.`;
+      }));
+      this.querySelector('[data-comparison-link]')?.addEventListener('click', () => {
+        const comparison = this.querySelector<HTMLDetailsElement>('#version-comparison');
+        if (comparison) comparison.open = true;
+      });
+      const dialog = this.querySelector<HTMLDialogElement>('dialog')!;
+      const dialogVersions = dialog.querySelector<HTMLElement>('[data-dialog-versions]')!;
+      let previousFocus: HTMLElement | null = null;
+      const openPassage = (row: HTMLElement, trigger: HTMLElement) => {
+        previousFocus = trigger;
+        dialog.querySelector('[data-dialog-note]')!.textContent = row.querySelector<HTMLTemplateElement>('template')!.content.textContent;
+        dialogVersions.replaceChildren();
+        row.querySelectorAll<HTMLElement>('[data-cell-version]').forEach((cell) => {
+          const section = document.createElement('section');
+          const heading = document.createElement('h3');
+          heading.textContent = this.querySelector(`[data-version-button="${cell.dataset.cellVersion}"] span:last-child`)?.textContent ?? '';
+          const copy = document.createElement('div');
+          copy.className = 'prose';
+          // Clone only the already rendered, repository-authored child nodes,
+          // without the inactive cell's inert/aria-hidden wrapper.
+          const source = row.dataset.passage === 'process-note' && cell.dataset.cellVersion === 'researched'
+            ? this.querySelector('#page-ai-note')! : cell;
+          copy.append(...Array.from(source.childNodes, (node) => node.cloneNode(true)));
+          section.append(heading, copy);
+          dialogVersions.append(section);
+        });
+        dialog.showModal();
+      };
+      this.querySelectorAll<HTMLElement>('[data-passage]').forEach((row) => {
+        const trigger = row.querySelector<HTMLButtonElement>('[data-compare-passage]')!;
+        trigger.addEventListener('click', () => openPassage(row, trigger));
+        row.querySelector('[data-cell-version="original"]')?.addEventListener('click', (event) => {
+          if (!(event.target instanceof Element) || event.target.closest('a, button') || window.getSelection()?.toString()) return;
+          // Route pointer activation through the native button, preserving
+          // keyboard parity, focus restoration and the single click counter.
+          trigger.click();
+        });
+      });
+      dialog.querySelector('[data-close-dialog]')?.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => {
+        const rect = dialog.getBoundingClientRect();
+        if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
+      });
+      dialog.addEventListener('close', () => previousFocus?.focus({ preventScroll: true }));
+      dialog.querySelector('[data-dialog-full]')?.addEventListener('click', () => {
+        const comparison = this.querySelector<HTMLDetailsElement>('#version-comparison')!;
+        comparison.open = true;
+        previousFocus = comparison.querySelector('summary');
+        dialog.close();
+      });
+    }
+  }
+  if (!customElements.get('null-article')) customElements.define('null-article', NullArticle);
+</script>
+
+<style>
+  .version-reader { display: block; --toolbar-offset: 4rem; }
+  .reader-intro, .alignment-note, .document-section, .comparison-section { max-width: var(--measure-read); margin-inline: auto; }
+  .reader-intro p { line-height: 1.6; margin: 0 0 .75rem; }
+  .version-key, .alignment-note { color: var(--color-ink-dim); font-size: .875rem; }
+  .version-toolbar { display: none; }
+  [data-ready] .version-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; position: sticky; top: var(--toolbar-offset); z-index: 30; padding: .75rem; margin: 1.5rem auto 0; max-width: var(--measure-read); background: var(--color-base); border: 1px solid var(--color-line); border-radius: .5rem; }
+  .version-buttons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .375rem; flex: 1 1 100%; }
+  .version-buttons button { min-height: 3.25rem; }
+  button { display: flex; gap: .5rem; align-items: center; justify-content: center; padding: .65rem .5rem; min-height: 44px; font-size: .875rem; line-height: 1.3; cursor: pointer; color: var(--color-ink-dim); border: 1px solid var(--color-line); border-radius: .25rem; background: var(--color-surface); }
+  button[aria-pressed="true"] { color: var(--color-base); background: var(--color-accent); border-color: var(--color-accent); font-weight: 650; }
+  button:hover { border-color: var(--color-accent); }
+  button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }
+  .version-number { font-family: var(--font-mono); opacity: .75; font-size: .75rem; }
+  .comparison-link { display: inline-flex; align-items: center; min-height: 32px; font-size: .8rem; margin-left: auto; }
+  .alignment-note { display: none; margin-block: .75rem 1.75rem; }
+  [data-ready] .alignment-note { display: block; }
+  .aligned-article { max-width: var(--measure-read); margin: 2rem auto 0; overflow-anchor: none; }
+  .aligned-passage { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .version-cell { grid-area: 2 / 1; min-width: 0; display: flow-root; }
+  .passage-compare { display: none; }
+  [data-ready] .passage-compare { display: flex; grid-area: 1 / 1; justify-self: end; font-size: .75rem; min-height: 44px; padding: .25rem .5rem; margin-bottom: .25rem; background: transparent; border-color: transparent; }
+  [data-ready] [data-cell-version="original"] { cursor: pointer; }
+  .version-cell[aria-hidden="true"] { display: none; }
+  [data-ready] .version-cell[aria-hidden="true"] { display: flow-root; visibility: hidden; pointer-events: none; }
+  .version-cell :global(p:first-child) { margin-top: 0; }
+  .version-cell :global(p:last-child) { margin-bottom: 1.5rem; }
+  .empty-passage { color: var(--color-ink-dim); font-size: .875rem; font-style: italic; }
+  .document-section { margin-block: 3rem 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-line); }
+  h2 { font-weight: 650; font-size: 1.25rem; }
+  .document-section p { color: var(--color-ink-dim); margin: .75rem 0; }
+  .document-section ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  .document-section a { display: flex; justify-content: space-between; align-items: center; min-height: 44px; padding: .65rem; border: 1px solid var(--color-line); border-radius: .25rem; text-decoration: none; gap: .5rem; }
+  .file-type { font-family: var(--font-mono); font-size: .75rem; color: var(--color-ink-dim); }
+  .comparison-section { scroll-margin-top: 15rem; padding-block: 1rem; border-block: 1px solid var(--color-line); }
+  summary { cursor: pointer; min-height: 44px; padding: .6rem 0; font-weight: 650; }
+  .comparison-body { margin-top: 1.5rem; overflow-wrap: anywhere; }
+  .comparison-body :global(table) { display: block; overflow-x: auto; white-space: normal; font-size: .8rem; }
+  .comparison-body :global(th), .comparison-body :global(td) { min-width: 12rem; }
+  .comparison-body :global(pre) { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .comparison-body :global(summary) { cursor: pointer; padding-block: .75rem; }
+  .page-process-note { max-width: var(--measure-read); margin: 2rem auto 0; scroll-margin-top: 15rem; }
+  .passage-dialog { width: min(60rem, calc(100% - 2rem)); max-height: calc(100dvh - 2rem); margin: auto; padding: 1.25rem; border: 1px solid var(--color-line); border-radius: .5rem; color: var(--color-ink); background: var(--color-base); overflow-y: auto; overscroll-behavior: contain; }
+  .passage-dialog::backdrop { background: rgb(0 0 0 / .75); }
+  .dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; position: sticky; top: -1.25rem; padding: 1.25rem; margin: -1.25rem -1.25rem 0; background: var(--color-base); z-index: 1; }
+  .dialog-header button { flex-shrink: 0; }
+  .dialog-note-label { margin-top: 1rem; color: var(--color-ink-dim); font-size: .75rem; }
+  .dialog-note { margin: 1rem 0; padding: 1rem; border-left: 3px solid var(--color-accent); background: var(--color-surface); line-height: 1.6; }
+  .dialog-versions :global(section) { border-top: 1px solid var(--color-line); padding-top: 1rem; margin-top: 1rem; }
+  .dialog-versions :global(h3) { color: var(--color-accent); font-size: .875rem; margin-bottom: .75rem; }
+  .dialog-versions :global(.prose p) { max-width: none; }
+  .passage-dialog > a { display: inline-flex; min-height: 44px; align-items: center; }
+  @media (max-width: 480px) {
+    [data-ready] .version-toolbar { margin-inline: -.75rem; padding: .5rem; }
+    .version-number { display: none; }
+    button { font-size: .75rem; padding: .5rem .25rem; }
+    .document-section ul { grid-template-columns: 1fr; }
+  }
+  @media print {
+    [data-ready] .version-toolbar, [data-ready] .passage-compare, .alignment-note, .document-section, .comparison-section, .passage-dialog { display: none; }
+    [data-ready] .version-cell[aria-hidden="true"] { display: none; }
+    .aligned-passage { display: block; }
+  }
+</style>
