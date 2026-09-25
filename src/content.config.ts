@@ -1,5 +1,5 @@
 import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { AI_ROLES } from './lib/aiRole';
 
 // Blog posts. One Markdown/MDX file per post in src/content/posts/.
@@ -31,4 +31,22 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+const social = defineCollection({
+  loader: file('./src/data/social.json'),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    draft: z.boolean().default(true),
+    caption: z.string(),
+    tags: z.array(z.string()).default([]),
+    image: z.object({
+      src: z.string().startsWith('/images/social/'),
+      alt: z.string().min(1),
+      width: z.number().int().positive(),
+      height: z.number().int().positive(),
+    }).optional(),
+    processNote: z.string().min(1),
+  }),
+});
+
+export const collections = { posts, social };

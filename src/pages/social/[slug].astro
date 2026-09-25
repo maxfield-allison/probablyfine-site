@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SocialPost from '../../components/SocialPost.astro';
+import { publishedSocial } from '../../lib/social';
+export async function getStaticPaths() {
+  return (await getCollection('social', publishedSocial)).map(post => ({params:{slug:post.id},props:{post}}));
+}
+const { post } = Astro.props;
+---
+<Layout title={`${post.data.title} · ProbablyFine`} description={post.data.caption}
+  ogImage={post.data.image?.src} ogWidth={post.data.image?.width} ogHeight={post.data.image?.height} ogAlt={post.data.image?.alt} ogType="article">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-12">
+    <a href="/social">← Social</a>
+    <SocialPost post={post} standalone />
+  </section>
+</Layout>

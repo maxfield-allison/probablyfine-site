@@ -15,6 +15,7 @@ interface NavLink {
 const links: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
+  { href: '/social', label: 'Social' },
   { href: '/labs', label: 'Labs' },
   { href: '/arcade', label: 'Arcade' },
   { href: '/chronochasm', label: 'Chronochasm', umami: 'chronochasm-link' },
@@ -28,7 +29,7 @@ const links: NavLink[] = [
   { href: 'https://maxfieldallison.com?utm_source=probablyfine&utm_medium=site', label: 'About me', external: true, umami: 'outbound-maxfieldallison' },
 ];
 
-const primary = links.filter((l) => ['/blog', '/labs', '/arcade', '/chronochasm'].includes(l.href));
+const primary = links.filter((l) => ['/blog', '/social', '/labs', '/arcade', '/chronochasm'].includes(l.href));
 const secondary = links.filter((l) => l.href !== '/' && !primary.includes(l));
 
 const linkClass = (l: NavLink) => [

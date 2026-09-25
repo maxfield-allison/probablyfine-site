@@ -1,0 +1,17 @@
+[
+  {
+    "id": "reputation-underflow",
+    "title": "Personal brand strategy",
+    "date": "2026-09-25T14:00:00-05:00",
+    "draft": false,
+    "caption": "I've decided to keep damaging my online reputation until it underflows and wraps around to INT_MAX.",
+    "tags": ["ProgrammingHumor", "JavaScript"],
+    "image": {
+      "src": "/images/social/2026-09-25-reputation-underflow.png",
+      "alt": "VS Code-style editor showing JavaScript that sets a signed 32-bit reputation score to -2147483648. A comment says ‘one more post’ before subtracting one. The terminal prints 2147483647: the score has wrapped from the minimum to the maximum.",
+      "width": 1200,
+      "height": 1200
+    },
+    "processNote": "The joke started with my wording. AI helped edit it and made the code example and HTML/CSS editor recreation. The code was run to check the result. The image is a browser screenshot of that recreation, not AI-generated artwork."
+  }
+]

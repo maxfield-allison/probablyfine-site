@@ -70,6 +70,10 @@ const DECLARED = new Set([
   'post-version',      // explicit article version selection (fixed version, slug)
   'rss-subscribe',
   'skip-link',         // skip-to-content was used
+  'social-image-download', // downloaded a social post image
+  'social-image-open', // opened a social post image
+  'social-permalink', // opened a social post's canonical page
+  'social-to-blog', // followed the longer-reads link from a social post
   'tag-open',          // a tag from the tag index (props: tag)
 ]);
 

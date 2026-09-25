@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SocialPost from '../../components/SocialPost.astro';
+import { publishedSocial } from '../../lib/social';
+const posts = (await getCollection('social', publishedSocial)).sort((a,b) => b.data.date.getTime()-a.data.date.getTime());
+---
+<Layout title="Social · ProbablyFine" description="Short posts, screenshots and things that made me laugh.">
+  <section class="max-w-[var(--container-shell)] mx-auto px-6 py-12">
+    <p class="font-mono text-sm text-[var(--color-accent)]">$ ls ./social</p>
+    <h1 class="text-3xl font-bold">Social</h1>
+    <p class="text-[var(--color-ink-dim)]">Short posts, screenshots and things that made me laugh.</p>
+    <p><a href="/social/rss.xml">RSS</a></p>
+    {posts.length ? posts.map(post => <SocialPost post={post} />) : <p>No posts yet.</p>}
+  </section>
+</Layout>
