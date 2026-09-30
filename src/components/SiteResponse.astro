@@ -1,0 +1,23 @@
+<div class="response-settings" data-response-root data-pagefind-ignore>
+  <button type="button" data-open-trail disabled>Your saved places</button>
+  <label><input type="checkbox" data-response-still disabled /> Still mode</label>
+  <div class="response-atmosphere" aria-hidden="true"></div>
+  <div class="reading-tools" data-reading-tools hidden>
+    <button type="button" data-open-contents disabled>In this page</button>
+    <span data-current-section></span>
+    <button type="button" data-save-place disabled>Keep my place</button>
+    <span class="reading-feedback" data-reading-status role="status"></span>
+  </div>
+  <dialog class="response-dialog" data-trail-dialog aria-labelledby="saved-places-title">
+    <div class="response-dialog-heading"><h2 id="saved-places-title">Your saved places</h2><button type="button" data-close-dialog aria-label="Close saved places">×</button></div>
+    <p>Keep a place in an article or case study, then come back to it. These bookmarks stay in this browser, on this site.</p>
+    <ul data-saved-places></ul>
+    <button type="button" data-clear-places>Clear saved places</button>
+    <p data-place-status role="status"></p>
+  </dialog>
+  <dialog class="response-dialog" data-contents-dialog aria-labelledby="page-contents-title">
+    <div class="response-dialog-heading"><h2 id="page-contents-title">In this page</h2><button type="button" data-close-dialog aria-label="Close page contents">×</button></div>
+    <nav aria-label="Page sections" data-page-sections></nav>
+  </dialog>
+</div>
+<script is:inline type="module" src="/js/site-response.js"></script>

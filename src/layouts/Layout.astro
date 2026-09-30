@@ -3,6 +3,8 @@ import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import SiteResponse from '../components/SiteResponse.astro';
+import '../styles/response.css';
 
 interface Props {
   title?: string;
@@ -147,6 +149,7 @@ const siteLd = {
             <slot />
           </main>
           <Footer />
+        <SiteResponse />
         </>
       )
     }

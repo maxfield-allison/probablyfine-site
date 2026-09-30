@@ -1,0 +1,413 @@
+
+
+body {
+  --attention: #3fb950;
+}
+#response-field {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse at 24% 45%,
+    color-mix(in srgb, var(--attention) 10%, transparent),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+body[data-attentive='true'] #response-field {
+  opacity: 1;
+}
+.viewport {
+  z-index: 1;
+  background: transparent;
+}
+.reader {
+  border-left-color: color-mix(in srgb, var(--attention) 35%, var(--line));
+}
+.reader:before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--attention) 8%, transparent)
+  );
+}
+.path-entry {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px auto 8px;
+  max-width: 670px;
+}
+.path-entry button,
+.reader-response button,
+.path-settings button {
+  font: 13px/1.5 var(--mono);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 10px 14px;
+  border-radius: 6px;
+  min-height: 44px;
+}
+.path-entry #begin-thread {
+  border-color: #3fb95065;
+  color: #a7dfb0;
+}
+.path-entry button:hover,
+.reader-response button:hover {
+  border-color: var(--attention);
+}
+.reader-response {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  font: 12px/1.5 var(--mono);
+  color: var(--dim);
+}
+.reader-response button {
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+.event-node.has-trace {
+  outline: 1px solid var(--attention);
+  outline-offset: 4px;
+}
+.event.has-trace .read:after {
+  content: ' · opened';
+  color: var(--dim);
+}
+.event.has-source .read:after {
+  content: ' · source explored';
+  color: var(--dim);
+}
+.source-button.source-opened:after {
+  content: ' ◇ opened';
+  color: #b6dec2;
+}
+.connection-arrival {
+  animation: arrive-line 900ms ease-out 1;
+}
+@keyframes arrive-line {
+  0% {
+    stroke-width: 5;
+    opacity: 1;
+  }
+  100% {
+    stroke-width: 2;
+    opacity: 0.75;
+  }
+}
+#path-dialog {
+  width: min(760px, calc(100vw - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  padding: 24px;
+  overflow: auto;
+}
+#path-dialog h2 {
+  font-size: 24px;
+  line-height: 1.3;
+  margin: 0;
+}
+#path-summary,
+.path-legend {
+  font-size: 14px;
+  color: var(--dim);
+}
+#path-map {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: radial-gradient(ellipse at center, #23312b55, transparent 70%);
+  border-block: 1px solid var(--line);
+}
+#path-list {
+  padding-left: 28px;
+}
+#path-list li {
+  padding: 8px 0;
+  color: var(--dim);
+}
+#path-list button {
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--ink);
+  padding: 8px;
+  min-height: 44px;
+}
+.trace-label {
+  display: block;
+  color: #a7dfb0;
+  font: 12px var(--mono);
+  padding: 0 8px;
+}
+.path-settings {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.path-settings label {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-height: 44px;
+}
+.path-settings p {
+  font-size: 13px;
+  color: var(--dim);
+}
+.path-settings input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+}
+.no-script {
+  position: fixed;
+  inset: 40% 20px auto;
+  z-index: 30;
+  background: var(--base);
+  padding: 20px;
+}
+.no-script a {
+  color: var(--green);
+}
+@media (max-width: 700px) {
+  .path-entry {
+    margin: 12px auto;
+  }
+  .path-entry button {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .reader-response {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .reader-response button {
+    font-size: 11px;
+  }
+  .title-actions {
+    gap: 5px;
+  }
+  #path-dialog {
+    padding: 18px;
+  }
+  #path-dialog h2 {
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .connection-arrival {
+    animation: none;
+  }
+  #response-field {
+    transition: none;
+  }
+}
+.response-still .connection-arrival {
+  animation: none;
+}
+#atlas {
+  width: min(1320px, calc(100vw - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  overflow: auto;
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    color-mix(in srgb, var(--attention, #76aabf) 9%, #0a0e12),
+    #0a0e12 80%
+  );
+}
+.atlas-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 26px 32px 12px;
+}
+.atlas-heading h2 {
+  font-size: 32px;
+  margin: 0;
+  line-height: 1.2;
+}
+.atlas-heading p:not(.eyebrow) {
+  color: var(--dim);
+  font-size: 13px;
+  margin-bottom: 0;
+}
+.atlas-heading .close {
+  flex-shrink: 0;
+}
+.atlas-field {
+  position: relative;
+  margin: 10px 32px 24px;
+}
+.atlas-field svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.atlas-field path {
+  fill: none;
+  stroke-width: 1;
+  opacity: 0.15;
+  transition:
+    opacity 0.3s,
+    stroke-width 0.3s;
+}
+.atlas-field .atlas-related {
+  opacity: 0.95;
+  stroke-width: 2;
+}
+#atlas-groups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 24px;
+}
+.atlas-group {
+  position: relative;
+  height: 128px;
+  min-width: 0;
+}
+.atlas-group h3 {
+  font: 12px/1.5 var(--mono);
+  color: #a7b5c0;
+  margin: 0;
+  padding: 0 8px;
+}
+.atlas-node {
+  position: absolute;
+  left: var(--node-x);
+  top: var(--node-y);
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--tone) 55%, transparent);
+  border-radius: 50%;
+  background: #0e171b;
+  color: var(--tone);
+  font: 11px var(--mono);
+  transform: translateX(-50%);
+  transition:
+    box-shadow 0.25s,
+    border-color 0.25s;
+  z-index: 1;
+}
+.atlas-connected {
+  border-color: var(--tone);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--tone) 28%, transparent);
+}
+.atlas-name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.atlas-opened {
+  outline: 1px solid var(--tone);
+  outline-offset: 3px;
+}
+.atlas-source:after {
+  content: '◇';
+  position: absolute;
+  top: -18px;
+  left: 15px;
+}
+.atlas-caption {
+  position: sticky;
+  bottom: 0;
+  background: #11161cf5;
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--line);
+  padding: 16px 32px;
+  z-index: 3;
+  min-height: 100px;
+}
+.atlas-caption p {
+  font-size: 15px;
+  margin: 0;
+  max-width: 900px;
+}
+.atlas-caption > span {
+  font: 11px var(--mono);
+  color: var(--dim);
+}
+@media (max-width: 899px) {
+  #atlas-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .atlas-field svg {
+    display: none;
+  }
+  .atlas-group {
+    height: auto;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  .atlas-group h3 {
+    margin-bottom: 12px;
+  }
+  .atlas-node {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    height: auto;
+    min-height: 44px;
+    border-radius: 4px;
+    padding: 8px 10px;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+  .atlas-name {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    margin: 0;
+    overflow: visible;
+    font: 12px/1.5 var(--sans);
+  }
+  .atlas-source:after {
+    position: static;
+  }
+  .atlas-caption {
+    display: none;
+  }
+  .atlas-heading h2 {
+    font-size: 25px;
+  }
+  .atlas-field {
+    margin-inline: 20px;
+  }
+  .atlas-heading {
+    padding: 20px;
+  }
+  .atlas-heading p:not(.eyebrow):after {
+    content: ' On narrow screens, the same moments form a reading index.';
+  }
+}
+@media (max-width: 520px) {
+  #atlas-groups {
+    grid-template-columns: 1fr;
+  }
+}
+/* Keep the timeline beside the reader legible instead of stacking faded labels. */
+.event.behind-reader{visibility:hidden;opacity:0}
+@media(min-width:1200px){.reading .intro{visibility:hidden}}
+
+.response-still #response-field{transition:none}
+@media(min-width:900px) and (max-width:1150px){#atlas-groups{grid-template-columns:repeat(3,minmax(0,1fr))}}

@@ -9,7 +9,7 @@
   "scripts": {
     "predev": "node scripts/copy-fonts.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/shared/headers.mjs --check && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs && node scripts/gen-arcade-og.mjs",
+    "prebuild": "node scripts/build-chronochasm-record.mjs && node scripts/shared/headers.mjs --check && node scripts/check-ai-notes.mjs && node scripts/check-tracking.mjs && node scripts/copy-fonts.mjs && node scripts/gen-post-og.mjs && node scripts/gen-pets-og.mjs && node scripts/gen-arcade-og.mjs",
     "build": "astro check && astro build",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",

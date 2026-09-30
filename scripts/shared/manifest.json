@@ -42,7 +42,10 @@
     { "path": "scripts/gen-og.mjs", "mode": "verbatim" },
     { "path": "src/components/ReadTracker.astro", "mode": "verbatim" },
     { "path": "public/js/read-tracker.js", "mode": "verbatim" },
-    { "path": "public/js/interactions.js", "mode": "verbatim" }
+    { "path": "public/js/interactions.js", "mode": "verbatim" },
+    { "path": "public/js/response-effect.js", "mode": "verbatim" },
+    { "path": "public/js/reading-places.js", "mode": "verbatim" },
+    { "path": "public/js/site-response.js", "mode": "verbatim" }
   ],
   "perSite": {
     "$comment": "Deliberately not shared. The sites share plumbing, not design.",

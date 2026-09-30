@@ -23,7 +23,7 @@ const mins = readingTime(post.body);
 import { aiRoleLabel, aiRoleColor } from '../lib/aiRole';
 ---
 
-<div class="group grid grid-cols-[4.5rem_minmax(0,1fr)] sm:grid-cols-[6.875rem_minmax(0,1fr)_auto] gap-x-5 gap-y-1 items-baseline py-5 border-b border-[var(--color-line)]">
+<div data-response class="group grid grid-cols-[4.5rem_minmax(0,1fr)] sm:grid-cols-[6.875rem_minmax(0,1fr)_auto] gap-x-5 gap-y-1 items-baseline py-5 border-b border-[var(--color-line)]">
   <time datetime={iso} class="font-mono text-xs text-[var(--color-ink-dim)]">
     {fullDate ? iso : iso.slice(5)}
   </time>

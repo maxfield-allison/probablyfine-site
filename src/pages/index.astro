@@ -75,11 +75,11 @@ const tiles = [
       starts a row changes with the column count at each breakpoint. */}
   <section class="max-w-[var(--container-shell)] mx-auto px-6 pb-4">
     <h2 class="font-mono text-sm text-[var(--color-accent)] m-0 mb-4"># where to start</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-4 border-t border-b border-[var(--color-line)]">
+    <div data-response-group class="grid grid-cols-2 sm:grid-cols-4 border-t border-b border-[var(--color-line)]">
       {
         tiles.map((t) => (
           <a
-            href={t.href}
+            data-response href={t.href}
             rel={t.external ? 'noopener' : undefined}
             data-umami-event={t.umami}
             class="no-underline hover:no-underline block p-5 font-mono text-sm border-[var(--color-line)] border-l [&:nth-child(2n+1)]:border-l-0 [&:nth-child(n+3)]:border-t sm:[&:nth-child(2n+1)]:border-l sm:[&:nth-child(4n+1)]:border-l-0 sm:[&:nth-child(n+3)]:border-t-0 hover:bg-[var(--color-surface)]/60 transition-colors"

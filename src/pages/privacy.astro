@@ -47,10 +47,11 @@ import Layout from '../layouts/Layout.astro';
 //
 // If you change what is collected, change this page in the same commit, and add
 // a log entry at the bottom. The old entries stay.
-const version = 'v1.7';
-const updated = '2026-09-25';
+const version = 'v1.8';
+const updated = '2026-09-30';
 
 const log = [
+  { version: 'v1.8', date: '2026-09-30', body: 'Added optional reading bookmarks on both sites and a remembered path in Chronochasm. These stay in your browser and have their own clear controls. The existing analytics remain separate.' },
   {
     version: 'v1.7',
     date: '2026-09-25',
@@ -234,14 +235,25 @@ const log = [
     <div class="py-5 border-t border-[var(--color-line)]">
       <h2 class="font-mono text-sm text-[var(--color-accent)]"># in your browser</h2>
       <p class="text-[var(--color-ink-dim)] mt-2 leading-relaxed">
-        The analytics store nothing in your browser. Two other things do, and only on the pages
-        that use them.
+        The analytics store nothing in your browser. Some page features do, as described below.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         On a post with comments, the comment box sets a cookie called
         <span class="font-mono text-sm">comentario_commenter_session</span> and keeps your comment
         sort order in local storage. Until you sign in, the cookie holds the same placeholder value
         for everyone. Once you sign in, it holds your login session.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        On either site, “Keep my place” saves that page's title, address and section in your
+        browser. “Your saved places” lets you return to it or clear the bookmarks. Saving is
+        optional; browsing alone does not create a saved reading history. Each site keeps its
+        own bookmarks, without sending them to a server or syncing them between devices.
+      </p>
+      <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
+        Chronochasm keeps a temporary path through the moments and sources you open. If you
+        choose “Remember my path on this browser,” it saves their public identifiers and your
+        last moment. “Clear my path” removes that saved path. This is separate from the
+        existing Chronochasm event counters described above. Still mode does not save a preference.
       </p>
       <p class="text-[var(--color-ink-dim)] mt-3 leading-relaxed">
         The arcade can keep saved games and disk changes in your browser's storage for

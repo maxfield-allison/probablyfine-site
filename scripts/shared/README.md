@@ -3,7 +3,7 @@
 probablyfine-site and personal-site are built and served the same way: an
 Astro static build in an nginx container on Kubernetes, a Cloudflare Pages
 mirror, and a Worker that fails over between them. Their designs are
-separate on purpose, so they share plumbing and not design.
+separate on purpose. They share plumbing and the response lifecycle, while each site owns its visual treatment.
 
 The shared files are listed in `manifest.json`. **probablyfine-site is the
 source of truth.** Change a shared file there, then sync it into
@@ -22,6 +22,10 @@ check below reports it.
 `perSite` in the manifest lists what stays separate on purpose: the layout,
 global CSS, icons, Astro config, Worker routes, and each site's security
 policy.
+
+## Visitor response behavior
+
+`public/js/response-effect.js`, `reading-places.js` and `site-response.js` share the finite-motion lifecycle, explicit browser bookmarks and Astro navigation cleanup. Their markup and CSS remain per-site. Chronochasm builds on the same finite-response controller with its own published relationships and optional path storage. Neither reading bookmarks nor path state add an analytics event.
 
 ## Security headers
 

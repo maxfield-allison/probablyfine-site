@@ -31,7 +31,7 @@ function animateFloat(now){
     b.style.setProperty('--dx',s.x.toFixed(2)+'px');b.style.setProperty('--dy',s.y.toFixed(2)+'px');b.style.setProperty('--tilt',s.r.toFixed(3)+'deg');
   }
   syncGraphMotion();
-  if(!document.hidden&&!reduced.matches)frame=requestAnimationFrame(animateFloat);
+  if(!document.hidden&&!reduced.matches&&!motionPaused)frame=requestAnimationFrame(animateFloat);
 }
 function visualPosition(id){const p=positions.get(id);return {...p,x:p.x+(reduced.matches?0:driftStates.get(id)?.x||0)};}
 function syncGraphMotion(){
@@ -39,7 +39,7 @@ function syncGraphMotion(){
   for(const path of connectorElements)path.setAttribute('d',connectionPath(visualPosition(path.dataset.from),visualPosition(path.dataset.to)));
   for(const path of leaderElements){const id=path.dataset.moment,card=$('event-'+id);if(card?.classList.contains('engaged'))path.setAttribute('d',leaderPath(visualPosition(id),card));}
 }
-function startMotion(){if(frame)cancelAnimationFrame(frame);frame=0;lastFrame=0;if(reduced.matches){for(const b of bars){b.style.setProperty('--dx','0px');b.style.setProperty('--dy','0px');b.style.setProperty('--tilt','0deg');}syncGraphMotion();}else if(!document.hidden)frame=requestAnimationFrame(animateFloat);}
+function startMotion(){if(frame)cancelAnimationFrame(frame);frame=0;lastFrame=0;if(reduced.matches||motionPaused){for(const state of driftStates.values())state.x=0;for(const b of bars){b.style.setProperty('--dx','0px');b.style.setProperty('--dy','0px');b.style.setProperty('--tilt','0deg');}syncGraphMotion();}else if(!document.hidden)frame=requestAnimationFrame(animateFloat);}
 const DAY=86400000;
 const SCALES=[192,2304,9216];
 let foldedTime=true, timeSegments=[], expandAllGaps=false;
@@ -257,7 +257,7 @@ function render({anchor=null,animate=false}={}){
   const gaps=timeSegments.filter(part=>part.gap),expanded=gaps.filter(part=>!part.folded).length;
   $('expand-gaps').disabled=expanded===gaps.length;$('collapse-gaps').disabled=expanded===0;
   $('gap-status').textContent=gaps.length?expanded+' of '+gaps.length+' gaps expanded':'No skipped intervals';document.querySelector('.gap-controls').hidden=gaps.length===0;
-  $('browse-moments').textContent=(phone.matches?'All ':'Browse all ')+data.moments.length+' moments';updateConnections();updateCurrentDate();startMotion();
+  $('browse-moments').textContent=(phone.matches?'All ':'Browse all ')+data.moments.length+' moments';updateConnections();updateCurrentDate();startMotion();document.dispatchEvent(new Event("chronochasm:render"));
 }
 function toggleGap(part){
   trackChronochasm('chronochasm-control',{control:'gaps',scope:'interval',expanded:part.folded});
@@ -313,7 +313,7 @@ function updateCurrentDate(){
   syncGraphMotion();markBehindReader();
 }
 function zoom(next){next=Math.max(0,Math.min(2,next));if(next===level)return;const anchor=anchorAtCurrentPosition();level=next;trackChronochasm('chronochasm-control',{control:'zoom',level:['chapters','moments','hours'][level]});render({anchor,animate:true});$('announcement').textContent=['Weeks in view','Days in view','Hours in view'][level];}
-function sourceButton(id,label){const b=element('button','source-button',label||data.sources[id].reference);b.addEventListener('click',()=>openSource(id));return b;}
+function sourceButton(id,label){const b=element('button','source-button',label||data.sources[id].reference);b.dataset.source=id;b.addEventListener('click',()=>openSource(id));return b;}
 function openSource(id){
   const source=data.sources[id],detail=source.detail;
   $('source-title').textContent=source.reference;
@@ -342,7 +342,7 @@ function openSource(id){
   }
   $('source-scope').textContent=detail?'Selected original words, with omissions noted above. The complete conversation or issue is not included.':'This retained selection is the available source here; no fuller exchange is included.';
   $('source').showModal();$('source-scroll').scrollTop=0;
-  trackChronochasm('chronochasm-source',{source:id,moment:selected});
+  trackChronochasm('chronochasm-source',{source:id,moment:selected});document.dispatchEvent(new CustomEvent('chronochasm:source',{detail:{id,moment:selected}}));
 }
 function renderReadingNavigation(id){
   const host=$('reader-navigation');host.replaceChildren();
@@ -415,7 +415,7 @@ function bind(){
   let resizeFrame;window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>render({anchor:anchorAtCurrentPosition()}));});
   $('close-reader').addEventListener('click',closeStory);$('close-source').addEventListener('click',()=>$('source').close());
   $('zoom-out').addEventListener('click',()=>zoom(level-1));$('zoom-in').addEventListener('click',()=>zoom(level+1));document.querySelectorAll('[data-level]').forEach(b=>b.addEventListener('click',()=>zoom(+b.dataset.level)));
-  $('motion-toggle').addEventListener('click',()=>{motionPaused=!motionPaused;trackChronochasm('chronochasm-control',{control:'motion',paused:motionPaused});$('motion-toggle').setAttribute('aria-pressed',String(motionPaused));$('motion-toggle').setAttribute('aria-label',motionPaused?'Resume floating motion':'Pause floating motion');$('motion-toggle').textContent=motionPaused?'▷':'Ⅱ';});
+  $('motion-toggle').addEventListener('click',()=>{motionPaused=!motionPaused;trackChronochasm('chronochasm-control',{control:'motion',paused:motionPaused});$('motion-toggle').setAttribute('aria-pressed',String(motionPaused));$('motion-toggle').setAttribute('aria-label',motionPaused?'Resume floating motion':'Pause floating motion');$('motion-toggle').textContent=motionPaused?'▷':'Ⅱ';startMotion();document.dispatchEvent(new Event('chronochasm:motion'));});
   $('thread-filter').addEventListener('change',e=>{if(opened)closeStory();filter=e.target.value;trackChronochasm('chronochasm-control',{control:'thread',thread:filter});selected=null;render();viewport.scrollTop=0;$('announcement').textContent=filter==='all'?'Showing all threads':'Showing '+thread(filter).name+', '+shownMoments().length+' moments';});
   marks.addEventListener('pointerover',e=>engage(e,true));marks.addEventListener('pointerout',e=>engage(e,false));marks.addEventListener('focusin',e=>engage(e,true));marks.addEventListener('focusout',e=>engage(e,false));
   for(const id of ['source','moment-index'])$(id).addEventListener('click',e=>{if(e.target!==$(id))return;const r=$(id).getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$(id).close();});
@@ -429,5 +429,8 @@ function bind(){
 }
 let resolveReady;
 window.chronochasm={ready:new Promise(resolve=>{resolveReady=resolve;})};
-async function init(){const response=await fetch('/chronochasm/content.json',{cache:'no-store'});if(!response.ok)throw Error('The selected history could not be loaded.');data=await response.json();for(const l of data.lanes){const key=element('span','lane-key',l.name);key.style.setProperty('--lane',l.color);key.title=l.description;$('lane-legend').append(key);}for(const t of data.threads){const o=element('option','',t.name);o.value=t.id;o.textContent=t.name+' ('+data.moments.filter(m=>m.thread===t.id).length+')';$('thread-filter').append(o);}$('edition-meta').textContent=data.threads.length+' threads · '+data.moments.length+' moments · August 18–September 14, 2026';bind();render();resolveReady({data,renderPassage,getSelected:()=>selected});const id=location.hash.slice(1);if(moment(id))openStory(id,{travel:true});}
+async function init(){const response=await fetch('/chronochasm/content.json',{cache:'no-store'});if(!response.ok)throw Error('The selected history could not be loaded.');data=await response.json();for(const l of data.lanes){const key=element('span','lane-key',l.name);key.style.setProperty('--lane',l.color);key.title=l.description;$('lane-legend').append(key);}for(const t of data.threads){const o=element('option','',t.name);o.value=t.id;o.textContent=t.name+' ('+data.moments.filter(m=>m.thread===t.id).length+')';$('thread-filter').append(o);}$('edition-meta').textContent=data.threads.length+' threads · '+data.moments.length+' moments · August 18–September 14, 2026';bind();render();resolveReady({data,renderPassage,getSelected:()=>selected,openMoment:id=>openStory(id,{travel:true}),motionPaused:()=>motionPaused});const id=location.hash.slice(1);if(moment(id))openStory(id,{travel:true});}
 init().catch(error=>{$('edition-meta').textContent=error.message;$('marks').append(element('p','load-error','Refresh the page to try loading the history again.'));$('zoom-in').disabled=true;$('zoom-out').disabled=true;});
+
+window.addEventListener('pagehide',()=>{cancelAnimationFrame(frame);frame=0;});
+window.addEventListener('pageshow',event=>{if(event.persisted)startMotion();});

@@ -20,7 +20,7 @@ const comparison = (await markdown.render(documents[3].text)).code;
 const processNote = (await markdown.render(pageProcessNote)).code;
 ---
 
-<null-article data-version="researched" class="version-reader mt-10">
+<null-article data-reading-content data-version="researched" class="version-reader mt-10">
   <div class="reader-intro" data-pagefind-ignore>
     <p>Three versions of the same article. Switch at any point to compare the corresponding passage. Tap an original passage, or choose “Compare this passage,” to see what changed.</p>
     <p class="version-key">Original: dictated words, with paragraph breaks. Edited: the first AI-shaped draft and my corrections. Revised: the article after source checks, critique, and several exchanges. These are three stages, not every intermediate draft.</p>
@@ -45,7 +45,7 @@ const processNote = (await markdown.render(pageProcessNote)).code;
 
   <div id="aligned-article" class="aligned-article" aria-label="Revised article">
     {rows.map((row, index) => (
-      <div class="aligned-passage" data-passage={row.id}>
+      <div class="aligned-passage" data-passage={row.id} id={`passage-${row.id}`} data-reading-heading={`Passage ${index + 1}`}>
         <button type="button" class="passage-compare" data-compare-passage={row.id} aria-label={`Compare passage ${index + 1}`} aria-haspopup="dialog"
           data-track="post-comparison" data-track-passage={row.id} data-track-slug={nullSlug}>Compare this passage <span aria-hidden="true">↗</span></button>
         {row.cells.map((cell) => (
@@ -123,6 +123,8 @@ const processNote = (await markdown.render(pageProcessNote)).code;
       let previousFocus: HTMLElement | null = null;
       const openPassage = (row: HTMLElement, trigger: HTMLElement) => {
         previousFocus = trigger;
+        row.dataset.explored = 'true';
+        trigger.setAttribute('aria-label', `Compare passage ${Array.from(this.querySelectorAll('[data-passage]')).indexOf(row) + 1}, previously opened`);
         dialog.querySelector('[data-dialog-note]')!.textContent = row.querySelector<HTMLTemplateElement>('template')!.content.textContent;
         dialogVersions.replaceChildren();
         row.querySelectorAll<HTMLElement>('[data-cell-version]').forEach((cell) => {
@@ -140,6 +142,9 @@ const processNote = (await markdown.render(pageProcessNote)).code;
           dialogVersions.append(section);
         });
         dialog.showModal();
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !document.documentElement.classList.contains('response-still')) {
+          dialogVersions.animate([{opacity:.65, translate:'0 8px'},{opacity:1, translate:'0 0'}],{duration:320,easing:'cubic-bezier(.2,.8,.2,1)'});
+        }
       };
       this.querySelectorAll<HTMLElement>('[data-passage]').forEach((row) => {
         const trigger = row.querySelector<HTMLButtonElement>('[data-compare-passage]')!;
@@ -169,6 +174,8 @@ const processNote = (await markdown.render(pageProcessNote)).code;
 </script>
 
 <style>
+  .aligned-passage[data-explored="true"] { box-shadow: -2px 0 var(--color-accent); }
+  .aligned-passage[data-explored="true"] .passage-compare::after { content: " · opened"; }
   .version-reader { display: block; --toolbar-offset: 4rem; }
   .reader-intro, .alignment-note, .document-section, .comparison-section { max-width: var(--measure-read); margin-inline: auto; }
   .reader-intro p { line-height: 1.6; margin: 0 0 .75rem; }
