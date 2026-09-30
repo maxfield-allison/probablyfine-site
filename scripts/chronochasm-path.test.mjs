@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createPathStore } from '../public/chronochasm/path-store.mjs';
+import { createPathStore } from '../public/chronochasm/path-store.js';
 const data = {
   moments: [{ id: 'one' }, { id: 'two' }],
   sources: { source: {} },

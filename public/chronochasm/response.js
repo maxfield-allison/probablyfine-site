@@ -1,6 +1,6 @@
 import { createResponse } from '/js/response-effect.js';
-import { mountAtlas } from './atlas.mjs';
-import { createPathStore } from './path-store.mjs';
+import { mountAtlas } from './atlas.js';
+import { createPathStore } from './path-store.js';
 const $ = (id) => document.getElementById(id);
 const api = await window.chronochasm.ready;
 const { data } = api;

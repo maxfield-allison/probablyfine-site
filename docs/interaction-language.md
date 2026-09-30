@@ -36,3 +36,5 @@ Chronochasm uses the same finite response controller with a separate atlas and p
 `node scripts/build-chronochasm-record.mjs` regenerates the no-JavaScript plain record from published content and runs before every build. Run `node --test scripts/chronochasm-path.test.mjs` for path validation and storage failure checks.
 
 Null keeps its version alignment and text geometry; explored passages gain a quiet mark. The reading toolbar is static there so it does not compete with the existing version controls.
+
+Serve browser modules with `.js` filenames: the production nginx MIME table does not recognize `.mjs`. A module returning HTTP 200 with `application/octet-stream` is still refused by the browser. Verify Content-Type on the origin as well as Pages.
