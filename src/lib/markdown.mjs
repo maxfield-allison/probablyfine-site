@@ -4,8 +4,8 @@
 // Astro 7 renders markdown with Sätteri rather than remark/rehype, so these are
 // Sätteri plugins: plain visitor objects over the same hast shapes a rehype
 // plugin would see. They run after syntax highlighting and before Astro assigns
-// heading ids. Each one matches authored syntax that no earlier post uses, so a
-// post without that syntax renders exactly as it did before.
+// heading ids. Tutorial extensions match authored syntax; table wrappers preserve
+// the content and native table semantics while adding a scroll region.
 
 /** @typedef {NonNullable<import('@astrojs/markdown-satteri').SatteriProcessorOptions['hastPlugins']>[number]} HastPlugin */
 
@@ -120,4 +120,26 @@ export const commandFlag = {
   },
 };
 
-export const postHastPlugins = [stepHeadings, callouts, commandFlag];
+// Keep native table semantics inside a focusable scroll region. The hint and
+// scrolling work without JavaScript; enhancement adds controls only on overflow.
+/** @type {HastPlugin} */
+export const scrollableTables = {
+  name: 'scrollable-tables',
+  element: {
+    filter: ['table'],
+    visit(node, ctx) {
+      ctx.replaceNode(node, el('scroll-table', {}, [
+        el('div', { className: ['table-scroll-tools'], dataPagefindIgnore: true }, [
+          el('p', {}, [text('Scroll sideways to see all columns.')]),
+          el('div', { className: ['table-scroll-buttons'], hidden: true }, [
+            el('button', { type: 'button', dataScrollDirection: '-1', ariaLabel: 'Scroll table left' }, [text('←')]),
+            el('button', { type: 'button', dataScrollDirection: '1', ariaLabel: 'Scroll table right' }, [text('→')]),
+          ]),
+        ]),
+        el('div', { className: ['table-viewport'], tabIndex: 0, role: 'region', ariaLabel: 'Scrollable table' }, [node]),
+      ]));
+    },
+  },
+};
+
+export const postHastPlugins = [stepHeadings, callouts, commandFlag, scrollableTables];
