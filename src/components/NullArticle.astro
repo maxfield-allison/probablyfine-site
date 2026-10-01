@@ -1,6 +1,7 @@
 ---
 import { createSatteriMarkdownProcessor } from '@astrojs/markdown-satteri';
 import { alignedPassages, documents, nullSlug, pageProcessNote, versions } from '../lib/null-article';
+import { scrollableTables } from '../lib/markdown.mjs';
 
 // Only repository-authored, reviewed Markdown enters this build-time renderer.
 // No reader input or fetched HTML reaches set:html. Disable smart punctuation
@@ -8,6 +9,7 @@ import { alignedPassages, documents, nullSlug, pageProcessNote, versions } from 
 const markdown = await createSatteriMarkdownProcessor({
   syntaxHighlight: false,
   features: { smartPunctuation: false },
+  hastPlugins: [scrollableTables],
 });
 const rows = await Promise.all(alignedPassages().map(async (row) => ({
   ...row,
@@ -177,7 +179,7 @@ const processNote = (await markdown.render(pageProcessNote)).code;
   .aligned-passage[data-explored="true"] { box-shadow: -2px 0 var(--color-accent); }
   .aligned-passage[data-explored="true"] .passage-compare::after { content: " · opened"; }
   .version-reader { display: block; --toolbar-offset: 4rem; }
-  .reader-intro, .alignment-note, .document-section, .comparison-section { max-width: var(--measure-read); margin-inline: auto; }
+  .reader-intro, .alignment-note, .document-section { max-width: var(--measure-read); margin-inline: auto; }
   .reader-intro p { line-height: 1.6; margin: 0 0 .75rem; }
   .version-key, .alignment-note { color: var(--color-ink-dim); font-size: .875rem; }
   .version-toolbar { display: none; }
@@ -209,10 +211,10 @@ const processNote = (await markdown.render(pageProcessNote)).code;
   .document-section ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
   .document-section a { display: flex; justify-content: space-between; align-items: center; min-height: 44px; padding: .65rem; border: 1px solid var(--color-line); border-radius: .25rem; text-decoration: none; gap: .5rem; }
   .file-type { font-family: var(--font-mono); font-size: .75rem; color: var(--color-ink-dim); }
-  .comparison-section { scroll-margin-top: 15rem; padding-block: 1rem; border-block: 1px solid var(--color-line); }
+  .comparison-section { width: min(76rem, calc(100vw - 3rem)); max-width: none; margin-inline: calc((100% - min(76rem, 100vw - 3rem)) / 2); scroll-margin-top: 15rem; padding-block: 1rem; border-block: 1px solid var(--color-line); }
   summary { cursor: pointer; min-height: 44px; padding: .6rem 0; font-weight: 650; }
   .comparison-body { margin-top: 1.5rem; overflow-wrap: anywhere; }
-  .comparison-body :global(table) { display: block; overflow-x: auto; white-space: normal; font-size: .8rem; }
+  .comparison-body :global(table) { font-size: .875rem; }
   .comparison-body :global(th), .comparison-body :global(td) { min-width: 12rem; }
   .comparison-body :global(pre) { white-space: pre-wrap; overflow-wrap: anywhere; }
   .comparison-body :global(summary) { cursor: pointer; padding-block: .75rem; }

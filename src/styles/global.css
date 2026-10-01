@@ -399,13 +399,11 @@
   margin-bottom: 1.25rem;
 }
 
-/* Markdown tables need their own reading measure and real gutters. Without
-   cell padding, adjacent headers render as one run of text; on phones the
-   table keeps its columns and scrolls instead of crushing them together. */
+/* Tables use the available shell width; long columns wrap and overflow stays
+   in a named region rather than pushing the whole page sideways. */
 .prose table {
   width: 100%;
-  max-width: var(--measure-read);
-  margin: 1.75rem auto;
+  margin: 0;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
 }
@@ -425,12 +423,52 @@
 .prose tbody tr:last-child td {
   border-bottom-color: transparent;
 }
-@media (max-width: 640px) {
-  .prose table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
+.prose th, .prose td {
+  min-width: 8rem;
+  overflow-wrap: anywhere;
+}
+scroll-table {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  margin: 1.75rem auto;
+}
+.table-viewport {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-line);
+  border-radius: .375rem;
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-ink-dim) var(--color-surface);
+}
+.table-scroll-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .5rem;
+}
+.table-scroll-tools p {
+  margin: 0;
+  font-size: .8125rem;
+  color: var(--color-ink-dim);
+}
+.table-scroll-buttons { display: flex; gap: .5rem; }
+.table-scroll-buttons button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--color-ink-dim);
+  border-radius: .25rem;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.table-scroll-buttons button:disabled { opacity: .4; cursor: default; }
+.table-scroll-tools[hidden], .table-scroll-buttons[hidden] { display: none; }
+@media print {
+  .table-scroll-tools { display: none; }
+  .table-viewport { overflow: visible; border: 0; }
+  .prose th, .prose td { min-width: 0; }
 }
 
 /* Inline post imagery. Markdown images render inside their own paragraph; the

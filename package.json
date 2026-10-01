@@ -28,6 +28,7 @@
     "check:headers": "node scripts/shared/headers.mjs --check",
     "check:ai-notes": "node scripts/check-ai-notes.mjs",
     "check:tracking": "node scripts/check-tracking.mjs",
+    "check:responsive": "node scripts/responsive-smoke.mjs",
     "check:arcade": "node scripts/arcade/smoke.mjs",
     "shared:sync": "node scripts/shared/sync-shared.mjs",
     "shared:check": "node scripts/shared/sync-shared.mjs --check"

@@ -1,0 +1,17 @@
+---
+interface Props { label: string; }
+const { label } = Astro.props;
+---
+
+<scroll-table>
+  <div class="table-scroll-tools" data-pagefind-ignore>
+    <p>Scroll sideways to see all columns.</p>
+    <div class="table-scroll-buttons" hidden>
+      <button type="button" data-scroll-direction="-1" aria-label="Scroll table left">←</button>
+      <button type="button" data-scroll-direction="1" aria-label="Scroll table right">→</button>
+    </div>
+  </div>
+  <div class="table-viewport" tabindex="0" role="region" aria-label={label}>
+    <slot />
+  </div>
+</scroll-table>

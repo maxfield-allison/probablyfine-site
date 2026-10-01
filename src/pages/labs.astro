@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Topology from '../components/Topology.astro';
+import ScrollTable from '../components/ScrollTable.astro';
 import rack from '../content/posts/img/2025-basement-rack.jpg';
 import { talosNodes, argoApplications, cephRawTiB, proxmoxNodes, gpus, clusterTotals } from '../data/facts';
 
@@ -154,7 +155,7 @@ const services = [
   <!-- Cluster -->
   <section class="reveal max-w-[var(--container-shell)] mx-auto px-6 py-8">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># the cluster</h2>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="Cluster nodes table">
+    <ScrollTable label="Cluster nodes table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>
@@ -188,7 +189,7 @@ const services = [
           </tr>
         </tfoot>
       </table>
-    </div>
+    </ScrollTable>
     <p class="text-[var(--color-ink-dim)] text-sm mt-4 leading-relaxed">
       Two tiers on purpose. pve-00 and pve-01 are the heavy compute and GPU hosts, both on
       ECC memory, with discrete NVIDIA cards passed through to Kubernetes workers. The three
@@ -207,7 +208,7 @@ const services = [
       blocks the NVENC and NVDEC engines the transcoding and camera detection depend on.
       Transcode, local inference, and the occasional experiment all land here.
     </p>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="GPUs table">
+    <ScrollTable label="GPUs table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>
@@ -230,7 +231,7 @@ const services = [
           }
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   </section>
 
   <!-- Storage -->
@@ -275,7 +276,7 @@ const services = [
       after Culture ships, which felt appropriate for machines whose entire job is to be
       quietly competent.
     </p>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="Pi fleet table">
+    <ScrollTable label="Pi fleet table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>
@@ -298,7 +299,7 @@ const services = [
           }
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
     <p class="text-[var(--color-ink-dim)] text-sm mt-4 max-w-2xl leading-relaxed">
       They share a small bag of USB radios that move between nodes as needed: a Z-Wave
       controller, a multiprotocol Zigbee/Thread stick, and a Google Coral TPU for edge ML.
@@ -328,7 +329,7 @@ const services = [
   <!-- Power -->
   <section class="max-w-[var(--container-shell)] mx-auto px-6 py-8 pb-16">
     <h2 class="font-mono text-sm text-[var(--color-accent)]"># chassis and power</h2>
-    <div class="mt-4 overflow-x-auto rounded border border-[var(--color-line)]" tabindex="0" role="region" aria-label="Chassis and power table">
+    <ScrollTable label="Chassis and power table">
       <table class="w-full text-sm">
         <thead class="font-mono text-xs text-[var(--color-ink-dim)] border-b border-[var(--color-line)]">
           <tr>
@@ -349,7 +350,7 @@ const services = [
           }
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
     <p class="text-[var(--color-ink-dim)] text-sm mt-6 leading-relaxed">
       Want the story behind all this instead of the spec sheet? The{' '}
       <a href="/blog">blog</a>{' '}
