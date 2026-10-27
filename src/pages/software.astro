@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const products = [
+  {
+    image: '/images/software/platefold.svg', id: 'platefold', name: 'Plate|Fold', category: 'Documents',
+    title: 'Give wide diagrams room to stay readable.',
+    description: 'Turn Markdown, documents and spreadsheets into PDFs. A figure can stay in the text column, move to a landscape plate, use a larger sheet or get a page cut to its proportions.',
+    availability: 'Windows x64, Apple Silicon macOS and Linux x86-64 desktop packages. Command line, Linux browser server and container images.',
+    limit: 'Word documents are reflowed rather than reproduced page for page. Tagged PDF structure is included; PDF/UA conformance is not claimed.',
+    license: 'MIT',
+    links: [
+      { label: 'Explore Plate|Fold', href: 'https://platefold.page' },
+      { label: 'Downloads', href: 'https://github.com/maxfield-allison/platefold/releases/latest' },
+      { label: 'Documentation', href: 'https://maxfield-allison.github.io/platefold/' },
+      { label: 'Source', href: 'https://github.com/maxfield-allison/platefold' },
+    ],
+  },
+  {
+    image: '/images/software/vacancyd.svg', id: 'vacancyd', name: 'Vacancyd', category: 'Compute',
+    title: 'Spare compute. On your terms.',
+    description: 'Let other machines borrow capacity from a computer you also use. Vacancyd gates requests to a dedicated inference server using owner policy and measured GPU memory, system memory and CPU capacity.',
+    availability: 'Windows x86-64 and Linux x86-64. Linux ARM64 is a preview. An owner console, service and container images are available.',
+    limit: 'macOS is not supported. There is no built-in TLS. A directly exposed inference server bypasses the gate.',
+    license: 'Apache-2.0',
+    links: [
+      { label: 'Explore Vacancyd', href: 'https://vacancyd.com' },
+      { label: 'Downloads', href: 'https://github.com/maxfield-allison/vacancyd/releases/latest' },
+      { label: 'Documentation', href: 'https://docs.vacancyd.com' },
+      { label: 'Source', href: 'https://github.com/maxfield-allison/vacancyd' },
+    ],
+  },
+  {
+    image: '/images/software/dnsweaver.png', id: 'dnsweaver', name: 'dnsweaver', category: 'Infrastructure',
+    title: 'DNS records that keep up with your services.',
+    description: 'Reconcile DNS records from containers, virtual machines and infrastructure sources. Keep internal and external names aligned as services start, move and disappear.',
+    availability: 'Self-hosted Go application with container distribution and configurable source and DNS-provider integrations.',
+    limit: 'Start with the documented ownership and reconciliation settings for your DNS zones.',
+    license: 'MIT',
+    links: [
+      { label: 'Explore dnsweaver', href: 'https://dnsweaver.com' },
+      { label: 'Downloads', href: 'https://github.com/maxfield-allison/dnsweaver/releases/latest' },
+      { label: 'Source and documentation', href: 'https://github.com/maxfield-allison/dnsweaver' },
+    ],
+  },
+];
+---
+
+<Layout title="Software · ProbablyFine" description="Independent open-source software by Maxfield Allison: Plate|Fold for readable PDFs, Vacancyd for spare compute, and dnsweaver for DNS automation.">
+  <div class="max-w-[var(--container-shell)] mx-auto px-6 pt-16 pb-8">
+    <header class="max-w-[var(--measure-read)]">
+      <p class="font-mono text-sm text-[var(--color-accent)] m-0">./software</p>
+      <h1 class="text-4xl sm:text-5xl font-bold mt-4 mb-0 leading-tight">Independent software.</h1>
+      <p class="text-lg text-[var(--color-ink-dim)] mt-6 mb-0 leading-relaxed">ProbablyFine is where I publish my independent software. These projects began with something I wanted to work better, then grew into tools other people can install, inspect and use.</p>
+      <p class="text-[var(--color-ink-dim)] mt-4 mb-0 leading-relaxed">I own the product direction and releases, and direct AI agents for implementation. The source, documentation and release files are linked below.</p>
+      <p class="font-mono text-sm mt-5 mb-0"><a href="https://maxfieldallison.com/projects" rel="noopener">About the work and my role →</a></p>
+    </header>
+
+    <div class="mt-14 space-y-12">
+      {products.map((product) => (
+        <section id={product.id} aria-labelledby={`${product.id}-title`} class="border-t border-[var(--color-line)] pt-7 grid gap-5 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-10">
+          <div>
+            <img src={product.image} alt="" width="64" height="64" loading="lazy" decoding="async" class="w-16 h-16 object-contain mb-5" />
+            <p class="font-mono text-xs text-[var(--color-ink-dim)] uppercase tracking-wider m-0">{product.category}</p>
+            <h2 id={`${product.id}-title`} class="text-2xl font-bold mt-2 mb-0">{product.name}</h2>
+            <p class="font-mono text-xs text-[var(--color-ink-dim)] mt-3 mb-0">Open source · {product.license}</p>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-xl sm:text-2xl font-semibold m-0">{product.title}</h3>
+            <p class="text-[var(--color-ink-dim)] leading-relaxed mt-4 mb-0 max-w-[var(--measure-read)]">{product.description}</p>
+            <p class="text-sm leading-relaxed mt-4 mb-0">{product.availability}</p>
+            <p class="text-sm text-[var(--color-ink-dim)] leading-relaxed mt-3 mb-0">{product.limit}</p>
+            <ul class="list-none p-0 mt-5 mb-0 flex flex-wrap gap-x-6 gap-y-3 font-mono text-sm" aria-label={`${product.name} links`}>
+              {product.links.map((link) => <li><a href={link.href} rel="noopener">{link.label} →</a></li>)}
+            </ul>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <aside class="mt-14 border-t border-[var(--color-line)] pt-7 max-w-[var(--measure-read)]" aria-labelledby="software-notes">
+      <h2 id="software-notes" class="text-xl font-semibold m-0">The work behind the software</h2>
+      <p class="text-[var(--color-ink-dim)] leading-relaxed mt-4 mb-0">The <a href="/blog">blog</a> covers design decisions, failures and what changed along the way. For supported configurations and known limits, start with each project's documentation.</p>
+      <p class="text-[var(--color-ink-dim)] leading-relaxed mt-4 mb-0">If something here is useful to you, <a href="/support">you can support the work</a>.</p>
+    </aside>
+  </div>
+</Layout>
